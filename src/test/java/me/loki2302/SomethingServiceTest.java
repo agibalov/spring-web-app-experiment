@@ -2,6 +2,8 @@ package me.loki2302;
 
 import static org.junit.Assert.assertEquals;
 
+import me.loki2302.service.SomethingService;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

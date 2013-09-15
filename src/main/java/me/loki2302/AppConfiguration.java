@@ -4,6 +4,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+
 import de.neuland.jade4j.JadeConfiguration;
 import de.neuland.jade4j.filter.MarkdownFilter;
 import de.neuland.jade4j.spring.template.SpringTemplateLoader;
@@ -11,7 +14,13 @@ import de.neuland.jade4j.spring.view.JadeViewResolver;
 
 @EnableWebMvc
 @ComponentScan("me.loki2302")
-public class AppConfiguration {
+public class AppConfiguration extends WebMvcConfigurerAdapter {
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/assets/**").addResourceLocations("/assets/");
+        registry.addResourceHandler("/robots.txt").addResourceLocations("/robots.txt");
+    }
+    
     @Bean
     public SpringTemplateLoader templateLoader() {
         SpringTemplateLoader templateLoader = new SpringTemplateLoader();

@@ -1,4 +1,6 @@
-package me.loki2302;
+package me.loki2302.service;
+
+import me.loki2302.dao.SomethingDao;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

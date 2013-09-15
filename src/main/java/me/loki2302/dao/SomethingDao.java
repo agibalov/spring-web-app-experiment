@@ -1,4 +1,4 @@
-package me.loki2302;
+package me.loki2302.dao;
 
 import java.util.HashMap;
 
@@ -16,5 +16,5 @@ public class SomethingDao {
                 "select * from Something", 
                 new HashMap<String, Object>(), 
                 Integer.class);
-    }        
+    }
 }
