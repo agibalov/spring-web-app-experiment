@@ -1,5 +1,10 @@
 package me.loki2302;
 
+import javax.annotation.PostConstruct;
+
+import me.loki2302.service.BlogService;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.web.servlet.ViewResolver;
@@ -8,7 +13,6 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import de.neuland.jade4j.JadeConfiguration;
-import de.neuland.jade4j.filter.MarkdownFilter;
 import de.neuland.jade4j.spring.template.SpringTemplateLoader;
 import de.neuland.jade4j.spring.view.JadeViewResolver;
 
@@ -43,5 +47,15 @@ public class AppConfiguration extends WebMvcConfigurerAdapter {
         JadeViewResolver viewResolver = new JadeViewResolver();
         viewResolver.setConfiguration(jadeConfiguration);
         return viewResolver;
+    }
+    
+    @Autowired
+    private BlogService blogService;
+    
+    @PostConstruct
+    public void PopulateDatabase() {
+        blogService.createCategory("Porn");
+        blogService.createCategory("Music");
+        blogService.createCategory("Programming");
     }
 }

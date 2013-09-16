@@ -2,10 +2,8 @@ package me.loki2302;
 
 import java.util.Date;
 
-import me.loki2302.service.ArticleService;
-import me.loki2302.service.CategoryService;
 import me.loki2302.service.SomethingService;
-import me.loki2302.service.UserService;
+import me.loki2302.service.BlogService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,18 +17,13 @@ public class HomeController {
     private SomethingService somethingService;
     
     @Autowired
-    private UserService userService;
-    
-    @Autowired
-    private CategoryService categoryService;
-    
-    @Autowired
-    private ArticleService articleService;
-    
+    private BlogService blogService;
+        
     @RequestMapping(value = "/", method = RequestMethod.GET)    
     public String index(Model model) {
         model.addAttribute("currentTime", new Date());
         model.addAttribute("whatServiceSays", somethingService.getSomething());
+        model.addAttribute("categories", blogService.getCategories());
         return "index";
     }
     

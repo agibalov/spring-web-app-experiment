@@ -1,8 +1,12 @@
 extends layout
 
 block title
-  small index page
+  | Index Page
 
 block content
   p current time is #{currentTime}
   p service says #{whatServiceSays}
+  h2 List of categories
+  ul
+    for category in categories
+      li: a(href="#/id=#{category.Id}") #{category.Name}
