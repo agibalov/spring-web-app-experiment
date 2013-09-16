@@ -1,0 +1,10 @@
+extends ../layout
+
+block title
+  | Categories
+
+block content
+  h2 List of categories
+  ul
+    for category in categories
+      li: a(href="/category/#{category.Id}") #{category.Name}

@@ -13,7 +13,7 @@ create table Categories(
 	Name varchar(256) not null 
 );
 
-create table Article(
+create table Articles(
 	Id int identity,
 	RowUuid char(36) not null,
 	Title varchar(256) not null,
@@ -22,5 +22,5 @@ create table Article(
 	CategoryId int not null
 );
 
-alter table Article add foreign key (UserId) references Users (Id);
-alter table Article add foreign key (CategoryId) references Categories (Id);
+alter table Articles add foreign key (UserId) references Users (Id);
+alter table Articles add foreign key (CategoryId) references Categories (Id);

@@ -1,0 +1,13 @@
+extends ../layout
+
+block title
+  | #{category.Category.Name}
+
+block content
+  h2 #{category.Category.Name}
+  ul.list-unstyled
+    for article in category.Articles
+      li
+        h3: a(href="/article/#{article.Id}") #{article.Title}
+        p #{article.Text}
+  

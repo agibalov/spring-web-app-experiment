@@ -43,4 +43,28 @@ public class BlogService {
     public ArticleRow createArticle(int userId, int categoryId, String title, String text) {
         return articleDao.createArticle(userId, categoryId, title, text);
     }
+    
+    public ArticleRow getArticle(int articleId) {
+        return articleDao.getArticle(articleId);
+    }
+    
+    public Category getCategory(int categoryId) {
+        CategoryRow categoryRow = categoryDao.getCategory(categoryId);
+        if(categoryRow == null) {
+            throw new RuntimeException("no such category");
+        }
+        
+        List<ArticleRow> articleRows = articleDao.getArticlesByCategory(categoryId);
+        
+        Category category = new Category();
+        category.Category = categoryRow;
+        category.Articles = articleRows;
+        
+        return category;
+    }
+    
+    public static class Category {
+        public CategoryRow Category;
+        public List<ArticleRow> Articles;
+    }
 }

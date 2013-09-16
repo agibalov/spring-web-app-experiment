@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -33,6 +34,15 @@ public class CategoryDao {
                 new CategoryRowMapper());
         
         return categoryRow;
+    }
+    
+    public CategoryRow getCategory(final int categoryId) {
+        return DataAccessUtils.singleResult(template.query(
+                "select Id, Name from Categories where Id = :categoryId",
+                new HashMap<String, Object>() {{
+                    put("categoryId", categoryId);
+                }},
+                new CategoryRowMapper()));
     }
     
     public List<CategoryRow> getCategories() {

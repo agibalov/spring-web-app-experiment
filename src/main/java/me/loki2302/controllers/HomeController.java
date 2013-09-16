@@ -1,4 +1,4 @@
-package me.loki2302;
+package me.loki2302.controllers;
 
 import java.util.Date;
 
@@ -24,11 +24,6 @@ public class HomeController {
         model.addAttribute("currentTime", new Date());
         model.addAttribute("whatServiceSays", somethingService.getSomething());
         model.addAttribute("categories", blogService.getCategories());
-        return "index";
-    }
-    
-    @RequestMapping(value = "/test", method = RequestMethod.GET)
-    public String test() {
-        return "test";
+        return "home/index";
     }
 }

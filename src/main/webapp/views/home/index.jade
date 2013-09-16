@@ -1,7 +1,7 @@
-extends layout
+extends ../layout
 
 block title
-  | Index Page
+  | Home
 
 block content
   p current time is #{currentTime}
@@ -9,4 +9,4 @@ block content
   h2 List of categories
   ul
     for category in categories
-      li: a(href="#/id=#{category.Id}") #{category.Name}
+      li: a(href="/category/#{category.Id}") #{category.Name}
