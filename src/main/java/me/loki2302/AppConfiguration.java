@@ -13,6 +13,7 @@ import me.loki2302.dao.UserDao.UserRow;
 import me.loki2302.faker.Faker;
 import me.loki2302.service.BlogService;
 
+import org.pegdown.PegDownProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -22,6 +23,7 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import de.neuland.jade4j.JadeConfiguration;
+import de.neuland.jade4j.filter.MarkdownFilter;
 import de.neuland.jade4j.spring.template.SpringTemplateLoader;
 import de.neuland.jade4j.spring.view.JadeViewResolver;
 
@@ -49,6 +51,7 @@ public class AppConfiguration extends WebMvcConfigurerAdapter {
         configuration.setCaching(false);
         configuration.setSharedVariables(new HashMap<String, Object>() {{
             put("dateHelper", new DateHelper());
+            put("markdownHelper", new MarkdownHelper());
         }});
         configuration.setTemplateLoader(templateLoader);
         return configuration;
@@ -61,6 +64,12 @@ public class AppConfiguration extends WebMvcConfigurerAdapter {
         
         public String makeTime(Date date) {
             return new SimpleDateFormat("HH:mm:ss").format(date);
+        }
+    }
+    
+    public static class MarkdownHelper {
+        public String renderMarkdown(String markdown) {
+            return new PegDownProcessor().markdownToHtml(markdown);
         }
     }
 
@@ -101,17 +110,21 @@ public class AppConfiguration extends WebMvcConfigurerAdapter {
                             "Article #%d in category %s by %s",
                             i,
                             categoryRow.Name,
-                            userRow.Name);
+                            userRow.Name);                                        
                     
-                    String text = String.format(
-                            "Content for article #%d in category %s by %s",
-                            i,
-                            categoryRow.Name,
-                            userRow.Name);
-                    
+                    String text = generateRandomMarkdown(faker);                    
                     blogService.createArticle(userRow.Id, categoryRow.Id, title, text);
                 }
             }
         }
+    }
+    
+    private static String generateRandomMarkdown(Faker faker) {
+        String markdown = "";
+        for(int i = 0; i < 5; ++i) {
+            markdown += faker.Lorem.sentences(10);
+            markdown += "\n\n";
+        }
+        return markdown;
     }
 }

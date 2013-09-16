@@ -17,7 +17,7 @@ create table Articles(
 	Id int identity,
 	RowUuid char(36) not null,
 	Title varchar(256) not null,
-	Text varchar(1024) not null,
+	Text varchar(65536) not null,
 	CreatedAt timestamp not null,
 	UpdatedAt timestamp,
 	UserId int not null,
