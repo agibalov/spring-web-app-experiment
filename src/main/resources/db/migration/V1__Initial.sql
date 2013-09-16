@@ -18,6 +18,8 @@ create table Articles(
 	RowUuid char(36) not null,
 	Title varchar(256) not null,
 	Text varchar(1024) not null,
+	CreatedAt timestamp not null,
+	UpdatedAt timestamp,
 	UserId int not null,
 	CategoryId int not null
 );

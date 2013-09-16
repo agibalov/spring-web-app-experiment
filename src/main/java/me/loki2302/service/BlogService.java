@@ -1,5 +1,6 @@
 package me.loki2302.service;
 
+import java.util.Date;
 import java.util.List;
 
 import me.loki2302.dao.ArticleDao;
@@ -41,7 +42,7 @@ public class BlogService {
     }
     
     public ArticleRow createArticle(int userId, int categoryId, String title, String text) {
-        return articleDao.createArticle(userId, categoryId, title, text);
+        return articleDao.createArticle(userId, categoryId, title, text, new Date());
     }
     
     public ArticleRow getArticle(int articleId) {
@@ -63,8 +64,18 @@ public class BlogService {
         return category;
     }
     
+    public Home getHome(int numberOfRecentArticles) {
+        Home home = new Home();
+        home.MostRecentArticles = articleDao.getRecentArticles(numberOfRecentArticles);
+        return home;
+    }
+    
     public static class Category {
         public CategoryRow Category;
         public List<ArticleRow> Articles;
+    }
+    
+    public static class Home {
+        public List<ArticleRow> MostRecentArticles;
     }
 }

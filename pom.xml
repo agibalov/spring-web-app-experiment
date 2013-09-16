@@ -19,6 +19,14 @@
 			<id>spring-jade4j-releases</id>
 			<url>https://raw.github.com/neuland/spring-jade4j/master/releases</url>
 		</repository>
+		<repository>
+			<id>fakerj-mvn-repo</id>
+			<url>https://raw.github.com/loki2302/fakerj/mvn-repo/</url>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
+			</snapshots>
+		</repository>
 	</repositories>
 
 	<dependencies>
@@ -35,6 +43,11 @@
 			<scope>test</scope>
 		</dependency>
 
+		<dependency>
+			<groupId>me.loki2302</groupId>
+			<artifactId>fakerj</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 		<dependency>
 			<groupId>org.apache.tomcat</groupId>
 			<artifactId>tomcat-servlet-api</artifactId>

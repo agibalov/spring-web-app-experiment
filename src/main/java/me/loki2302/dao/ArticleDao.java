@@ -1,5 +1,6 @@
 package me.loki2302.dao;
 
+import java.util.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -21,22 +22,24 @@ public class ArticleDao {
             final int userId, 
             final int categoryId, 
             final String title, 
-            final String text) {
+            final String text,
+            final Date createdAt) {
         
         final String rowUuid = UUID.randomUUID().toString();                
         template.update(
-                "insert into Articles(RowUuid, Title, Text, CategoryId, UserId) " + 
-                "values(:rowUuid, :title, :text, :categoryId, :userId)",
+                "insert into Articles(RowUuid, Title, Text, CreatedAt, CategoryId, UserId) " + 
+                "values(:rowUuid, :title, :text, :createdAt, :categoryId, :userId)",
                 new HashMap<String, Object>() {{
                     put("rowUuid", rowUuid);
                     put("title", title);
                     put("text", text);
+                    put("createdAt", createdAt);
                     put("categoryId", categoryId);
                     put("userId", userId);
                 }});
         
         ArticleRow articleRow = template.queryForObject(
-                "select Id, Title, Text, CategoryId, UserId from Articles where RowUuid = :rowUuid",
+                "select Id, Title, Text, CreatedAt, UpdatedAt, CategoryId, UserId from Articles where RowUuid = :rowUuid",
                 new HashMap<String, Object>() {{
                     put("rowUuid", rowUuid);
                 }},
@@ -47,16 +50,27 @@ public class ArticleDao {
     
     public ArticleRow getArticle(final int articleId) {
         return DataAccessUtils.singleResult(template.query(
-                "select Id, Title, Text, CategoryId, UserId from Articles where Id = :articleId",
+                "select Id, Title, Text, CreatedAt, UpdatedAt, CategoryId, UserId from Articles where Id = :articleId",
                 new HashMap<String, Object>() {{
                     put("articleId", articleId);
                 }},
                 new ArticleRowMapper()));
     }
     
+    public List<ArticleRow> getRecentArticles(final int numberOfArticles) {
+        return template.query(
+                "select top :take Id, Title, Text, CreatedAt, UpdatedAt, CategoryId, UserId " + 
+                "from Articles " + 
+                "order by CreatedAt desc", 
+                new HashMap<String, Object>() {{
+                    put("take", numberOfArticles);
+                }},
+                new ArticleRowMapper());
+    }
+    
     public List<ArticleRow> getArticlesByCategory(final int categoryId) {
         return template.query(
-                "select Id, Title, Text, CategoryId, UserId from Articles where CategoryId = :categoryId", 
+                "select Id, Title, Text, CreatedAt, UpdatedAt, CategoryId, UserId from Articles where CategoryId = :categoryId", 
                 new HashMap<String, Object>() {{
                     put("categoryId", categoryId);
                 }},
@@ -67,6 +81,8 @@ public class ArticleDao {
         public int Id;
         public String Title;
         public String Text;
+        public Date CreatedAt;
+        public Date UpdatedAt;
         public int CategoryId;
         public int UserId;
     }
@@ -78,6 +94,8 @@ public class ArticleDao {
             articleRow.Id = rs.getInt("Id");
             articleRow.Title = rs.getString("Title");
             articleRow.Text = rs.getString("Text");
+            articleRow.CreatedAt = rs.getTimestamp("CreatedAt");
+            articleRow.UpdatedAt = rs.getTimestamp("UpdatedAt");
             articleRow.CategoryId = rs.getInt("CategoryId");
             articleRow.UserId = rs.getInt("UserId");
             return articleRow;

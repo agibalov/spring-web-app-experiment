@@ -4,9 +4,14 @@ block title
   | Home
 
 block content
-  p current time is #{currentTime}
-  p service says #{whatServiceSays}
-  h2 List of categories
-  ul
-    for category in categories
-      li: a(href="/category/#{category.Id}") #{category.Name}
+  .row
+    .col-md-6
+      .panel.panel-default
+        .panel-heading: h2.panel-title Most Recent Articles
+        .panel-body
+          ul.list-unstyled
+            for article in home.MostRecentArticles
+              li
+                h3: a(href="/article/#{article.Id}") #{article.Title}
+                p on #{dateHelper.makeDate(article.CreatedAt)} at #{dateHelper.makeTime(article.CreatedAt)} 
+                p #{article.Text}

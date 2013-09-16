@@ -1,12 +1,16 @@
 package me.loki2302;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
 import me.loki2302.dao.CategoryDao.CategoryRow;
 import me.loki2302.dao.UserDao.UserRow;
+import me.loki2302.faker.Faker;
 import me.loki2302.service.BlogService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,8 +47,21 @@ public class AppConfiguration extends WebMvcConfigurerAdapter {
     public JadeConfiguration jadeConfiguration(SpringTemplateLoader templateLoader) {
         JadeConfiguration configuration = new JadeConfiguration();
         configuration.setCaching(false);
+        configuration.setSharedVariables(new HashMap<String, Object>() {{
+            put("dateHelper", new DateHelper());
+        }});
         configuration.setTemplateLoader(templateLoader);
         return configuration;
+    }
+    
+    public static class DateHelper {
+        public String makeDate(Date date) {
+            return new SimpleDateFormat("dd/MM/yyyy").format(date);
+        }
+        
+        public String makeTime(Date date) {
+            return new SimpleDateFormat("HH:mm:ss").format(date);
+        }
     }
 
     @Bean
@@ -59,10 +76,12 @@ public class AppConfiguration extends WebMvcConfigurerAdapter {
     
     @PostConstruct
     public void PopulateDatabase() {
+        Faker faker = Faker.make();
+        
         final int numberOfUsers = 10;        
         List<UserRow> userRows = new ArrayList<UserRow>();
         for(int i = 0; i < numberOfUsers; ++i) {
-            String userName = String.format("User#%d", i + 1);
+            String userName = faker.Internet.userName();
             UserRow userRow = blogService.createUser(userName);
             userRows.add(userRow);
         }
