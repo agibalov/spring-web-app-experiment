@@ -3,7 +3,10 @@ package me.loki2302.dao;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
+
+import me.loki2302.dao.rows.UserRow;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.support.DataAccessUtils;
@@ -16,13 +19,22 @@ public class UserDao {
     @Autowired
     private NamedParameterJdbcTemplate template;
        
-    public UserRow findUserByUserId(final int userId) {
+    public UserRow getUser(final int userId) {
         return DataAccessUtils.singleResult(template.query(
                 "select Id, Name from Users where Id = :userId",
                 new HashMap<String, Object>() {{
                     put("userId", userId);
                 }},
                 new UserRowMapper()));
+    }
+    
+    public List<UserRow> getUsers(final Iterable<Integer> userIds) {
+        return template.query(
+                "select Id, Name from Users where Id in (:userIds)",
+                new HashMap<String, Object>() {{
+                    put("userIds", userIds);
+                }},
+                new UserRowMapper());
     }
     
     public UserRow findUserByUserName(final String userName) {
@@ -51,11 +63,6 @@ public class UserDao {
                 new UserRowMapper());
                 
         return user;
-    }
-    
-    public static class UserRow {
-        public int Id;
-        public String Name;
     }
     
     private static class UserRowMapper implements RowMapper<UserRow> {

@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
+import me.loki2302.dao.rows.ArticleRow;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.RowMapper;
@@ -56,7 +58,7 @@ public class ArticleDao {
                 }},
                 new ArticleRowMapper()));
     }
-    
+        
     public List<ArticleRow> getRecentArticles(final int numberOfArticles) {
         return template.query(
                 "select top :take Id, Title, Text, CreatedAt, UpdatedAt, CategoryId, UserId " + 
@@ -67,7 +69,7 @@ public class ArticleDao {
                 }},
                 new ArticleRowMapper());
     }
-    
+        
     public List<ArticleRow> getArticlesByCategory(final int categoryId) {
         return template.query(
                 "select Id, Title, Text, CreatedAt, UpdatedAt, CategoryId, UserId from Articles where CategoryId = :categoryId", 
@@ -75,16 +77,6 @@ public class ArticleDao {
                     put("categoryId", categoryId);
                 }},
                 new ArticleRowMapper());
-    }
-    
-    public static class ArticleRow {
-        public int Id;
-        public String Title;
-        public String Text;
-        public Date CreatedAt;
-        public Date UpdatedAt;
-        public int CategoryId;
-        public int UserId;
     }
     
     private static class ArticleRowMapper implements RowMapper<ArticleRow> {

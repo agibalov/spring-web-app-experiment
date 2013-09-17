@@ -6,6 +6,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
+import me.loki2302.dao.rows.CategoryRow;
+import me.loki2302.dao.rows.UserRow;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.RowMapper;
@@ -45,15 +48,19 @@ public class CategoryDao {
                 new CategoryRowMapper()));
     }
     
+    public List<CategoryRow> getCategories(final Iterable<Integer> categoryIds) {
+        return template.query(
+                "select Id, Name from Categories where Id in (:categoryIds)",
+                new HashMap<String, Object>() {{
+                    put("categoryIds", categoryIds);
+                }},
+                new CategoryRowMapper());
+    }
+    
     public List<CategoryRow> getCategories() {
         return template.query(
                 "select Id, Name from Categories", 
                 new CategoryRowMapper());
-    }
-    
-    public static class CategoryRow {
-        public int Id;
-        public String Name;
     }
     
     private static class CategoryRowMapper implements RowMapper<CategoryRow> {

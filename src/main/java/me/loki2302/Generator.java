@@ -24,8 +24,8 @@ public class Generator {
     }
     
     public String articleMarkdown() {
-        Random random = new Random();        
-                
+        Random random = new Random();
+                        
         String article = "";        
         int numberOfParagraphs = 5 + random.nextInt(3);
         for(int paragraphCounter = 0; paragraphCounter < numberOfParagraphs; ++paragraphCounter) {

@@ -1,9 +1,9 @@
 extends ../layout
-
+ 
 block title
-  | #{article.Title}
+  | #{article.Article.Title}
 
-block content
-  h2 #{article.Title}
-  p #{article.CreatedAt}
-  div!= markdownHelper.renderMarkdown(article.Text)
+block content  
+  h2 #{article.Article.Title}
+  +article_meta(article)
+  div!= markdownHelper.renderMarkdown(article.Article.Text)

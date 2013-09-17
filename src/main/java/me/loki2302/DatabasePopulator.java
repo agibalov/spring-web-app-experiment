@@ -6,8 +6,8 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 
-import me.loki2302.dao.CategoryDao.CategoryRow;
-import me.loki2302.dao.UserDao.UserRow;
+import me.loki2302.dao.rows.CategoryRow;
+import me.loki2302.dao.rows.UserRow;
 import me.loki2302.service.BlogService;
 
 import org.apache.commons.lang3.text.WordUtils;

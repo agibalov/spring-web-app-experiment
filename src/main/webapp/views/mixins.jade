@@ -1,0 +1,8 @@
+mixin article_meta(article)
+  p.text-muted
+    | on #{dateHelper.makeDate(article.Article.CreatedAt)} 
+    | at #{dateHelper.makeTime(article.Article.CreatedAt)} 
+    | by 
+    a(href="/user/#{article.User.Id}") #{article.User.Name} 
+    | in 
+    a(href="/category/#{article.Category.Id}") #{article.Category.Name}

@@ -5,13 +5,16 @@ block title
 
 block content
   .row
-    .col-md-6
-      .panel.panel-default
-        .panel-heading: h2.panel-title Most Recent Articles
-        .panel-body
-          ul.list-unstyled
-            for article in home.MostRecentArticles
-              li
-                h3: a(href="/article/#{article.Id}") #{article.Title}
-                p on #{dateHelper.makeDate(article.CreatedAt)} at #{dateHelper.makeTime(article.CreatedAt)} 
-                div!= markdownHelper.renderMarkdown(article.Text)
+    .col-md-3   
+      .list-group
+        for category in home.Categories
+          a.list-group-item(href="/category/#{category.Id}")
+            h4.list-group-item-heading: #{category.Name}
+            p.list-group-item-text category            
+    .col-md-9
+      ul.list-unstyled
+        for article in home.MostRecentArticles
+          li
+            h3: a(href="/article/#{article.Id}") #{article.Title}
+            p on #{dateHelper.makeDate(article.CreatedAt)} at #{dateHelper.makeTime(article.CreatedAt)} 
+            div!= markdownHelper.renderMarkdown(article.Text)
