@@ -14,4 +14,4 @@ block content
               li
                 h3: a(href="/article/#{article.Id}") #{article.Title}
                 p on #{dateHelper.makeDate(article.CreatedAt)} at #{dateHelper.makeTime(article.CreatedAt)} 
-                p #{article.Text}
+                div!= markdownHelper.renderMarkdown(article.Text)

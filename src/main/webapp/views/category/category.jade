@@ -9,5 +9,5 @@ block content
     for article in category.Articles
       li
         h3: a(href="/article/#{article.Id}") #{article.Title}
-        p #{article.Text}
+        div!= markdownHelper.renderMarkdown(article.Text)
   

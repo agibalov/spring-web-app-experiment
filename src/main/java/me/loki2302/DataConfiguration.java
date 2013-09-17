@@ -2,6 +2,8 @@ package me.loki2302;
 
 import javax.sql.DataSource;
 
+import me.loki2302.faker.Faker;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -35,5 +37,10 @@ public class DataConfiguration {
     @Bean
     public NamedParameterJdbcTemplate jdbcTemplate(DataSource dataSource) {
         return new NamedParameterJdbcTemplate(dataSource);
+    }
+    
+    @Bean
+    public Faker faker() {
+        return Faker.make();
     }
 }
