@@ -60,9 +60,27 @@ public class ArticleDao {
         return template.query(
                 "select top :take Id, Title, Text, CreatedAt, UpdatedAt, CategoryId, UserId " + 
                 "from Articles " + 
-                "order by CreatedAt desc", 
+                "order by Id desc", 
                 new MapSqlParameterSource()
                     .addValue("take", numberOfArticles),
+                new ArticleRowMapper());
+    }
+    
+    public List<ArticleRow> getRecentArticlesForCategories(
+            Iterable<Integer> categoryIds, 
+            int numberOfRecentArticles) {
+        return template.query(
+                "select A.Id, A.Title, A.Text, A.CreatedAt, A.UpdatedAt, A.CategoryId, A.UserId " +
+                "from Categories as C " +
+                "join Articles as A on A.CategoryId = C.Id " +
+                "where C.Id in (:categoryIds) and A.Id in ( " +
+                "    select top :take Id " + 
+                "    from Articles " +
+                "    where CategoryId = C.Id " +
+                "    order by Id desc)", 
+                new MapSqlParameterSource()
+                    .addValue("take", numberOfRecentArticles)
+                    .addValue("categoryIds", categoryIds),
                 new ArticleRowMapper());
     }
         

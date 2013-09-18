@@ -5,13 +5,13 @@ block title
 
 block content
   .row
-    .col-md-3   
+    .col-md-6   
       .list-group
         for category in home.Categories
           a.list-group-item(href="/category/#{category.CategoryId}")
             h4.list-group-item-heading: #{category.Name}
             p.list-group-item-text category            
-    .col-md-9
+    .col-md-6
       ul.list-unstyled
         for article in home.MostRecentArticles
           li

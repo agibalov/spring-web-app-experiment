@@ -64,8 +64,44 @@ public class BlogService {
         return categoryDao.createCategory(categoryName);
     }
     
-    public List<CategoryRow> getCategories() {
-        return categoryDao.getCategories();
+    public List<ShortCategory> getCategories() {
+        List<CategoryRow> allCategoryRows = categoryDao.getCategories();
+        
+        Set<Integer> categoryIds = extractIds(allCategoryRows);
+        List<ArticleRow> articleRows = articleDao.getRecentArticlesForCategories(categoryIds, 3);
+        
+        Set<Integer> userIds = extractUserIds(articleRows);
+        List<UserRow> userRows = userDao.getUsers(userIds);
+        Map<Integer, BriefUser> briefUsersMap = makeBriefUsersMap(userRows);
+        
+        Map<Integer, BriefCategory> briefCategoriesMap = makeBriefCategoriesMap(allCategoryRows);
+        
+        List<ShortCategory> shortCategories = new ArrayList<ShortCategory>();
+        for(CategoryRow categoryRow : allCategoryRows) {
+            ShortCategory shortCategory = new ShortCategory();
+            shortCategory.CategoryId = categoryRow.Id;
+            shortCategory.Name = categoryRow.Name;
+            
+            //
+            List<ArticleRow> articleRowsForThisCategory = new ArrayList<ArticleRow>();
+            for(ArticleRow articleRow : articleRows) {
+                if(articleRow.CategoryId != categoryRow.Id) {
+                    continue;
+                }
+                
+                articleRowsForThisCategory.add(articleRow);
+            }
+            //
+            
+            shortCategory.RecentArticles = makeBriefArticles(
+                    articleRowsForThisCategory, 
+                    briefUsersMap, 
+                    briefCategoriesMap);
+            
+            shortCategories.add(shortCategory);
+        }
+        
+        return shortCategories;
     }
     
     public ArticleRow createArticle(int userId, int categoryId, String title, String text) {
@@ -99,10 +135,8 @@ public class BlogService {
         }
         
         List<ArticleRow> articleRows = articleDao.getArticlesByCategory(categoryId);        
-        Set<Integer> userIds = new HashSet<Integer>();
-        for(ArticleRow articleRow : articleRows) {
-            userIds.add(articleRow.UserId);
-        }        
+        
+        Set<Integer> userIds = extractUserIds(articleRows);        
         List<UserRow> userRows = userDao.getUsers(userIds);
         Map<Integer, BriefUser> briefUsersMap = makeBriefUsersMap(userRows);
         
@@ -160,6 +194,14 @@ public class BlogService {
         }
         return userIds;
     }
+    
+    private static Set<Integer> extractIds(Iterable<CategoryRow> categoryRows) {
+        Set<Integer> userIds = new HashSet<Integer>();
+        for(CategoryRow categoryRow : categoryRows) {
+            userIds.add(categoryRow.Id);
+        }
+        return userIds;
+    }
         
     private static CompleteArticle makeCompleteArticle(
             ArticleRow articleRow, 
@@ -206,8 +248,33 @@ public class BlogService {
         return shortArticle;
     }
     
-    private static BriefArticle makeBriefArticle(ArticleRow articleRow) {
-        throw new RuntimeException();
+    private static List<BriefArticle> makeBriefArticles(
+            List<ArticleRow> articleRows,
+            Map<Integer, BriefUser> briefUsersMap, 
+            Map<Integer, BriefCategory> briefCategoriesMap) {
+        List<BriefArticle> briefArticles = new ArrayList<BriefArticle>();
+        for(ArticleRow articleRow : articleRows) {
+            BriefArticle briefArticle = makeBriefArticle(
+                    articleRow,
+                    briefUsersMap,
+                    briefCategoriesMap);
+            briefArticles.add(briefArticle);
+        }
+        return briefArticles;
+    }
+    
+    private static BriefArticle makeBriefArticle(
+            ArticleRow articleRow,
+            Map<Integer, BriefUser> briefUsersMap, 
+            Map<Integer, BriefCategory> briefCategoriesMap) {
+        BriefArticle briefArticle = new BriefArticle();        
+        briefArticle.ArticleId = articleRow.Id;
+        briefArticle.Title = articleRow.Title;
+        briefArticle.CreatedAt = articleRow.CreatedAt;
+        briefArticle.UpdatedAt = articleRow.UpdatedAt;
+        briefArticle.User = briefUsersMap.get(articleRow.UserId);
+        briefArticle.Category = briefCategoriesMap.get(articleRow.CategoryId);        
+        return briefArticle;
     }
     
     private static Map<Integer, BriefUser> makeBriefUsersMap(List<UserRow> userRows) {

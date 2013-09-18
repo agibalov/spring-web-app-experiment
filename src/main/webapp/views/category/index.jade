@@ -5,6 +5,14 @@ block title
 
 block content
   h2 List of categories
-  ul
+  ul.list-unstyled
     for category in categories
-      li: a(href="/category/#{category.Id}") #{category.Name}
+      li
+        h2: a(href="/category/#{category.CategoryId}") #{category.Name}
+        ul.list-unstyled
+          for article in category.RecentArticles
+            li
+              h3 #{article.Title}
+              +article_meta(article)
+              p: a(href="/article/#{article.ArticleId}") (Read...)
+              
