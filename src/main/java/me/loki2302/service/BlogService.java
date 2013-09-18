@@ -64,46 +64,31 @@ public class BlogService {
         return categoryDao.createCategory(categoryName);
     }
     
-    public List<ShortCategory> getCategories() {
+    public List<ShortCategory> getCategories(int numberOfRecentArticles) {
         List<CategoryRow> allCategoryRows = categoryDao.getCategories();
         
         Set<Integer> categoryIds = extractIds(allCategoryRows);
-        List<ArticleRow> articleRows = articleDao.getRecentArticlesForCategories(categoryIds, 3);
+        List<ArticleRow> articleRows = articleDao.getRecentArticlesForCategories(
+                categoryIds, 
+                numberOfRecentArticles);        
         
         Set<Integer> userIds = extractUserIds(articleRows);
         List<UserRow> userRows = userDao.getUsers(userIds);
         Map<Integer, BriefUser> briefUsersMap = makeBriefUsersMap(userRows);
         
         Map<Integer, BriefCategory> briefCategoriesMap = makeBriefCategoriesMap(allCategoryRows);
+        List<BriefArticle> briefArticles = makeBriefArticles(
+                articleRows, 
+                briefUsersMap, 
+                briefCategoriesMap);
         
-        List<ShortCategory> shortCategories = new ArrayList<ShortCategory>();
-        for(CategoryRow categoryRow : allCategoryRows) {
-            ShortCategory shortCategory = new ShortCategory();
-            shortCategory.CategoryId = categoryRow.Id;
-            shortCategory.Name = categoryRow.Name;
-            
-            //
-            List<ArticleRow> articleRowsForThisCategory = new ArrayList<ArticleRow>();
-            for(ArticleRow articleRow : articleRows) {
-                if(articleRow.CategoryId != categoryRow.Id) {
-                    continue;
-                }
-                
-                articleRowsForThisCategory.add(articleRow);
-            }
-            //
-            
-            shortCategory.RecentArticles = makeBriefArticles(
-                    articleRowsForThisCategory, 
-                    briefUsersMap, 
-                    briefCategoriesMap);
-            
-            shortCategories.add(shortCategory);
-        }
+        List<ShortCategory> shortCategories = makeShortCategories(
+                allCategoryRows, 
+                briefArticles);
         
         return shortCategories;
     }
-    
+        
     public ArticleRow createArticle(int userId, int categoryId, String title, String text) {
         return articleDao.createArticle(userId, categoryId, title, text, new Date());
     }
@@ -329,8 +314,38 @@ public class BlogService {
         return category;
     }
     
-    private static ShortCategory makeShortCategory(CategoryRow categoryRow) {
-        throw new RuntimeException();
+    private static List<ShortCategory> makeShortCategories(
+            List<CategoryRow> categoryRows, 
+            List<BriefArticle> briefArticles) {
+        List<ShortCategory> shortCategories = new ArrayList<ShortCategory>();
+        for(CategoryRow categoryRow : categoryRows) {
+            //
+            List<BriefArticle> briefArticlesForThisCategory = new ArrayList<BriefArticle>();
+            for(BriefArticle briefArticle : briefArticles) {
+                if(briefArticle.Category.CategoryId != categoryRow.Id) {
+                    continue;
+                }
+                
+                briefArticlesForThisCategory.add(briefArticle);
+            }
+            //
+            
+            ShortCategory shortCategory = makeShortCategory(
+                    categoryRow, 
+                    briefArticlesForThisCategory);
+            
+            shortCategories.add(shortCategory);
+        }
+        
+        return shortCategories;
+    }
+    
+    private static ShortCategory makeShortCategory(CategoryRow categoryRow, List<BriefArticle> recentArticles) {
+        ShortCategory shortCategory = new ShortCategory();
+        shortCategory.CategoryId = categoryRow.Id;
+        shortCategory.Name = categoryRow.Name;
+        shortCategory.RecentArticles = recentArticles;                
+        return shortCategory;
     }
     
     private static CompleteCategory makeCompleteCategory(

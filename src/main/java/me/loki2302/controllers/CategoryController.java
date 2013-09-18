@@ -16,7 +16,7 @@ public class CategoryController {
     
     @RequestMapping
     public String listOfCategories(Model model) {
-        model.addAttribute("categories", blogService.getCategories());            
+        model.addAttribute("categories", blogService.getCategories(3));            
         return "category/index";
     }
     
