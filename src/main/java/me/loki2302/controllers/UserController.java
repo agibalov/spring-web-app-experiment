@@ -1,6 +1,5 @@
 package me.loki2302.controllers;
 
-import me.loki2302.dao.rows.UserRow;
 import me.loki2302.service.BlogService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +16,7 @@ public class UserController {
     
     @RequestMapping("{userId}")
     public String user(@PathVariable int userId, Model model) {
-        UserRow user = blogService.getUser(userId);
-        model.addAttribute("user", user);
+        model.addAttribute("user", blogService.getUser(userId));
         return "user/index";
     }
 }

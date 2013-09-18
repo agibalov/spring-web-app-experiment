@@ -1,8 +1,8 @@
 mixin article_meta(article)
   p.text-muted
-    | on #{dateHelper.makeDate(article.Article.CreatedAt)} 
-    | at #{dateHelper.makeTime(article.Article.CreatedAt)} 
+    | on #{dateHelper.makeDate(article.CreatedAt)} 
+    | at #{dateHelper.makeTime(article.CreatedAt)} 
     | by 
-    a(href="/user/#{article.User.Id}") #{article.User.Name} 
+    a(href="/user/#{article.User.UserId}") #{article.User.Name} 
     | in 
-    a(href="/category/#{article.Category.Id}") #{article.Category.Name}
+    a(href="/category/#{article.Category.CategoryId}") #{article.Category.Name}

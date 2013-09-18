@@ -1,7 +1,7 @@
 package me.loki2302.controllers;
 
 import me.loki2302.service.BlogService;
-import me.loki2302.service.Home;
+import me.loki2302.service.dto.Home;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

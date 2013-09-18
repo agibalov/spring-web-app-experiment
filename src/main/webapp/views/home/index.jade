@@ -8,13 +8,14 @@ block content
     .col-md-3   
       .list-group
         for category in home.Categories
-          a.list-group-item(href="/category/#{category.Id}")
+          a.list-group-item(href="/category/#{category.CategoryId}")
             h4.list-group-item-heading: #{category.Name}
             p.list-group-item-text category            
     .col-md-9
       ul.list-unstyled
         for article in home.MostRecentArticles
           li
-            h3: a(href="/article/#{article.Id}") #{article.Title}
-            p on #{dateHelper.makeDate(article.CreatedAt)} at #{dateHelper.makeTime(article.CreatedAt)} 
-            div!= markdownHelper.renderMarkdown(article.Text)
+            h3: a(href="/article/#{article.ArticleId}") #{article.Title}
+            +article_meta(article) 
+            div!= markdownHelper.renderMarkdown(article.FirstParagraph)
+            p: a(href="/article/#{article.ArticleId}") (Read more...)
