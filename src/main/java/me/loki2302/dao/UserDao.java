@@ -19,7 +19,7 @@ public class UserDao {
     @Autowired
     private NamedParameterJdbcTemplate template;
        
-    public UserRow getUser(final int userId) {
+    public UserRow getUser(int userId) {
         return DataAccessUtils.singleResult(template.query(
                 "select Id, Name from Users where Id = :userId",
                 new MapSqlParameterSource()
@@ -27,7 +27,7 @@ public class UserDao {
                 new UserRowMapper()));
     }
     
-    public List<UserRow> getUsers(final Iterable<Integer> userIds) {
+    public List<UserRow> getUsers(Iterable<Integer> userIds) {
         return template.query(
                 "select Id, Name from Users where Id in (:userIds)",
                 new MapSqlParameterSource()
@@ -35,7 +35,7 @@ public class UserDao {
                 new UserRowMapper());
     }
     
-    public UserRow findUserByUserName(final String userName) {
+    public UserRow findUserByUserName(String userName) {
         return DataAccessUtils.singleResult(template.query(
                 "select Id, Name from Users where Name = :userName",
                 new MapSqlParameterSource()
@@ -43,7 +43,7 @@ public class UserDao {
                 new UserRowMapper()));
     }
     
-    public UserRow createUser(final String userName) {
+    public UserRow createUser(String userName) {
         final String rowUuid = UUID.randomUUID().toString();                
         template.update(
                 "insert into Users(RowUuid, Name) values(:rowUuid, :userName)",

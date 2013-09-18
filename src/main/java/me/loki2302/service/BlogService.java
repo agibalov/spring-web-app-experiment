@@ -38,6 +38,10 @@ public class BlogService {
         return userDao.createUser(userName);
     }
     
+    public UserRow getUser(int userId) {
+        return userDao.getUser(userId);
+    }
+    
     public CategoryRow createCategory(String categoryName) {
         return categoryDao.createCategory(categoryName);
     }
