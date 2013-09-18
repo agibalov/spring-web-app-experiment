@@ -1,8 +1,8 @@
 mixin article_meta(article)
   p.text-muted
-    | on #{dateHelper.makeDate(article.CreatedAt)} 
-    | at #{dateHelper.makeTime(article.CreatedAt)} 
-    | by 
+    | <span class="glyphicon glyphicon-calendar"></span> #{dateHelper.makeDate(article.CreatedAt)} 
+    | <span class="glyphicon glyphicon-time"></span> #{dateHelper.makeTime(article.CreatedAt)} 
+    | <span class="glyphicon glyphicon-user"></span> 
     a(href="/user/#{article.User.UserId}") #{article.User.Name} 
-    | in 
+    | <span class="glyphicon glyphicon-book"></span> 
     a(href="/category/#{article.Category.CategoryId}") #{article.Category.Name}

@@ -15,7 +15,9 @@ block content
       ul.list-unstyled
         for article in home.MostRecentArticles
           li
-            h3: a(href="/article/#{article.ArticleId}") #{article.Title}
+            h3
+              | <span class="glyphicon glyphicon-file"></span>
+              a(href="/article/#{article.ArticleId}") #{article.Title}
             +article_meta(article) 
             div!= markdownHelper.renderMarkdown(article.FirstParagraph)
             p: a(href="/article/#{article.ArticleId}") (Read more...)

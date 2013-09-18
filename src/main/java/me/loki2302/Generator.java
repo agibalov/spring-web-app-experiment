@@ -10,6 +10,8 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class Generator {
+    private final Random random = new Random();
+    
     @Autowired
     private Faker faker;
     
@@ -24,20 +26,21 @@ public class Generator {
     }
     
     public String articleMarkdown() {
-        Random random = new Random();
+        StringBuilder articleBuilder = new StringBuilder();
                         
-        String article = "";        
         int numberOfParagraphs = 5 + random.nextInt(3);
         for(int paragraphCounter = 0; paragraphCounter < numberOfParagraphs; ++paragraphCounter) {
-            String paragraph = "";
+            StringBuilder paragraphBuilder = new StringBuilder();
             int numberOfSentences = 9 + random.nextInt(5);
             for(int sentenceCounter = 0; sentenceCounter < numberOfSentences; ++sentenceCounter) {
                 String sentence = faker.Lorem.sentence() + ". ";
-                paragraph += WordUtils.capitalize(sentence, '.');            
+                paragraphBuilder.append(WordUtils.capitalize(sentence, '.'));            
             }            
-            article += paragraph + "\n\n";
+            
+            articleBuilder.append(paragraphBuilder);
+            articleBuilder.append("\n\n");
         }
         
-        return article;
+        return articleBuilder.toString();
     }       
 }

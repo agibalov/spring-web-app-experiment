@@ -4,6 +4,6 @@ block title
   | #{article.Title}
 
 block content  
-  h2 #{article.Title}
+  h2 <span class="glyphicon glyphicon-file"></span> #{article.Title}
   +article_meta(article)
   div!= markdownHelper.renderMarkdown(article.Text)

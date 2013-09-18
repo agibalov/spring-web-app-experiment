@@ -65,9 +65,9 @@ public class BlogService {
     }
     
     public List<ShortCategory> getCategories(int numberOfRecentArticles) {
-        List<CategoryRow> allCategoryRows = categoryDao.getCategories();
+        List<CategoryRow> categoryRows = categoryDao.getCategories();
         
-        Set<Integer> categoryIds = extractIds(allCategoryRows);
+        Set<Integer> categoryIds = extractIds(categoryRows);
         List<ArticleRow> articleRows = articleDao.getRecentArticlesForCategories(
                 categoryIds, 
                 numberOfRecentArticles);        
@@ -76,14 +76,14 @@ public class BlogService {
         List<UserRow> userRows = userDao.getUsers(userIds);
         Map<Integer, BriefUser> briefUsersMap = makeBriefUsersMap(userRows);
         
-        Map<Integer, BriefCategory> briefCategoriesMap = makeBriefCategoriesMap(allCategoryRows);
+        Map<Integer, BriefCategory> briefCategoriesMap = makeBriefCategoriesMap(categoryRows);
         List<BriefArticle> briefArticles = makeBriefArticles(
                 articleRows, 
                 briefUsersMap, 
                 briefCategoriesMap);
         
         List<ShortCategory> shortCategories = makeShortCategories(
-                allCategoryRows, 
+                categoryRows, 
                 briefArticles);
         
         return shortCategories;
