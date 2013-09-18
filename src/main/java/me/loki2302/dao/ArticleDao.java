@@ -77,7 +77,8 @@ public class ArticleDao {
                 "    select top :take Id " + 
                 "    from Articles " +
                 "    where CategoryId = C.Id " +
-                "    order by Id desc)", 
+                "    order by Id desc) " + 
+                "order by A.Id desc", 
                 new MapSqlParameterSource()
                     .addValue("take", numberOfRecentArticles)
                     .addValue("categoryIds", categoryIds),

@@ -20,6 +20,11 @@
 			<url>https://raw.github.com/neuland/spring-jade4j/master/releases</url>
 		</repository>
 		<repository>
+			<id>spring-libs-milestone</id>
+			<name>Spring Milestone Repository</name>
+			<url>http://repo.springsource.org/milestone</url>
+		</repository>
+		<repository>
 			<id>fakerj-mvn-repo</id>
 			<url>https://raw.github.com/loki2302/fakerj/mvn-repo/</url>
 			<snapshots>
@@ -59,6 +64,16 @@
 			<version>3.2.4.RELEASE</version>
 		</dependency>
 		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-web</artifactId>
+			<version>3.2.0.RC1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-config</artifactId>
+			<version>3.2.0.RC1</version>
+		</dependency>
+		<dependency>
 			<groupId>de.neuland</groupId>
 			<artifactId>spring-jade4j</artifactId>
 			<version>0.3.3</version>
@@ -92,6 +107,21 @@
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
 			<version>3.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-validator</artifactId>
+			<version>4.3.0.Final</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.6.4</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-simple</artifactId>
+			<version>1.6.4</version>
 		</dependency>
 	</dependencies>
 	<build>

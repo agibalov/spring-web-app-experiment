@@ -23,7 +23,7 @@ public class DatabasePopulator {
     
     @PostConstruct
     public void PopulateDatabase() {
-        final int numberOfUsers = 10;        
+        final int numberOfUsers = 3;        
         List<UserRow> userRows = new ArrayList<UserRow>();
         for(int i = 0; i < numberOfUsers; ++i) {
             String userName = generator.username();
