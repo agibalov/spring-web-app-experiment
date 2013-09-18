@@ -1,8 +1,8 @@
 package me.loki2302;
 
 import java.util.HashMap;
+import java.util.Map;
 
-import me.loki2302.faker.Faker;
 import me.loki2302.jadehelpers.JadeDateHelper;
 import me.loki2302.jadehelpers.JadeMarkdownHelper;
 
@@ -39,10 +39,12 @@ public class AppConfiguration extends WebMvcConfigurerAdapter {
     public JadeConfiguration jadeConfiguration(SpringTemplateLoader templateLoader) {
         JadeConfiguration configuration = new JadeConfiguration();
         configuration.setCaching(false);
-        configuration.setSharedVariables(new HashMap<String, Object>() {{
-            put("dateHelper", new JadeDateHelper());
-            put("markdownHelper", new JadeMarkdownHelper());
-        }});
+        
+        Map<String, Object> sharedVariables = new HashMap<String, Object>();
+        sharedVariables.put("dateHelper", new JadeDateHelper());
+        sharedVariables.put("markdownHelper", new JadeMarkdownHelper());        
+        configuration.setSharedVariables(sharedVariables);
+        
         configuration.setTemplateLoader(templateLoader);
         return configuration;
     }

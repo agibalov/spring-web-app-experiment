@@ -50,7 +50,11 @@ public class BlogService {
         return articleDao.createArticle(userId, categoryId, title, text, new Date());
     }
         
-    public CompleteArticle getCompleteArticle(int articleId) {
+    public CompleteArticle getCompleteArticle(int articleId) {        
+        // CompleteArticle: full article + category + user + other articles in this category
+        // ShortArticle: title + first paragraph + category + user
+        // BriefArticle: title + category + user
+        
         ArticleRow articleRow = articleDao.getArticle(articleId);
         if(articleRow == null) {
             throw new ArticleNotFoundException();
