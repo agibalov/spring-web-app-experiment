@@ -5,8 +5,9 @@ block title
 
 block content
   h2 #{category.Name}
+  p.text-muted DEBUG: #{category.Articles}
   ul.list-unstyled
-    for article in category.Articles
+    for article in category.Articles.Items
       li
         h3 
           | <span class="glyphicon glyphicon-file"></span>
@@ -14,3 +15,10 @@ block content
         +article_meta(article)
         div!= markdownHelper.renderMarkdown(article.FirstParagraph)
         p: a(href="/article/#{article.ArticleId}") (Read more...)
+  ul.pager
+    unless category.Articles.CurrentPage==0
+      li.previous
+        a(href="/category/#{category.CategoryId}?articlesPerPage=#{category.Articles.ItemsPerPage}&page=#{category.Articles.CurrentPage-1}") &larr; Previous
+    unless category.Articles.CurrentPage==category.Articles.NumberOfPages-1
+      li.next
+        a(href="/category/#{category.CategoryId}?articlesPerPage=#{category.Articles.ItemsPerPage}&page=#{category.Articles.CurrentPage+1}") Next &rarr;

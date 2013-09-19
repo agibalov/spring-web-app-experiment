@@ -14,6 +14,7 @@ import me.loki2302.dao.CategoryDao;
 import me.loki2302.dao.UserDao;
 import me.loki2302.dao.rows.ArticleRow;
 import me.loki2302.dao.rows.CategoryRow;
+import me.loki2302.dao.rows.Page;
 import me.loki2302.dao.rows.UserRow;
 import me.loki2302.service.dto.Home;
 import me.loki2302.service.dto.article.BriefArticle;
@@ -21,6 +22,7 @@ import me.loki2302.service.dto.article.CompleteArticle;
 import me.loki2302.service.dto.article.ShortArticle;
 import me.loki2302.service.dto.category.BriefCategory;
 import me.loki2302.service.dto.category.CompleteCategory;
+import me.loki2302.service.dto.category.CompleteCategory2;
 import me.loki2302.service.dto.category.ShortCategory;
 import me.loki2302.service.dto.user.BriefUser;
 import me.loki2302.service.dto.user.CompleteUser;
@@ -121,7 +123,7 @@ public class BlogService {
         
         List<ArticleRow> articleRows = articleDao.getArticlesByCategory(categoryId);        
         
-        Set<Integer> userIds = extractUserIds(articleRows);        
+        Set<Integer> userIds = extractUserIds(articleRows);
         List<UserRow> userRows = userDao.getUsers(userIds);
         Map<Integer, BriefUser> briefUsersMap = makeBriefUsersMap(userRows);
         
@@ -136,6 +138,43 @@ public class BlogService {
         CompleteCategory completeCategory = makeCompleteCategory(
                 categoryRow, 
                 shortArticles);
+        
+        return completeCategory;
+    }
+    
+    public CompleteCategory2 getCategory2(int categoryId, int articlesPerPage, int page) {
+        CategoryRow categoryRow = categoryDao.getCategory(categoryId);
+        if(categoryRow == null) {
+            throw new CategoryNotFoundException();
+        }
+        
+        Page<ArticleRow> articleRowsPage = articleDao.getArticlesPageByCategory(
+                categoryId, 
+                articlesPerPage, 
+                page);
+        
+        Set<Integer> userIds = extractUserIds(articleRowsPage.Items);
+        List<UserRow> userRows = userDao.getUsers(userIds);
+        Map<Integer, BriefUser> briefUsersMap = makeBriefUsersMap(userRows);
+        
+        List<CategoryRow> categoryRows = Arrays.asList(categoryRow);
+        Map<Integer, BriefCategory> briefCategoriesMaps = makeBriefCategoriesMap(categoryRows);
+        
+        List<ShortArticle> shortArticles = makeShortArticles(
+                articleRowsPage.Items,
+                briefUsersMap,
+                briefCategoriesMaps);
+        
+        Page<ShortArticle> pageData = new Page<ShortArticle>();
+        pageData.NumberOfItems = articleRowsPage.NumberOfItems;
+        pageData.ItemsPerPage = articleRowsPage.ItemsPerPage;
+        pageData.NumberOfPages = articleRowsPage.NumberOfPages;
+        pageData.CurrentPage = articleRowsPage.CurrentPage;
+        pageData.Items = shortArticles;
+        
+        CompleteCategory2 completeCategory = makeCompleteCategory2(
+                categoryRow, 
+                pageData);
         
         return completeCategory;
     }
@@ -352,6 +391,16 @@ public class BlogService {
             CategoryRow categoryRow, 
             List<ShortArticle> shortArticles) {
         CompleteCategory category = new CompleteCategory();
+        category.CategoryId = categoryRow.Id;
+        category.Name = categoryRow.Name;
+        category.Articles = shortArticles;
+        return category;
+    }
+    
+    private static CompleteCategory2 makeCompleteCategory2(
+            CategoryRow categoryRow, 
+            Page<ShortArticle> shortArticles) {
+        CompleteCategory2 category = new CompleteCategory2();
         category.CategoryId = categoryRow.Id;
         category.Name = categoryRow.Name;
         category.Articles = shortArticles;

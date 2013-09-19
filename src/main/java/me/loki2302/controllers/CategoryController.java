@@ -1,6 +1,7 @@
 package me.loki2302.controllers;
 
 import me.loki2302.service.BlogService;
+import me.loki2302.service.dto.category.CompleteCategory2;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,8 +22,18 @@ public class CategoryController {
     }
     
     @RequestMapping("{categoryId}")
-    public String category(@PathVariable int categoryId, Model model) {
-        model.addAttribute("category", blogService.getCategory(categoryId));
+    public String category(
+            @PathVariable("categoryId") int categoryId, 
+            Integer articlesPerPage,
+            Integer page,
+            Model model) {
+        
+        CompleteCategory2 category = blogService.getCategory2(
+                categoryId, 
+                articlesPerPage == null ? 5 : articlesPerPage, 
+                page == null ? 0 : page);
+        
+        model.addAttribute("category", category);
         return "category/category";
     }
 }

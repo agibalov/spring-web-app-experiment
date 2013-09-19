@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.UUID;
 
 import me.loki2302.dao.rows.ArticleRow;
+import me.loki2302.dao.rows.Page;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.support.DataAccessUtils;
@@ -91,6 +92,35 @@ public class ArticleDao {
                 new MapSqlParameterSource()
                     .addValue("categoryId", categoryId),
                 new ArticleRowMapper());
+    }
+    
+    public Page<ArticleRow> getArticlesPageByCategory(int categoryId, int itemsPerPage, int page) {
+        int numberOfItems = template.queryForObject(
+                "select count(Id) from Articles where CategoryId = :categoryId",
+                new MapSqlParameterSource()
+                    .addValue("categoryId", categoryId),
+                Integer.class);
+        
+        int skip = page * itemsPerPage;
+        if(skip >= numberOfItems) {
+            throw new RuntimeException("no such page");
+        }
+        
+        List<ArticleRow> items = template.query(
+                "select limit :skip :take Id, Title, Text, CreatedAt, UpdatedAt, CategoryId, UserId from Articles where CategoryId = :categoryId", 
+                new MapSqlParameterSource()
+                    .addValue("categoryId", categoryId)
+                    .addValue("skip", skip)
+                    .addValue("take", itemsPerPage),
+                new ArticleRowMapper());
+        
+        Page<ArticleRow> pageData = new Page<ArticleRow>();
+        pageData.NumberOfItems = numberOfItems;
+        pageData.ItemsPerPage = itemsPerPage;
+        pageData.NumberOfPages = (numberOfItems / itemsPerPage) + (numberOfItems % itemsPerPage > 0 ? 1 : 0);
+        pageData.CurrentPage = page;
+        pageData.Items = items;
+        return pageData;
     }
     
     private static class ArticleRowMapper implements RowMapper<ArticleRow> {
