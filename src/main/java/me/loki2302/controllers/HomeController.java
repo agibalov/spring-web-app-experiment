@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping("/")
-public class HomeController {   
+public class HomeController extends BlogController {   
     @Autowired
     private BlogService blogService;
         

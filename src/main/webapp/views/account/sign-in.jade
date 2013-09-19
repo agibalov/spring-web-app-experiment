@@ -4,7 +4,8 @@ block title
   | Sign In
 
 block content
-  h1 Sign In (#{currentUser})
+  h1 Sign In
+  p.text-muted DEBUG: #{currentUser} 
   form(method="POST", action="/account/sign-in")
     .form-group(class=userNameError ? "has-error" : "")
       label.control-label(for="userName") User Name

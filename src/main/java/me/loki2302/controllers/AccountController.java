@@ -1,11 +1,17 @@
 package me.loki2302.controllers;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotEmpty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,17 +25,19 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 @Controller
 @RequestMapping("/account")
-public class AccountController {
+public class AccountController extends BlogController {
     private final static Logger logger = LoggerFactory.getLogger(AccountController.class);
     
     @ModelAttribute("currentUser")
     public String currentUser() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if(auth == null) {
-            return "<NO USER>";
-        }
-        
-        return auth.getName();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return String.format(
+                "name=%s, credentials=%s, details=%s, authorities=%s, isAuthenticated=%b", 
+                authentication.getName(),
+                authentication.getCredentials(),
+                authentication.getDetails(),
+                authentication.getAuthorities(),
+                authentication.isAuthenticated());
     }
     
     @RequestMapping(value = "/sign-in", method = RequestMethod.GET)
@@ -43,13 +51,7 @@ public class AccountController {
             Model model,
             @Validated @ModelAttribute("signInModel") SignInModel signInModel,
             BindingResult bindingResult) {
-        
-        /*http://stackoverflow.com/questions/9941773/spring-security-authentication-user-manually
-            
-        Authentication authentication =  new UsernamePasswordAuthenticationToken(person, null, person.getAuthorities());
-        log.debug("Logging in with {}", authentication.getPrincipal());
-        SecurityContextHolder.getContext().setAuthentication(authentication);*/
-        
+                
         logger.info("Sign In request");
         
         if(bindingResult.hasErrors()) {
@@ -69,6 +71,17 @@ public class AccountController {
             }
         } else {
             logger.info("There are no errors");
+            
+            List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>(); 
+            authorities.add(new SimpleGrantedAuthority("USER"));
+            authorities.add(new SimpleGrantedAuthority("ADMIN"));
+            authorities.add(new SimpleGrantedAuthority("WHOEVER"));
+            
+            Authentication authentication =  new UsernamePasswordAuthenticationToken(
+                    signInModel.getUserName(), 
+                    signInModel.getPassword(), 
+                    authorities);            
+            SecurityContextHolder.getContext().setAuthentication(authentication);
         }
         
         logger.info("UserName: {}, Password: {}", signInModel.getUserName(), signInModel.getPassword());

@@ -7,17 +7,21 @@ html
       block title
     link(rel="stylesheet", href="/assets/css/bootstrap.min.css")
   body
-    div.container
+    nav.navbar.navbar-default
+      .container  
+        .navbar-header
+          a.navbar-brand(href="/") Brand
+        ul.nav.navbar-nav
+          li: a(href="/") <span class="glyphicon glyphicon-home"></span> Home
+          li: a(href="/category") <span class="glyphicon glyphicon-book"></span> Categories
+          li: a(href="/account/sign-in") <span class="glyphicon glyphicon-fire"></span> Sign In  
+        ul.nav.navbar-nav.navbar-right
+          li: a(href="#") <span class="glyphicon glyphicon-user"></span> #{authentication.name}
+          li: a(href="#") Sign Out
+    .container      
       div.page-header
         h2 Blogs 
-          block title
-      ul.list-inline
-        li
-          | <span class="glyphicon glyphicon-home"></span> 
-          a(href="/") Home
-        li
-          | <span class="glyphicon glyphicon-book"></span> 
-          a(href="/category") Categories    
+          block title        
       block content
       hr
       p &copy; loki2302

@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping("/article")
-public class ArticleController {
+public class ArticleController extends BlogController {
     @Autowired
     private BlogService blogService;
     
