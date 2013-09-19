@@ -4,7 +4,8 @@ insert into Something(x) values(123);
 create table Users(
 	Id int identity,
 	RowUuid char(36) not null,
-	Name varchar(256) not null
+	Name varchar(256) not null,
+	Password varchar(256) not null
 );
 
 create table Categories(

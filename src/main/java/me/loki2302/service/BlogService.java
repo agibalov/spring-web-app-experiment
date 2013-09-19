@@ -41,15 +41,20 @@ public class BlogService {
     @Autowired
     private ArticleDao articleDao;
     
-    public UserRow createUser(String userName) {
-        UserRow existingUser = userDao.findUserByUserName(userName);
-        if(existingUser != null) {
-            throw new RuntimeException("user already exists");
+    public int signInOrSignUp(String userName, String password) {
+        UserRow user = userDao.findUserByUserName(userName);
+        if(user != null) {
+            if(!user.Password.equals(password)) {
+                throw new IncorrectPasswordException();
+            }
+            
+            return user.Id;
         }
         
-        return userDao.createUser(userName);
+        user = userDao.createUser(userName, password);
+        return user.Id;
     }
-    
+        
     public CompleteUser getUser(int userId) {
         UserRow userRow = userDao.getUser(userId);
         if(userRow == null) {

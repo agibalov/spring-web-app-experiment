@@ -21,7 +21,7 @@ public class UserDao {
        
     public UserRow getUser(int userId) {
         return DataAccessUtils.singleResult(template.query(
-                "select Id, Name from Users where Id = :userId",
+                "select Id, Name, Password from Users where Id = :userId",
                 new MapSqlParameterSource()
                     .addValue("userId", userId),
                 new UserRowMapper()));
@@ -29,30 +29,31 @@ public class UserDao {
     
     public List<UserRow> getUsers(Iterable<Integer> userIds) {
         return template.query(
-                "select Id, Name from Users where Id in (:userIds)",
+                "select Id, Name, Password from Users where Id in (:userIds)",
                 new MapSqlParameterSource()
                     .addValue("userIds", userIds),
                 new UserRowMapper());
     }
-    
+        
     public UserRow findUserByUserName(String userName) {
         return DataAccessUtils.singleResult(template.query(
-                "select Id, Name from Users where Name = :userName",
+                "select Id, Name, Password from Users where Name = :userName",
                 new MapSqlParameterSource()
                     .addValue("userName", userName),
                 new UserRowMapper()));
     }
     
-    public UserRow createUser(String userName) {
+    public UserRow createUser(String userName, String password) {
         final String rowUuid = UUID.randomUUID().toString();                
         template.update(
-                "insert into Users(RowUuid, Name) values(:rowUuid, :userName)",
+                "insert into Users(RowUuid, Name, Password) values(:rowUuid, :userName, :password)",
                 new MapSqlParameterSource()
                     .addValue("rowUuid", rowUuid)
-                    .addValue("userName", userName));
+                    .addValue("userName", userName)
+                    .addValue("password", password));
         
         UserRow user = template.queryForObject(
-                "select Id, Name from Users where RowUuid = :rowUuid",
+                "select Id, Name, Password from Users where RowUuid = :rowUuid",
                 new MapSqlParameterSource()
                     .addValue("rowUuid", rowUuid),
                 new UserRowMapper());
@@ -66,6 +67,7 @@ public class UserDao {
             UserRow userRow = new UserRow();
             userRow.Id = rs.getInt("Id");
             userRow.Name = rs.getString("Name");
+            userRow.Password = rs.getString("Password");
             return userRow;
         }
     }

@@ -42,7 +42,7 @@ public class AppConfiguration extends WebMvcConfigurerAdapter {
         
         Map<String, Object> sharedVariables = new HashMap<String, Object>();
         sharedVariables.put("dateHelper", new JadeDateHelper());
-        sharedVariables.put("markdownHelper", new JadeMarkdownHelper());        
+        sharedVariables.put("markdownHelper", new JadeMarkdownHelper());
         configuration.setSharedVariables(sharedVariables);
         
         configuration.setTemplateLoader(templateLoader);
