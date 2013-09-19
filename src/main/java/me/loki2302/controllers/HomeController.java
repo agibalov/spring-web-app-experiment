@@ -2,7 +2,6 @@ package me.loki2302.controllers;
 
 import java.security.Principal;
 
-import me.loki2302.controllers.AccountController.UserIdAuthenticationToken;
 import me.loki2302.service.BlogService;
 import me.loki2302.service.dto.Home;
 

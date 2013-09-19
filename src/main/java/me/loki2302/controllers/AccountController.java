@@ -1,21 +1,15 @@
 package me.loki2302.controllers;
 
-import java.security.Principal;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
-import javax.validation.constraints.NotNull;
 
 import me.loki2302.service.BlogService;
 import me.loki2302.service.IncorrectPasswordException;
 
-import org.hibernate.validator.constraints.NotEmpty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AbstractAuthenticationToken;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -117,52 +111,5 @@ public class AccountController extends BlogController {
     public String signOut() {
         SecurityContextHolder.clearContext();
         return "redirect:/";
-    }
-    
-    public static class UserIdAuthenticationToken extends AbstractAuthenticationToken {
-        private static final long serialVersionUID = 1L;
-        
-        private final int userId; 
-        
-        public UserIdAuthenticationToken(int userId, Collection<? extends GrantedAuthority> authorities) {
-            super(authorities);  
-            this.userId = userId;
-        }
-
-        @Override
-        public Object getCredentials() {
-            return null;
-        }
-
-        @Override
-        public Object getPrincipal() {
-            return userId;
-        }
-    }
-    
-    public static class SignInModel {
-        @NotNull
-        @NotEmpty
-        private String userName;
-        
-        @NotNull
-        @NotEmpty
-        private String password;
-        
-        public void setUserName(String userName) {
-            this.userName = userName;
-        }
-        
-        public String getUserName() {
-            return userName;
-        }
-        
-        public void setPassword(String password) {
-            this.password = password;
-        }
-        
-        public String getPassword() {
-            return password;
-        }
     }
 }
