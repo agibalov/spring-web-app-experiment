@@ -22,7 +22,6 @@ import me.loki2302.service.dto.article.CompleteArticle;
 import me.loki2302.service.dto.article.ShortArticle;
 import me.loki2302.service.dto.category.BriefCategory;
 import me.loki2302.service.dto.category.CompleteCategory;
-import me.loki2302.service.dto.category.CompleteCategory2;
 import me.loki2302.service.dto.category.ShortCategory;
 import me.loki2302.service.dto.user.BriefUser;
 import me.loki2302.service.dto.user.CompleteUser;
@@ -113,42 +112,15 @@ public class BlogService {
                 briefCategoriesMaps);
                 
         return completeArticle;
-    } 
-    
-    public CompleteCategory getCategory(int categoryId) {
-        CategoryRow categoryRow = categoryDao.getCategory(categoryId);
-        if(categoryRow == null) {
-            throw new CategoryNotFoundException();
-        }
-        
-        List<ArticleRow> articleRows = articleDao.getArticlesByCategory(categoryId);        
-        
-        Set<Integer> userIds = extractUserIds(articleRows);
-        List<UserRow> userRows = userDao.getUsers(userIds);
-        Map<Integer, BriefUser> briefUsersMap = makeBriefUsersMap(userRows);
-        
-        List<CategoryRow> categoryRows = Arrays.asList(categoryRow);
-        Map<Integer, BriefCategory> briefCategoriesMaps = makeBriefCategoriesMap(categoryRows);
-        
-        List<ShortArticle> shortArticles = makeShortArticles(
-                articleRows,
-                briefUsersMap,
-                briefCategoriesMaps);
-        
-        CompleteCategory completeCategory = makeCompleteCategory(
-                categoryRow, 
-                shortArticles);
-        
-        return completeCategory;
     }
     
-    public CompleteCategory2 getCategory2(int categoryId, int articlesPerPage, int page) {
+    public CompleteCategory getCategory2(int categoryId, int articlesPerPage, int page) {
         CategoryRow categoryRow = categoryDao.getCategory(categoryId);
         if(categoryRow == null) {
             throw new CategoryNotFoundException();
         }
         
-        Page<ArticleRow> articleRowsPage = articleDao.getArticlesPageByCategory(
+        Page<ArticleRow> articleRowsPage = articleDao.getArticlesByCategory(
                 categoryId, 
                 articlesPerPage, 
                 page);
@@ -172,7 +144,7 @@ public class BlogService {
         pageData.CurrentPage = articleRowsPage.CurrentPage;
         pageData.Items = shortArticles;
         
-        CompleteCategory2 completeCategory = makeCompleteCategory2(
+        CompleteCategory completeCategory = makeCompleteCategory(
                 categoryRow, 
                 pageData);
         
@@ -379,28 +351,20 @@ public class BlogService {
         return shortCategories;
     }
     
-    private static ShortCategory makeShortCategory(CategoryRow categoryRow, List<BriefArticle> recentArticles) {
+    private static ShortCategory makeShortCategory(
+            CategoryRow categoryRow, 
+            List<BriefArticle> recentArticles) {
         ShortCategory shortCategory = new ShortCategory();
         shortCategory.CategoryId = categoryRow.Id;
         shortCategory.Name = categoryRow.Name;
         shortCategory.RecentArticles = recentArticles;                
         return shortCategory;
     }
-    
+        
     private static CompleteCategory makeCompleteCategory(
             CategoryRow categoryRow, 
-            List<ShortArticle> shortArticles) {
-        CompleteCategory category = new CompleteCategory();
-        category.CategoryId = categoryRow.Id;
-        category.Name = categoryRow.Name;
-        category.Articles = shortArticles;
-        return category;
-    }
-    
-    private static CompleteCategory2 makeCompleteCategory2(
-            CategoryRow categoryRow, 
             Page<ShortArticle> shortArticles) {
-        CompleteCategory2 category = new CompleteCategory2();
+        CompleteCategory category = new CompleteCategory();
         category.CategoryId = categoryRow.Id;
         category.Name = categoryRow.Name;
         category.Articles = shortArticles;

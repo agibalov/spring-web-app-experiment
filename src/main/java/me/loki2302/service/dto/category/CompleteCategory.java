@@ -1,11 +1,19 @@
 package me.loki2302.service.dto.category;
 
-import java.util.List;
-
+import me.loki2302.dao.rows.Page;
 import me.loki2302.service.dto.article.ShortArticle;
 
 public class CompleteCategory {
     public int CategoryId;
     public String Name;
-    public List<ShortArticle> Articles;
+    public Page<ShortArticle> Articles;
+    
+    @Override
+    public String toString() {
+        return String.format(
+                "CompleteCategory2{CategoryId=%d,Name=%s,Articles=%s}",
+                CategoryId,
+                Name,
+                Articles);
+    }
 }

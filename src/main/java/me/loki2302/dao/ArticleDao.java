@@ -85,16 +85,8 @@ public class ArticleDao {
                     .addValue("categoryIds", categoryIds),
                 new ArticleRowMapper());
     }
-        
-    public List<ArticleRow> getArticlesByCategory(int categoryId) {
-        return template.query(
-                "select Id, Title, Text, CreatedAt, UpdatedAt, CategoryId, UserId from Articles where CategoryId = :categoryId", 
-                new MapSqlParameterSource()
-                    .addValue("categoryId", categoryId),
-                new ArticleRowMapper());
-    }
-    
-    public Page<ArticleRow> getArticlesPageByCategory(int categoryId, int itemsPerPage, int page) {
+            
+    public Page<ArticleRow> getArticlesByCategory(int categoryId, int itemsPerPage, int page) {
         int numberOfItems = template.queryForObject(
                 "select count(Id) from Articles where CategoryId = :categoryId",
                 new MapSqlParameterSource()
