@@ -24,7 +24,8 @@ public class MyWebApplicationInitializer implements WebApplicationInitializer {
         dispatcher.setLoadOnStartup(1);
         dispatcher.addMapping("/");
         
-        servletContext.addFilter("springSecurityFilterChain", new DelegatingFilterProxy("springSecurityFilterChain"))
-        .addMappingForUrlPatterns(null, false, "/*");
+        servletContext
+            .addFilter("springSecurityFilterChain", new DelegatingFilterProxy("springSecurityFilterChain"))
+            .addMappingForUrlPatterns(null, false, "/*");
     }
 }

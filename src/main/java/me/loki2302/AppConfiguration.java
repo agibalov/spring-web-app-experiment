@@ -5,6 +5,7 @@ import java.util.Map;
 
 import me.loki2302.jadehelpers.JadeDateHelper;
 import me.loki2302.jadehelpers.JadeMarkdownHelper;
+import me.loki2302.jadehelpers.SpringSecurityHelper;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -43,6 +44,7 @@ public class AppConfiguration extends WebMvcConfigurerAdapter {
         Map<String, Object> sharedVariables = new HashMap<String, Object>();
         sharedVariables.put("dateHelper", new JadeDateHelper());
         sharedVariables.put("markdownHelper", new JadeMarkdownHelper());
+        sharedVariables.put("security", new SpringSecurityHelper());
         configuration.setSharedVariables(sharedVariables);
         
         configuration.setTemplateLoader(templateLoader);
