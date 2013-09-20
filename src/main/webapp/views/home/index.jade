@@ -4,6 +4,12 @@ block title
   | Home
 
 block content
+  p.text-muted
+    | DEBUG: 
+    if home.User
+      | #{home.User.Name}
+    else
+      | no user
   .row
     .col-md-6   
       .list-group

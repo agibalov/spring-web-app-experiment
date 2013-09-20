@@ -156,7 +156,7 @@ public class BlogService {
         return completeCategory;
     }
     
-    public Home getHome(int numberOfRecentArticles) {        
+    public Home getHome(Integer userId, int numberOfRecentArticles) {        
         Home home = new Home();
         
         List<CategoryRow> allCategoryRows = categoryDao.getCategories();
@@ -176,6 +176,11 @@ public class BlogService {
                 articleRows, 
                 briefUsersMap, 
                 briefCategoriesMap);
+        
+        if(userId != null) {
+            UserRow user = userDao.getUser(userId);
+            home.User = makeBriefUser(user);
+        }
         
         return home;
     }

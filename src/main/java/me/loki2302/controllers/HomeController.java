@@ -25,7 +25,12 @@ public class HomeController extends BlogController {
         logger.info("PRINCIPAL: {}", principal);
         logger.info("TOKEN: {}", t);
         
-        Home home = blogService.getHome(3);
+        Integer userId = null;
+        if(t != null) {
+            userId = (Integer)t.getPrincipal();
+        }
+        
+        Home home = blogService.getHome(userId, 3);
         model.addAttribute("home", home);
         return "home/index";
     }
