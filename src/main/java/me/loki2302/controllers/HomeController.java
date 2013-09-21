@@ -21,14 +21,14 @@ public class HomeController extends BlogController {
     private BlogService blogService;
         
     @RequestMapping
-    public String index(Model model, Principal principal, UserIdAuthenticationToken t) {
-        logger.info("PRINCIPAL: {}", principal);
-        logger.info("TOKEN: {}", t);
+    public String index(Model model/*, Principal principal, UserIdAuthenticationToken t*/) {
+        /*logger.info("PRINCIPAL: {}", principal);
+        logger.info("TOKEN: {}", t);*/
         
         Integer userId = null;
-        if(t != null) {
+        /*if(t != null) {
             userId = (Integer)t.getPrincipal();
-        }
+        }*/
         
         Home home = blogService.getHome(userId, 3);
         model.addAttribute("home", home);
