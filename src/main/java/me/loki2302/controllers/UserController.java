@@ -1,6 +1,6 @@
 package me.loki2302.controllers;
 
-import me.loki2302.service.BlogService;
+import me.loki2302.service.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -12,11 +12,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/user")
 public class UserController extends BlogController {
     @Autowired
-    private BlogService blogService;
+    private UserService userService;
     
     @RequestMapping("{userId}")
     public String user(@PathVariable int userId, Model model) {
-        model.addAttribute("user", blogService.getUser(userId));
+        model.addAttribute("user", userService.getUser(userId));
         return "user/index";
     }
 }

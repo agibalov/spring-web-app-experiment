@@ -1,4 +1,4 @@
-package me.loki2302.service;
+package me.loki2302.service.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

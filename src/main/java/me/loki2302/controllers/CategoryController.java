@@ -1,6 +1,6 @@
 package me.loki2302.controllers;
 
-import me.loki2302.service.BlogService;
+import me.loki2302.service.CategoryService;
 import me.loki2302.service.dto.category.CompleteCategory;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,11 +13,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/category")
 public class CategoryController extends BlogController {
     @Autowired
-    private BlogService blogService;
+    private CategoryService categoryService;
     
     @RequestMapping
     public String listOfCategories(Model model) {
-        model.addAttribute("categories", blogService.getCategories(3));            
+        model.addAttribute("categories", categoryService.getCategories(3));            
         return "category/index";
     }
     
@@ -28,7 +28,7 @@ public class CategoryController extends BlogController {
             Integer page,
             Model model) {
         
-        CompleteCategory category = blogService.getCategory2(
+        CompleteCategory category = categoryService.getCategory(
                 categoryId, 
                 articlesPerPage == null ? 5 : articlesPerPage, 
                 page == null ? 0 : page);

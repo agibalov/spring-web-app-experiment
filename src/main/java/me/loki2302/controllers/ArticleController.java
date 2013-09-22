@@ -1,6 +1,6 @@
 package me.loki2302.controllers;
 
-import me.loki2302.service.BlogService;
+import me.loki2302.service.ArticleService;
 import me.loki2302.service.dto.article.CompleteArticle;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @RequestMapping("/article")
 public class ArticleController extends BlogController {
     @Autowired
-    private BlogService blogService;
+    private ArticleService articleService;
     
     @RequestMapping(value = "new/{categoryId}", method = RequestMethod.GET)
     public String createArticle(@PathVariable int categoryId, Model model) {
@@ -29,14 +29,14 @@ public class ArticleController extends BlogController {
     
     @RequestMapping("{articleId}")
     public String viewArticle(@PathVariable int articleId, Model model) {
-        CompleteArticle article = blogService.getArticle(articleId);
+        CompleteArticle article = articleService.getArticle(articleId);
         model.addAttribute("article", article);
         return "article/index";
     }
     
     @RequestMapping(value = "{articleId}/edit", method = RequestMethod.GET)
     public String editArticle(@PathVariable int articleId, Model model) {
-        CompleteArticle article = blogService.getArticle(articleId);
+        CompleteArticle article = articleService.getArticle(articleId);
         model.addAttribute("article", article);
         return "article/edit";
     }

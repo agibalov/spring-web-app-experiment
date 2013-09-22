@@ -5,8 +5,8 @@ import java.util.List;
 
 
 import me.loki2302.auth.UserIdAuthenticationToken;
-import me.loki2302.service.BlogService;
-import me.loki2302.service.IncorrectPasswordException;
+import me.loki2302.service.AuthenticationService;
+import me.loki2302.service.exceptions.IncorrectPasswordException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +32,7 @@ public class AccountController extends BlogController {
     private final static Logger logger = LoggerFactory.getLogger(AccountController.class);
     
     @Autowired
-    private BlogService blogService;
+    private AuthenticationService authenticationService;
     
     @ModelAttribute("currentUser")
     public String currentUser() {
@@ -92,7 +92,7 @@ public class AccountController extends BlogController {
             logger.info("There are no errors");
             
             try {
-                int userId = blogService.signInOrSignUp(
+                int userId = authenticationService.signInOrSignUp(
                         signInModel.getUserName(), 
                         signInModel.getPassword());
                 
