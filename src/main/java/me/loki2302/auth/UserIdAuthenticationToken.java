@@ -1,4 +1,4 @@
-package me.loki2302.controllers;
+package me.loki2302.auth;
 
 import java.util.Collection;
 

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+import me.loki2302.auth.UserIdAuthenticationToken;
 import me.loki2302.service.BlogService;
 import me.loki2302.service.IncorrectPasswordException;
 
@@ -23,6 +24,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.util.UriComponentsBuilder;
 
 @Controller
 @RequestMapping("/account")
@@ -49,7 +51,16 @@ public class AccountController extends BlogController {
     }
     
     @RequestMapping(value = "/sign-in", method = RequestMethod.GET)
-    public String signIn(Model model) {        
+    public String signIn(Model model, UriComponentsBuilder b) {        
+        // http://docs.spring.io/spring/docs/3.2.x/spring-framework-reference/html/mvc.html
+        /*UriComponents uriComponents =
+                UriComponentsBuilder.fromUriString("http://example.com/hotels/{hotel}/bookings/{booking}").build();
+
+        URI uri = uriComponents.expand("42", "21").encode().toUri();*/
+        
+        logger.info("OMG: {}", b.build());
+        
+        
         model.addAttribute("signInModel", new SignInModel());
         return "account/sign-in";
     }
@@ -90,7 +101,7 @@ public class AccountController extends BlogController {
                 authorities.add(new SimpleGrantedAuthority("ADMIN"));
                 authorities.add(new SimpleGrantedAuthority("WHOEVER"));
                 
-                Authentication authentication = new UserIdAuthenticationToken(
+                UserIdAuthenticationToken authentication = new UserIdAuthenticationToken(
                         userId,
                         authorities);
                 authentication.setAuthenticated(true);
@@ -109,6 +120,7 @@ public class AccountController extends BlogController {
     
     @RequestMapping(value = "/sign-out", method = RequestMethod.GET)
     public String signOut() {
+        logger.info("SIGN OUT");
         SecurityContextHolder.clearContext();
         return "redirect:/";
     }
