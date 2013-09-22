@@ -3,7 +3,9 @@ package me.loki2302.controllers;
 import java.security.Principal;
 
 import me.loki2302.auth.UserIdAuthenticationToken;
-import me.loki2302.service.HomeService;
+import me.loki2302.service.ArticleService;
+import me.loki2302.service.CategoryService;
+import me.loki2302.service.UserService;
 import me.loki2302.service.dto.Home;
 
 import org.slf4j.Logger;
@@ -19,20 +21,28 @@ public class HomeController extends BlogController {
     private final static Logger logger = LoggerFactory.getLogger(HomeController.class);
     
     @Autowired
-    private HomeService homeService;
+    private CategoryService categoryService;
+    
+    @Autowired
+    private ArticleService articleService;
+    
+    @Autowired
+    private UserService userService;
            
     @RequestMapping
     public String index(Model model, Principal principal, UserIdAuthenticationToken t) {
         logger.info("HOME");
         logger.info("PRINCIPAL: {}", principal);
         logger.info("TOKEN: {}", t);
-            
-        Integer userId = null;
-        if(t != null) {
-            userId = (Integer)t.getPrincipal();
+        
+        Home home = new Home();        
+        home.Categories = categoryService.getBriefCategories();            
+        home.MostRecentArticles = articleService.getMostRecentArticles(3);
+        
+        if(t != null) {            
+            home.User = userService.getBriefUser((Integer)t.getPrincipal());
         }
         
-        Home home = homeService.getHome(userId, 3);
         model.addAttribute("home", home);
         return "home/index";
     }

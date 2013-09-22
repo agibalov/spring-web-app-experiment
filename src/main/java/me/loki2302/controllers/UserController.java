@@ -16,7 +16,7 @@ public class UserController extends BlogController {
     
     @RequestMapping("{userId}")
     public String user(@PathVariable int userId, Model model) {
-        model.addAttribute("user", userService.getUser(userId));
+        model.addAttribute("user", userService.getCompleteUser(userId));
         return "user/index";
     }
 }

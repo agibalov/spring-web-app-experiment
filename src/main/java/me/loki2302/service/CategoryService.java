@@ -63,6 +63,11 @@ public class CategoryService {
         return categoryDao.createCategory(categoryName);
     }
     
+    public List<BriefCategory> getBriefCategories() {
+        List<CategoryRow> allCategoryRows = categoryDao.getCategories();
+        return briefCategoryMapper.makeBriefCategories(allCategoryRows);
+    }
+    
     public List<ShortCategory> getCategories(int numberOfRecentArticles) {
         List<CategoryRow> categoryRows = categoryDao.getCategories();
         
