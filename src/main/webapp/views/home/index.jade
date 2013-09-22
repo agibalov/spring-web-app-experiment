@@ -10,6 +10,9 @@ block content
       | #{home.User.Name}
     else
       | no user
+  if authentication
+    .btn-group.btn-group-lg
+      a.btn.btn-default.btn-success(href="/article/new/0") New Article    
   .row
     .col-md-6   
       .list-group
