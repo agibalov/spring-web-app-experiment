@@ -7,6 +7,8 @@ import java.util.List;
 import me.loki2302.auth.UserIdAuthenticationToken;
 import me.loki2302.service.AuthenticationService;
 import me.loki2302.service.exceptions.IncorrectPasswordException;
+import me.loki2302.service.exceptions.UserNameAlreadyUsedException;
+import me.loki2302.service.exceptions.UserNotRegisteredException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +21,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.validation.ObjectError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -66,19 +67,12 @@ public class AccountController extends BlogController {
     }
     
     @RequestMapping(value = "/sign-in", method = RequestMethod.POST)
-    public String signInDo(
+    public String signIn(
             Model model,
             @Validated @ModelAttribute("signInModel") SignInModel signInModel,
             BindingResult bindingResult) {
-                
-        logger.info("Sign In request");
         
-        if(bindingResult.hasErrors()) {
-            logger.info("There are errors");
-            for(ObjectError objectError : bindingResult.getAllErrors()) {
-                logger.info("Error: {}", objectError);
-            }
-            
+        if(bindingResult.hasErrors()) {            
             FieldError userNameError = bindingResult.getFieldError("userName");
             if(userNameError != null) {
                 model.addAttribute("userNameError", userNameError.getDefaultMessage());    
@@ -88,11 +82,9 @@ public class AccountController extends BlogController {
             if(passwordError != null) {
                 model.addAttribute("passwordError", passwordError.getDefaultMessage());
             }
-        } else {
-            logger.info("There are no errors");
-            
+        } else {            
             try {
-                int userId = authenticationService.signInOrSignUp(
+                int userId = authenticationService.signIn(
                         signInModel.getUserName(), 
                         signInModel.getPassword());
                 
@@ -108,19 +100,66 @@ public class AccountController extends BlogController {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
                 
                 return "redirect:/";
+            } catch(UserNotRegisteredException e) {
+                model.addAttribute("userNameError", "User not registered");
             } catch(IncorrectPasswordException e) {
                 model.addAttribute("passwordError", "Incorrect password");
             }
-        }
-        
-        logger.info("UserName: {}, Password: {}", signInModel.getUserName(), signInModel.getPassword());
+        }        
         
         return "account/sign-in";
     }
     
+    @RequestMapping(value = "/sign-up", method = RequestMethod.GET)
+    public String signUp(Model model) {
+        model.addAttribute("signUpModel", new SignUpModel());
+        return "account/sign-up";
+    }
+    
+    @RequestMapping(value = "/sign-up", method = RequestMethod.POST)
+    public String signUp(
+            Model model,
+            @Validated @ModelAttribute("signUpModel") SignUpModel signUpModel,
+            BindingResult bindingResult) {
+        
+        if(bindingResult.hasErrors()) {            
+            FieldError userNameError = bindingResult.getFieldError("userName");
+            if(userNameError != null) {
+                model.addAttribute("userNameError", userNameError.getDefaultMessage());    
+            }            
+            
+            FieldError passwordError = bindingResult.getFieldError("password");
+            if(passwordError != null) {
+                model.addAttribute("passwordError", passwordError.getDefaultMessage());
+            }
+        } else {            
+            try {
+                int userId = authenticationService.signUp(
+                        signUpModel.getUserName(), 
+                        signUpModel.getPassword());
+                
+                List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>(); 
+                authorities.add(new SimpleGrantedAuthority("USER"));
+                authorities.add(new SimpleGrantedAuthority("ADMIN"));
+                authorities.add(new SimpleGrantedAuthority("WHOEVER"));
+                
+                UserIdAuthenticationToken authentication = new UserIdAuthenticationToken(
+                        userId,
+                        authorities);
+                authentication.setAuthenticated(true);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+                
+                return "redirect:/";
+            } catch(UserNameAlreadyUsedException e) {
+                model.addAttribute("userNameError", "User name already used");
+            }
+        }
+        
+        return "account/sign-up";
+    }
+    
     @RequestMapping(value = "/sign-out", method = RequestMethod.GET)
     public String signOut() {
-        logger.info("SIGN OUT");
         SecurityContextHolder.clearContext();
         return "redirect:/";
     }
