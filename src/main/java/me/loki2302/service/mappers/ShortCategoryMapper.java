@@ -1,7 +1,9 @@
 package me.loki2302.service.mappers;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import me.loki2302.dao.rows.CategoryRow;
 import me.loki2302.service.dto.article.BriefArticle;
@@ -24,18 +26,20 @@ public class ShortCategoryMapper {
     public List<ShortCategory> makeShortCategories(
             List<CategoryRow> categoryRows, 
             List<BriefArticle> briefArticles) {
-        List<ShortCategory> shortCategories = new ArrayList<ShortCategory>();
-        for(CategoryRow categoryRow : categoryRows) {
-            //
-            List<BriefArticle> briefArticlesForThisCategory = new ArrayList<BriefArticle>();
-            for(BriefArticle briefArticle : briefArticles) {
-                if(briefArticle.Category.CategoryId != categoryRow.Id) {
-                    continue;
-                }
-                
-                briefArticlesForThisCategory.add(briefArticle);
+        
+        Map<Integer, List<BriefArticle>> briefArticlesByCategoryIds = new HashMap<Integer, List<BriefArticle>>();
+        for(BriefArticle briefArticle : briefArticles) {
+            int categoryId = briefArticle.Category.CategoryId;
+            if(!briefArticlesByCategoryIds.containsKey(categoryId)) {
+                briefArticlesByCategoryIds.put(categoryId, new ArrayList<BriefArticle>());
             }
-            //
+            List<BriefArticle> briefArticlesForCategory = briefArticlesByCategoryIds.get(categoryId);
+            briefArticlesForCategory.add(briefArticle);
+        }
+        
+        List<ShortCategory> shortCategories = new ArrayList<ShortCategory>();
+        for(CategoryRow categoryRow : categoryRows) {            
+            List<BriefArticle> briefArticlesForThisCategory = briefArticlesByCategoryIds.get(categoryRow.Id);
             
             ShortCategory shortCategory = makeShortCategory(
                     categoryRow, 
