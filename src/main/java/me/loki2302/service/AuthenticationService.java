@@ -13,21 +13,7 @@ import org.springframework.stereotype.Service;
 public class AuthenticationService {
     @Autowired
     private UserDao userDao;
-    
-    public int signInOrSignUp(String userName, String password) {
-        UserRow user = userDao.findUserByUserName(userName);
-        if(user != null) {
-            if(!user.Password.equals(password)) {
-                throw new IncorrectPasswordException();
-            }
-            
-            return user.Id;
-        }
         
-        user = userDao.createUser(userName, password);
-        return user.Id;
-    }
-    
     public int signIn(String userName, String password) {
         UserRow user = userDao.findUserByUserName(userName);
         if(user == null) {

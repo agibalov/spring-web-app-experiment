@@ -34,7 +34,7 @@ public class DatabasePopulator {
         List<Integer> userIds = new ArrayList<Integer>();
         for(int i = 0; i < numberOfUsers; ++i) {
             String userName = generator.username();
-            int userId = authenticationService.signInOrSignUp(userName, "qwerty");
+            int userId = authenticationService.signUp(userName, "qwerty");
             userIds.add(userId);
         }
         
