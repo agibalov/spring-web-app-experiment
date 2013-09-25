@@ -8,11 +8,16 @@ create table Users(
 	Password varchar(256) not null
 );
 
+create unique index UserRowUuidIndex on Users(RowUuid);
+create unique index UserNameIndex on Users(Name);
+
 create table Categories(
 	Id int identity,
 	RowUuid char(36) not null,
 	Name varchar(256) not null 
 );
+
+create unique index CategoryRowUuidIndex on Categories(RowUuid);
 
 create table Articles(
 	Id int identity,
@@ -24,6 +29,8 @@ create table Articles(
 	UserId int not null,
 	CategoryId int not null
 );
+
+create unique index ArticleRowUuidIndex on Articles(RowUuid);
 
 alter table Articles add foreign key (UserId) references Users (Id);
 alter table Articles add foreign key (CategoryId) references Categories (Id);
