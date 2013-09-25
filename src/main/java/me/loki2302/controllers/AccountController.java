@@ -6,6 +6,7 @@ import java.util.List;
 
 import me.loki2302.auth.UserIdAuthenticationToken;
 import me.loki2302.service.AuthenticationService;
+import me.loki2302.service.dto.AuthenticationResult;
 import me.loki2302.service.exceptions.IncorrectPasswordException;
 import me.loki2302.service.exceptions.UserNameAlreadyUsedException;
 import me.loki2302.service.exceptions.UserNotRegisteredException;
@@ -84,9 +85,10 @@ public class AccountController extends BlogController {
             }
         } else {            
             try {
-                int userId = authenticationService.signIn(
+                AuthenticationResult authenticationResult = authenticationService.signIn(
                         signInModel.getUserName(), 
                         signInModel.getPassword());
+                int userId = authenticationResult.UserId;
                 
                 List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>(); 
                 authorities.add(new SimpleGrantedAuthority("USER"));
@@ -134,9 +136,10 @@ public class AccountController extends BlogController {
             }
         } else {            
             try {
-                int userId = authenticationService.signUp(
+                AuthenticationResult authenticationResult = authenticationService.signUp(
                         signUpModel.getUserName(), 
                         signUpModel.getPassword());
+                int userId = authenticationResult.UserId;
                 
                 List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>(); 
                 authorities.add(new SimpleGrantedAuthority("USER"));

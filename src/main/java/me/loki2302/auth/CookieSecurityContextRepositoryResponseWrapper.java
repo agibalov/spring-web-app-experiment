@@ -9,12 +9,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.web.context.SaveContextOnUpdateOrErrorResponseWrapper;
 
-public class ResponseWrapper extends SaveContextOnUpdateOrErrorResponseWrapper {
-    private final static Logger logger = LoggerFactory.getLogger(ResponseWrapper.class);
+public class CookieSecurityContextRepositoryResponseWrapper extends SaveContextOnUpdateOrErrorResponseWrapper {
+    private final static Logger logger = LoggerFactory.getLogger(CookieSecurityContextRepositoryResponseWrapper.class);
     
     private final static String AUTH_COOKIE_NAME = "secret_cookie";
     
-    public ResponseWrapper(HttpServletResponse response, boolean disableUrlRewriting) {
+    public CookieSecurityContextRepositoryResponseWrapper(HttpServletResponse response, boolean disableUrlRewriting) {
         super(response, disableUrlRewriting);
     }
 

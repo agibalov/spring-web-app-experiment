@@ -11,6 +11,15 @@ create table Users(
 create unique index UserRowUuidIndex on Users(RowUuid);
 create unique index UserNameIndex on Users(Name);
 
+create table Sessions(
+	Id int identity,
+	RowUuid char(36) not null,
+	Token char(36) not null,
+	UserId int not null	
+);
+
+alter table Sessions add foreign key (UserId) references Users (Id);
+
 create table Categories(
 	Id int identity,
 	RowUuid char(36) not null,
@@ -31,6 +40,5 @@ create table Articles(
 );
 
 create unique index ArticleRowUuidIndex on Articles(RowUuid);
-
 alter table Articles add foreign key (UserId) references Users (Id);
 alter table Articles add foreign key (CategoryId) references Categories (Id);

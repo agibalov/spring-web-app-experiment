@@ -18,7 +18,7 @@ import org.springframework.stereotype.Repository;
 public class UserDao {
     @Autowired
     private NamedParameterJdbcTemplate template;
-       
+    
     public UserRow getUser(int userId) {
         return DataAccessUtils.singleResult(template.query(
                 "select Id, Name, Password from Users where Id = :userId",

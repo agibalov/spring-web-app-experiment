@@ -10,6 +10,7 @@ import me.loki2302.dao.rows.CategoryRow;
 import me.loki2302.service.ArticleService;
 import me.loki2302.service.AuthenticationService;
 import me.loki2302.service.CategoryService;
+import me.loki2302.service.dto.AuthenticationResult;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -34,7 +35,8 @@ public class DatabasePopulator {
         List<Integer> userIds = new ArrayList<Integer>();
         for(int i = 0; i < numberOfUsers; ++i) {
             String userName = generator.username();
-            int userId = authenticationService.signUp(userName, "qwerty");
+            AuthenticationResult authenticationResult = authenticationService.signUp(userName, "qwerty");
+            int userId = authenticationResult.UserId;
             userIds.add(userId);
         }
         

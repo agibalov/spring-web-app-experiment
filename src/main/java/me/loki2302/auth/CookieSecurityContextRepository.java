@@ -27,7 +27,7 @@ public class CookieSecurityContextRepository implements SecurityContextRepositor
         HttpServletRequest request = requestResponseHolder.getRequest();
         HttpServletResponse response = requestResponseHolder.getResponse();       
         
-        requestResponseHolder.setResponse(new ResponseWrapper(response, false));
+        requestResponseHolder.setResponse(new CookieSecurityContextRepositoryResponseWrapper(response, false));
         
         String authCookieValue = getCookieValue(AUTH_COOKIE_NAME, request);
         if(authCookieValue == null) {
@@ -66,7 +66,7 @@ public class CookieSecurityContextRepository implements SecurityContextRepositor
     @Override
     public void saveContext(SecurityContext context, HttpServletRequest request, HttpServletResponse response) {
         logger.info("{} saveContext called {}", request.getRequestURI(), context);        
-        ResponseWrapper responseWrapper = (ResponseWrapper)response;
+        CookieSecurityContextRepositoryResponseWrapper responseWrapper = (CookieSecurityContextRepositoryResponseWrapper)response;
         if(!responseWrapper.isContextSaved()) {
             logger.info("context is not saved, saving it");
             responseWrapper.saveContext(context);
