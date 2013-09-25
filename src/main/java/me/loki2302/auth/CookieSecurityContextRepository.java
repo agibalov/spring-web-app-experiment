@@ -50,7 +50,7 @@ public class CookieSecurityContextRepository implements SecurityContextRepositor
             return SecurityContextHolder.createEmptyContext();
         }       
     
-        logger.info("found auth cookie: {0}", authCookieValue);
+        logger.info("found auth cookie: {}", authCookieValue);
         
         AuthenticationResult authenticationResult = authenticationService.getSessionInfo(authCookieValue);
         
@@ -58,7 +58,7 @@ public class CookieSecurityContextRepository implements SecurityContextRepositor
         authorities.add(new SimpleGrantedAuthority("USER"));
         authorities.add(new SimpleGrantedAuthority("ADMIN"));
         authorities.add(new SimpleGrantedAuthority("WHOEVER"));
-        UserIdAuthenticationToken authentication = new UserIdAuthenticationToken(
+        SessionAuthenticationToken authentication = new SessionAuthenticationToken(
                 authenticationResult.UserId, 
                 authenticationResult.UserName, 
                 authenticationResult.SessionToken, 

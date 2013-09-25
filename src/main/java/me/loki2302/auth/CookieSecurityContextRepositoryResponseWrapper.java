@@ -32,12 +32,12 @@ public class CookieSecurityContextRepositoryResponseWrapper extends SaveContextO
             return;
         }
         
-        if(!(authentication instanceof UserIdAuthenticationToken)) {
+        if(!(authentication instanceof SessionAuthenticationToken)) {
             logger.info("auth type is something weird: {} -> throwing", authentication);
             throw new RuntimeException("Unsupported authentication type");
         }
         
-        UserIdAuthenticationToken userIdAuthenticationToken = (UserIdAuthenticationToken)authentication;        
+        SessionAuthenticationToken userIdAuthenticationToken = (SessionAuthenticationToken)authentication;        
         logger.info("auth type is what i know");
         logger.info("user id is {}", userIdAuthenticationToken.getPrincipal());
         logger.info("credentials is {}", userIdAuthenticationToken.getCredentials());

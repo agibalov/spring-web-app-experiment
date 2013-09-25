@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-import me.loki2302.auth.UserIdAuthenticationToken;
+import me.loki2302.auth.SessionAuthenticationToken;
 import me.loki2302.service.AuthenticationService;
 import me.loki2302.service.dto.AuthenticationResult;
 import me.loki2302.service.exceptions.IncorrectPasswordException;
@@ -94,7 +94,7 @@ public class AccountController extends BlogController {
                 authorities.add(new SimpleGrantedAuthority("ADMIN"));
                 authorities.add(new SimpleGrantedAuthority("WHOEVER"));
                 
-                UserIdAuthenticationToken authentication = new UserIdAuthenticationToken(
+                SessionAuthenticationToken authentication = new SessionAuthenticationToken(
                         authenticationResult.UserId,
                         authenticationResult.UserName,
                         authenticationResult.SessionToken,
@@ -146,7 +146,7 @@ public class AccountController extends BlogController {
                 authorities.add(new SimpleGrantedAuthority("ADMIN"));
                 authorities.add(new SimpleGrantedAuthority("WHOEVER"));
                 
-                UserIdAuthenticationToken authentication = new UserIdAuthenticationToken(
+                SessionAuthenticationToken authentication = new SessionAuthenticationToken(
                         authenticationResult.UserId,
                         authenticationResult.UserName,
                         authenticationResult.SessionToken,

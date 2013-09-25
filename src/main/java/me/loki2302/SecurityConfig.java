@@ -1,6 +1,7 @@
 package me.loki2302;
 
 import me.loki2302.auth.CookieSecurityContextRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -15,10 +16,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private CookieSecurityContextRepository cookieSecurityContextRepository;
     
-    public SecurityConfig() {
-        super(true);
-    }
-    
+    @Autowired
+    private DummyAuthenticationProvider dummyAuthenticationProvider;
+        
     @Override
     public void configure(WebSecurity web) throws Exception {
         web.ignoring().antMatchers("/assets/**", "/robots.txt");
@@ -27,33 +27,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-            //.csrf().disable()
-            //.anonymous().disable()
-            //.securityContext().securityContextRepository(new VoyeurSecurityContextRepositoryProxy(new HttpSessionSecurityContextRepository()));
-            .securityContext().securityContextRepository(cookieSecurityContextRepository)
-            ;
-        
-        /*http
             .csrf().disable()
-            .authorizeRequests()
-                .antMatchers("/assets/**").permitAll()
-                .anyRequest().authenticated()
-                .and()
-            .formLogin()
-                .loginPage("/account/sign-in")
-                .usernameParameter("userName")
-                .passwordParameter("password")
-                .permitAll()
-                .and()
-            .logout()
-                .permitAll();*/               
+            .anonymous().disable()
+            .securityContext().securityContextRepository(cookieSecurityContextRepository);               
     }
     
     @Override
     protected void registerAuthentication(AuthenticationManagerBuilder auth) throws Exception {
-        auth.inMemoryAuthentication()
-            .withUser("loki2302")
-            .password("qwerty")
-            .roles("USER");
+        auth.authenticationProvider(dummyAuthenticationProvider);
     }
 }

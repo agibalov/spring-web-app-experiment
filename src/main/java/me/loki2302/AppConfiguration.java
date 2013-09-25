@@ -1,14 +1,18 @@
 package me.loki2302;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import me.loki2302.controllers.CurrentUserHandlerMethodArgumentResolver;
 import me.loki2302.jadehelpers.JadeDateHelper;
 import me.loki2302.jadehelpers.JadeMarkdownHelper;
 import me.loki2302.jadehelpers.SpringSecurityHelper;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -20,13 +24,21 @@ import de.neuland.jade4j.spring.view.JadeViewResolver;
 
 @EnableWebMvc
 @ComponentScan("me.loki2302")
-public class AppConfiguration extends WebMvcConfigurerAdapter {    
+public class AppConfiguration extends WebMvcConfigurerAdapter {
+    @Autowired
+    private CurrentUserHandlerMethodArgumentResolver currentUserHandlerMethodArgumentResolver;
+    
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/assets/**").addResourceLocations("/assets/");
         registry.addResourceHandler("/robots.txt").addResourceLocations("/robots.txt");
     }
     
+    @Override
+    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
+        argumentResolvers.add(currentUserHandlerMethodArgumentResolver);
+    }
+
     @Bean
     public SpringTemplateLoader templateLoader() {
         SpringTemplateLoader templateLoader = new SpringTemplateLoader();
@@ -40,21 +52,21 @@ public class AppConfiguration extends WebMvcConfigurerAdapter {
     public JadeConfiguration jadeConfiguration(SpringTemplateLoader templateLoader) {
         JadeConfiguration configuration = new JadeConfiguration();
         configuration.setCaching(false);
-        
+
         Map<String, Object> sharedVariables = new HashMap<String, Object>();
         sharedVariables.put("dateHelper", new JadeDateHelper());
         sharedVariables.put("markdownHelper", new JadeMarkdownHelper());
         sharedVariables.put("security", new SpringSecurityHelper());
         configuration.setSharedVariables(sharedVariables);
-        
+
         configuration.setTemplateLoader(templateLoader);
         return configuration;
     }
-    
+
     @Bean
     public ViewResolver viewResolver(JadeConfiguration jadeConfiguration) {
         JadeViewResolver viewResolver = new JadeViewResolver();
         viewResolver.setConfiguration(jadeConfiguration);
         return viewResolver;
-    }   
+    }    
 }
