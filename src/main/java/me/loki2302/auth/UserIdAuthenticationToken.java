@@ -32,4 +32,9 @@ public class UserIdAuthenticationToken extends AbstractAuthenticationToken {
     public Object getPrincipal() {
         return userId;
     }
+
+    @Override
+    public String getName() {
+        return userName;
+    }
 }

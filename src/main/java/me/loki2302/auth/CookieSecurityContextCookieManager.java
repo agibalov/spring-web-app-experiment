@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class CookieSecurityContextCookieManager {
-    private final static String AUTH_COOKIE_NAME = "secret_cookie";
+    private final static String AUTH_COOKIE_NAME = "session-token";
     
     public Cookie createAuthenticationCookie(String cookieValue) {
         Cookie authenticationCookie = new Cookie(AUTH_COOKIE_NAME, cookieValue);
