@@ -32,8 +32,7 @@ public class AuthenticationService {
             throw new IncorrectPasswordException();
         }
         
-        int userId = user.Id;
-        AuthenticationResult authenticationResult = startSessionForUser(userId);
+        AuthenticationResult authenticationResult = startSessionForUser(user);
         return authenticationResult;
     }
     
@@ -45,18 +44,35 @@ public class AuthenticationService {
         
         user = userDao.createUser(userName, password);
         
-        int userId = user.Id;
-        AuthenticationResult authenticationResult = startSessionForUser(userId);
+        AuthenticationResult authenticationResult = startSessionForUser(user);
         return authenticationResult;
     }
     
-    private AuthenticationResult startSessionForUser(int userId) {
-        String sessionToken = UUID.randomUUID().toString();
-        SessionRow session = sessionDao.createSession(userId, sessionToken);
+    public AuthenticationResult getSessionInfo(String sessionToken) {
+        SessionRow session = sessionDao.getSession(sessionToken);
+        if(session == null) {
+            throw new RuntimeException("no such session");
+        }
         
+        int userId = session.UserId;
+        UserRow user = userDao.getUser(userId);
+        AuthenticationResult authenticationResult = makeAuthenticationResult(sessionToken, user);
+        return authenticationResult;
+    }
+    
+    private AuthenticationResult startSessionForUser(UserRow userRow) {
+        String sessionToken = UUID.randomUUID().toString();
+        SessionRow session = sessionDao.createSession(userRow.Id, sessionToken);
+        
+        AuthenticationResult authenticationResult = makeAuthenticationResult(session.Token, userRow);
+        return authenticationResult;
+    }
+    
+    private AuthenticationResult makeAuthenticationResult(String sessionToken, UserRow userRow) {
         AuthenticationResult authenticationResult = new AuthenticationResult();
-        authenticationResult.SessionToken = session.Token;
-        authenticationResult.UserId = session.UserId;
+        authenticationResult.SessionToken = sessionToken;
+        authenticationResult.UserId = userRow.Id;
+        authenticationResult.UserName = userRow.Name;
         return authenticationResult;
     }
 }

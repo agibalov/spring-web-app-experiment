@@ -3,7 +3,6 @@ package me.loki2302.auth;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
@@ -18,7 +17,11 @@ import org.springframework.security.web.context.SecurityContextRepository;
 public class CookieSecurityContextRepository implements SecurityContextRepository {
     private final static Logger logger = LoggerFactory.getLogger(CookieSecurityContextRepository.class);
     
-    private final static String AUTH_COOKIE_NAME = "secret_cookie";
+    private final CookieSecurityContextCookieManager cookieManager;
+    
+    public CookieSecurityContextRepository(CookieSecurityContextCookieManager cookieManager) {
+        this.cookieManager = cookieManager;
+    }
     
     @Override
     public SecurityContext loadContext(HttpRequestResponseHolder requestResponseHolder) {
@@ -27,9 +30,14 @@ public class CookieSecurityContextRepository implements SecurityContextRepositor
         HttpServletRequest request = requestResponseHolder.getRequest();
         HttpServletResponse response = requestResponseHolder.getResponse();       
         
-        requestResponseHolder.setResponse(new CookieSecurityContextRepositoryResponseWrapper(response, false));
+        CookieSecurityContextRepositoryResponseWrapper responseWrapper = 
+                new CookieSecurityContextRepositoryResponseWrapper(
+                        cookieManager, 
+                        response, 
+                        false); 
+        requestResponseHolder.setResponse(responseWrapper);
         
-        String authCookieValue = getCookieValue(AUTH_COOKIE_NAME, request);
+        String authCookieValue = cookieManager.getAuthenticationCookieValue(request);
         if(authCookieValue == null) {
             logger.info("didn't find auth cookie -> returning empty context");
             return SecurityContextHolder.createEmptyContext();
@@ -79,31 +87,10 @@ public class CookieSecurityContextRepository implements SecurityContextRepositor
     public boolean containsContext(HttpServletRequest request) {
         logger.info("{} containsContext called", request.getRequestURI());
         
-        String authCookieValue = getCookieValue(AUTH_COOKIE_NAME, request);
+        String authCookieValue = cookieManager.getAuthenticationCookieValue(request);
         boolean authCookieIsNotNull = authCookieValue != null;
         
         logger.info("auth cookie is {}", authCookieIsNotNull);
         return authCookieIsNotNull;
-    }
-    
-    private static Cookie getCookie(String cookieNameOfInterest, HttpServletRequest request) {
-        Cookie[] cookies = request.getCookies();
-        for(Cookie cookie : cookies) {
-            String cookieName = cookie.getName();
-            if(cookieName.equals(cookieNameOfInterest)) {
-                return cookie;
-            }
-        }
-        
-        return null;
-    }
-    
-    private static String getCookieValue(String cookieNameOfInterest, HttpServletRequest request) {
-        Cookie cookie = getCookie(cookieNameOfInterest, request);
-        if(cookie == null) {
-            return null;
-        }
-        
-        return cookie.getValue();
-    }
+    }   
 }

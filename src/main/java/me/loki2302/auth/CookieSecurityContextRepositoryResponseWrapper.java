@@ -12,10 +12,14 @@ import org.springframework.security.web.context.SaveContextOnUpdateOrErrorRespon
 public class CookieSecurityContextRepositoryResponseWrapper extends SaveContextOnUpdateOrErrorResponseWrapper {
     private final static Logger logger = LoggerFactory.getLogger(CookieSecurityContextRepositoryResponseWrapper.class);
     
-    private final static String AUTH_COOKIE_NAME = "secret_cookie";
+    private final CookieSecurityContextCookieManager cookieManager;
     
-    public CookieSecurityContextRepositoryResponseWrapper(HttpServletResponse response, boolean disableUrlRewriting) {
+    public CookieSecurityContextRepositoryResponseWrapper(
+            CookieSecurityContextCookieManager cookieManager, 
+            HttpServletResponse response, 
+            boolean disableUrlRewriting) {
         super(response, disableUrlRewriting);
+        this.cookieManager = cookieManager;
     }
 
     @Override
@@ -23,9 +27,7 @@ public class CookieSecurityContextRepositoryResponseWrapper extends SaveContextO
         Authentication authentication = context.getAuthentication();
         if(authentication == null) {
             logger.info("auth is null, killing the cookie");
-            Cookie authCookie = new Cookie(AUTH_COOKIE_NAME, null);
-            authCookie.setPath("/");
-            authCookie.setMaxAge(0);
+            Cookie authCookie = cookieManager.createAuthenticationKillerCookie();
             addCookie(authCookie);
             return;
         }
@@ -40,8 +42,7 @@ public class CookieSecurityContextRepositoryResponseWrapper extends SaveContextO
         
         logger.info("auth type is what i know, userId is {}, saving cookie", userId);
         
-        Cookie authCookie = new Cookie(AUTH_COOKIE_NAME, String.format("%d", userId));
-        authCookie.setPath("/");
+        Cookie authCookie = cookieManager.createAuthenticationCookie(userId);
         addCookie(authCookie);
     }
 }
