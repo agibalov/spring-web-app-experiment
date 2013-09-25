@@ -23,7 +23,7 @@ public class CookieSecurityContextRepositoryResponseWrapper extends SaveContextO
     }
 
     @Override
-    protected void saveContext(SecurityContext context) {        
+    protected void saveContext(SecurityContext context) {
         Authentication authentication = context.getAuthentication();
         if(authentication == null) {
             logger.info("auth is null, killing the cookie");
@@ -37,12 +37,15 @@ public class CookieSecurityContextRepositoryResponseWrapper extends SaveContextO
             throw new RuntimeException("Unsupported authentication type");
         }
         
-        UserIdAuthenticationToken userIdAuthenticationToken = (UserIdAuthenticationToken)authentication;
-        int userId = (Integer)userIdAuthenticationToken.getPrincipal();
+        UserIdAuthenticationToken userIdAuthenticationToken = (UserIdAuthenticationToken)authentication;        
+        logger.info("auth type is what i know");
+        logger.info("user id is {}", userIdAuthenticationToken.getPrincipal());
+        logger.info("credentials is {}", userIdAuthenticationToken.getCredentials());
         
-        logger.info("auth type is what i know, userId is {}, saving cookie", userId);
+        String sessionToken = (String)userIdAuthenticationToken.getCredentials();
+        logger.info("saving cookie: {}", sessionToken);
         
-        Cookie authCookie = cookieManager.createAuthenticationCookie(userId);
+        Cookie authCookie = cookieManager.createAuthenticationCookie(sessionToken);
         addCookie(authCookie);
     }
 }

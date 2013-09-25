@@ -9,8 +9,8 @@ import org.springframework.stereotype.Component;
 public class CookieSecurityContextCookieManager {
     private final static String AUTH_COOKIE_NAME = "secret_cookie";
     
-    public Cookie createAuthenticationCookie(int userId) {
-        Cookie authenticationCookie = new Cookie(AUTH_COOKIE_NAME, String.format("%d", userId));
+    public Cookie createAuthenticationCookie(String cookieValue) {
+        Cookie authenticationCookie = new Cookie(AUTH_COOKIE_NAME, cookieValue);
         authenticationCookie.setPath("/");
         return authenticationCookie;
     }
@@ -23,7 +23,7 @@ public class CookieSecurityContextCookieManager {
     }    
     
     public String getAuthenticationCookieValue(HttpServletRequest request) {
-        Cookie cookie = getCookie(request);
+        Cookie cookie = getCookieByName(AUTH_COOKIE_NAME, request);
         if(cookie == null) {
             return null;
         }
@@ -31,11 +31,11 @@ public class CookieSecurityContextCookieManager {
         return cookie.getValue();
     }
     
-    private static Cookie getCookie(HttpServletRequest request) {
+    private static Cookie getCookieByName(String cookieOfInterest, HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
         for(Cookie cookie : cookies) {
             String cookieName = cookie.getName();
-            if(cookieName.equals(AUTH_COOKIE_NAME)) {
+            if(cookieName.equals(cookieOfInterest)) {
                 return cookie;
             }
         }

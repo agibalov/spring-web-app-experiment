@@ -88,15 +88,16 @@ public class AccountController extends BlogController {
                 AuthenticationResult authenticationResult = authenticationService.signIn(
                         signInModel.getUserName(), 
                         signInModel.getPassword());
-                int userId = authenticationResult.UserId;
-                
+                                
                 List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>(); 
                 authorities.add(new SimpleGrantedAuthority("USER"));
                 authorities.add(new SimpleGrantedAuthority("ADMIN"));
                 authorities.add(new SimpleGrantedAuthority("WHOEVER"));
                 
                 UserIdAuthenticationToken authentication = new UserIdAuthenticationToken(
-                        userId,
+                        authenticationResult.UserId,
+                        authenticationResult.UserName,
+                        authenticationResult.SessionToken,
                         authorities);
                 authentication.setAuthenticated(true);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -139,7 +140,6 @@ public class AccountController extends BlogController {
                 AuthenticationResult authenticationResult = authenticationService.signUp(
                         signUpModel.getUserName(), 
                         signUpModel.getPassword());
-                int userId = authenticationResult.UserId;
                 
                 List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>(); 
                 authorities.add(new SimpleGrantedAuthority("USER"));
@@ -147,7 +147,9 @@ public class AccountController extends BlogController {
                 authorities.add(new SimpleGrantedAuthority("WHOEVER"));
                 
                 UserIdAuthenticationToken authentication = new UserIdAuthenticationToken(
-                        userId,
+                        authenticationResult.UserId,
+                        authenticationResult.UserName,
+                        authenticationResult.SessionToken,
                         authorities);
                 authentication.setAuthenticated(true);
                 SecurityContextHolder.getContext().setAuthentication(authentication);

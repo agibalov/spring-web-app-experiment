@@ -1,8 +1,7 @@
 package me.loki2302;
 
-import me.loki2302.auth.CookieSecurityContextCookieManager;
 import me.loki2302.auth.CookieSecurityContextRepository;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -13,6 +12,9 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+    @Autowired
+    private CookieSecurityContextRepository cookieSecurityContextRepository;
+    
     public SecurityConfig() {
         super(true);
     }
@@ -28,7 +30,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             //.csrf().disable()
             //.anonymous().disable()
             //.securityContext().securityContextRepository(new VoyeurSecurityContextRepositoryProxy(new HttpSessionSecurityContextRepository()));
-            .securityContext().securityContextRepository(new CookieSecurityContextRepository(new CookieSecurityContextCookieManager()))
+            .securityContext().securityContextRepository(cookieSecurityContextRepository)
             ;
         
         /*http
