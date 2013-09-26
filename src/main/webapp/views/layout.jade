@@ -16,8 +16,8 @@ html
           li: a(href="/category") <span class="glyphicon glyphicon-book"></span> Categories
           
         ul.nav.navbar-nav.navbar-right
-          if authentication            
-            li: a(href="#") <span class="glyphicon glyphicon-user"></span> #{authentication.name}
+          if User            
+            li: a(href="#") <span class="glyphicon glyphicon-user"></span> #{User.UserName}
             li: a(href="/account/sign-out") Sign Out
           else
             li: a(href="/account/sign-in") <span class="glyphicon glyphicon-fire"></span> Sign In            
@@ -26,7 +26,8 @@ html
       h2 Blogs 
         small
           block title
-      p #{magik}                
+      if User
+        p.text-muted #{User.UserId} #{User.UserName} #{User.SessionToken}
       block content
       hr
       p

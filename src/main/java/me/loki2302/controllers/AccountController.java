@@ -14,7 +14,6 @@ import me.loki2302.service.exceptions.UserNotRegisteredException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -30,13 +29,13 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 @Controller
 @RequestMapping("/account")
-public class AccountController extends BlogController {
+public class AccountController {
     private final static Logger logger = LoggerFactory.getLogger(AccountController.class);
     
     @Autowired
     private AuthenticationService authenticationService;
     
-    @ModelAttribute("currentUser")
+    /*@ModelAttribute("currentUser")
     public String currentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(authentication == null) {
@@ -50,7 +49,7 @@ public class AccountController extends BlogController {
                 authentication.getDetails(),
                 authentication.getAuthorities(),
                 authentication.isAuthenticated());
-    }
+    }*/
     
     @RequestMapping(value = "/sign-in", method = RequestMethod.GET)
     public String signIn(Model model, UriComponentsBuilder b) {        

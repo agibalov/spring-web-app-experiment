@@ -4,8 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import me.loki2302.controllers.CurrentUserHandlerMethodArgumentResolver;
 import me.loki2302.jadehelpers.JadeDateHelper;
@@ -15,15 +13,12 @@ import me.loki2302.jadehelpers.SpringSecurityHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
-import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
-import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import de.neuland.jade4j.JadeConfiguration;
 import de.neuland.jade4j.spring.template.SpringTemplateLoader;
@@ -31,7 +26,10 @@ import de.neuland.jade4j.spring.view.JadeViewResolver;
 
 @EnableWebMvc
 @ComponentScan("me.loki2302")
-public class AppConfiguration extends WebMvcConfigurerAdapter {
+public class AppConfiguration extends WebMvcConfigurerAdapter {    
+    @Autowired
+    private UserRelatedDetailsModelExtender userRelatedDetailsModelExtender; 
+    
     @Autowired
     private CurrentUserHandlerMethodArgumentResolver currentUserHandlerMethodArgumentResolver;
     
@@ -48,25 +46,7 @@ public class AppConfiguration extends WebMvcConfigurerAdapter {
     
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new HandlerInterceptorAdapter() {
-            @Override
-            public void postHandle(
-                    HttpServletRequest request, 
-                    HttpServletResponse response, 
-                    Object handler, 
-                    ModelAndView modelAndView) throws Exception {
-                if(modelAndView == null) {
-                    return;
-                }
-                
-                ModelMap modelMap = modelAndView.getModelMap();
-                if(modelMap == null) {
-                    return;
-                }
-                
-                modelMap.addAttribute("magik", "MAGIK HERE!!!111one");
-            }            
-        });
+        registry.addInterceptor(userRelatedDetailsModelExtender);
     }
 
     @Bean

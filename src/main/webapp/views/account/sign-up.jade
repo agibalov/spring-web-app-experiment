@@ -5,7 +5,6 @@ block title
 
 block content
   h1 Sign Up
-  p.text-muted DEBUG: #{currentUser} 
   form(method="POST", action="/account/sign-up")
     .form-group(class=userNameError ? "has-error" : "")
       label.control-label(for="userName") User Name

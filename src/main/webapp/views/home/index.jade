@@ -4,13 +4,7 @@ block title
   | Home
 
 block content
-  p.text-muted
-    | DEBUG: 
-    if home.User
-      | #{home.User.Name}
-    else
-      | no user
-  if authentication
+  if User
     .btn-group.btn-group-lg
       a.btn.btn-default.btn-success(href="/article/new/0") New Article    
   .row

@@ -19,7 +19,7 @@ import org.springframework.web.context.request.NativeWebRequest;
 
 @Controller
 @RequestMapping("/")
-public class HomeController extends BlogController {   
+public class HomeController {   
     private final static Logger logger = LoggerFactory.getLogger(HomeController.class);
     
     @Autowired
@@ -50,9 +50,9 @@ public class HomeController extends BlogController {
         home.Categories = categoryService.getBriefCategories();            
         home.MostRecentArticles = articleService.getMostRecentArticles(3);
         
-        if(sessionAuthenticationToken != null) {            
+        /*if(sessionAuthenticationToken != null) {            
             home.User = userService.getBriefUser((Integer)sessionAuthenticationToken.getPrincipal());
-        }
+        }*/
         
         model.addAttribute("home", home);
         return "home/index";
