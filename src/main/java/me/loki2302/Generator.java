@@ -30,14 +30,13 @@ public class Generator {
                         
         int numberOfParagraphs = 5 + random.nextInt(3);
         for(int paragraphCounter = 0; paragraphCounter < numberOfParagraphs; ++paragraphCounter) {
-            StringBuilder paragraphBuilder = new StringBuilder();
             int numberOfSentences = 9 + random.nextInt(5);
-            for(int sentenceCounter = 0; sentenceCounter < numberOfSentences; ++sentenceCounter) {
-                String sentence = faker.Lorem.sentence() + ". ";
-                paragraphBuilder.append(WordUtils.capitalize(sentence, '.'));            
-            }            
+
+            String paragraph = faker.Lorem.sentences(numberOfSentences) + "\n";
+            paragraph = WordUtils.capitalize(paragraph, '\n');
+            paragraph = paragraph.replace("\n", ". ");
             
-            articleBuilder.append(paragraphBuilder);
+            articleBuilder.append(paragraph);
             articleBuilder.append("\n\n");
         }
         
