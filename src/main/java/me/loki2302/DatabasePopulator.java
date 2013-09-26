@@ -10,6 +10,7 @@ import me.loki2302.dao.rows.CategoryRow;
 import me.loki2302.service.ArticleService;
 import me.loki2302.service.AuthenticationService;
 import me.loki2302.service.CategoryService;
+import me.loki2302.service.CurrentTimeProvider;
 import me.loki2302.service.dto.AuthenticationResult;
 
 import org.slf4j.Logger;
@@ -20,6 +21,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class DatabasePopulator {
     private final static Logger logger = LoggerFactory.getLogger(DatabasePopulator.class);
+    
+    @Autowired
+    private CurrentTimeProvider currentTimeProvider;
     
     @Autowired
     private AuthenticationService authenticationService;
@@ -35,6 +39,9 @@ public class DatabasePopulator {
     
     @PostConstruct
     public void PopulateDatabase() {
+        
+        // TODO: user currentTimeProvider to play with time
+        
         logger.info("generating users");
         final int numberOfUsers = 23;        
         List<Integer> userIds = new ArrayList<Integer>();
