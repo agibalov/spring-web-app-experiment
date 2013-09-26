@@ -3,6 +3,7 @@ package me.loki2302;
 import java.util.Random;
 
 import me.loki2302.faker.Faker;
+import net._01001111.text.LoremIpsum;
 
 import org.apache.commons.lang3.text.WordUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class Generator {
     private final Random random = new Random();
+    private final LoremIpsum jlorem = new LoremIpsum();
     
     @Autowired
     private Faker faker;
@@ -25,21 +27,8 @@ public class Generator {
         return WordUtils.capitalize(faker.Lorem.sentence(5, 2));
     }
     
-    public String articleMarkdown() {
-        StringBuilder articleBuilder = new StringBuilder();
-                        
+    public String articleMarkdown() {        
         int numberOfParagraphs = 5 + random.nextInt(3);
-        for(int paragraphCounter = 0; paragraphCounter < numberOfParagraphs; ++paragraphCounter) {
-            int numberOfSentences = 9 + random.nextInt(5);
-
-            String paragraph = faker.Lorem.sentences(numberOfSentences) + "\n";
-            paragraph = WordUtils.capitalize(paragraph, '\n');
-            paragraph = paragraph.replace("\n", ". ");
-            
-            articleBuilder.append(paragraph);
-            articleBuilder.append("\n\n");
-        }
-        
-        return articleBuilder.toString();
+        return jlorem.paragraphs(numberOfParagraphs).replace("  ", " ");
     }       
 }
