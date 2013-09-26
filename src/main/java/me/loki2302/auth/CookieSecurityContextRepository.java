@@ -53,6 +53,10 @@ public class CookieSecurityContextRepository implements SecurityContextRepositor
         logger.info("found auth cookie: {}", authCookieValue);
         
         AuthenticationResult authenticationResult = authenticationService.getSessionInfo(authCookieValue);
+        if(authenticationResult == null) {
+            logger.info("no session for token {}", authCookieValue);
+            return SecurityContextHolder.createEmptyContext();
+        }
         
         List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>(); 
         authorities.add(new SimpleGrantedAuthority("USER"));

@@ -51,7 +51,7 @@ public class AuthenticationService {
     public AuthenticationResult getSessionInfo(String sessionToken) {
         SessionRow session = sessionDao.getSession(sessionToken);
         if(session == null) {
-            throw new RuntimeException("no such session");
+            return null;
         }
         
         int userId = session.UserId;
