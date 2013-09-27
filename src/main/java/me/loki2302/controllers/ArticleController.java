@@ -1,6 +1,5 @@
 package me.loki2302.controllers;
 
-import me.loki2302.dao.rows.ArticleRow;
 import me.loki2302.service.ArticleService;
 import me.loki2302.service.dto.article.CompleteArticle;
 
@@ -66,14 +65,14 @@ public class ArticleController {
         logger.info("title: {}", title);
         logger.info("text: {}", text);
         
-        ArticleRow articleRow = articleService.createArticle(
+        int articleId = articleService.createArticle(
                 currentUserId,
                 categoryId,
                 title,
                 text);
         
         UriComponents uriComponents = uriComponentsBuilder.replacePath("/article/{articleId}").build();
-        String articleUrl = uriComponents.expand(articleRow.Id).encode().toUriString();
+        String articleUrl = uriComponents.expand(articleId).encode().toUriString();
         logger.info("URL: {}", articleUrl);
         
         return String.format("redirect:%s", articleUrl);
@@ -87,9 +86,24 @@ public class ArticleController {
     }
     
     @RequestMapping(value = "{articleId}/edit", method = RequestMethod.GET)
-    public String editArticle(@PathVariable int articleId, Model model) {
+    public String editArticle(
+            @CurrentUser Integer currentUserId,
+            @PathVariable int articleId, 
+            Model model) {
+        if(currentUserId == null) { // what do i normally do here?
+            throw new RuntimeException("user should be authenticated to edit articles");
+        }        
+                
         CompleteArticle article = articleService.getArticle(articleId);
-        model.addAttribute("article", article);
+        if(article.User.UserId != currentUserId) { // what do i normally do here?
+            throw new RuntimeException("the user doesn't own this article");
+        }
+        
+        model.addAttribute("articleId", articleId);
+        ArticleModel articleModel = new ArticleModel();
+        articleModel.setTitle(article.Title);
+        articleModel.setText(article.Text);
+        model.addAttribute("articleModel", articleModel);        
         return "article/edit";
     }
     

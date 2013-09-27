@@ -52,14 +52,16 @@ public class ArticleService {
     @Autowired
     private ShortArticleMapper shortArticleMapper;
     
-    public ArticleRow createArticle(int userId, int categoryId, String title, String text) {
+    public int createArticle(int userId, int categoryId, String title, String text) {
         Date currentTime = currentTimeProvider.getCurrentTime();
-        return articleDao.createArticle(
+        ArticleRow articleRow = articleDao.createArticle(
                 userId, 
                 categoryId, 
                 title, 
                 text, 
                 currentTime);
+        
+        return articleRow.Id; 
     }
         
     public CompleteArticle getArticle(int articleId) {

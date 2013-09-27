@@ -11,8 +11,6 @@ import me.loki2302.service.exceptions.IncorrectPasswordException;
 import me.loki2302.service.exceptions.UserNameAlreadyUsedException;
 import me.loki2302.service.exceptions.UserNotRegisteredException;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -25,26 +23,15 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.util.UriComponentsBuilder;
 
 @Controller
 @RequestMapping("/account")
-public class AccountController {
-    private final static Logger logger = LoggerFactory.getLogger(AccountController.class);
-    
+public class AccountController {    
     @Autowired
     private AuthenticationService authenticationService;        
     
     @RequestMapping(value = "/sign-in", method = RequestMethod.GET)
-    public String signIn(Model model, UriComponentsBuilder b) {        
-        // http://docs.spring.io/spring/docs/3.2.x/spring-framework-reference/html/mvc.html
-        /*UriComponents uriComponents =
-                UriComponentsBuilder.fromUriString("http://example.com/hotels/{hotel}/bookings/{booking}").build();
-
-        URI uri = uriComponents.expand("42", "21").encode().toUri();*/
-        
-        logger.info("OMG: {}", b.build());        
-        
+    public String signIn(Model model) {               
         model.addAttribute("signInModel", new SignInModel());
         return "account/sign-in";
     }
