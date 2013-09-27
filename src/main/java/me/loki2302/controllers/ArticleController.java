@@ -6,6 +6,7 @@ import me.loki2302.service.dto.article.CompleteArticle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -26,6 +27,7 @@ public class ArticleController {
     @Autowired
     private ArticleService articleService;
     
+    @PreAuthorize("isAuthenticated()")
     @RequestMapping(value = "new/{categoryId}", method = RequestMethod.GET)
     public String createArticle(@PathVariable int categoryId, Model model) {
         model.addAttribute("categoryId", categoryId);
@@ -33,6 +35,7 @@ public class ArticleController {
         return "article/new";
     }
     
+    @PreAuthorize("isAuthenticated()")
     @RequestMapping(value = "new/{categoryId}", method = RequestMethod.POST)
     public String createArticleDo(
             @CurrentUser Integer currentUserId,
@@ -41,11 +44,7 @@ public class ArticleController {
             @Validated @ModelAttribute("articleModel") ArticleModel articleModel,
             BindingResult bindingResult,
             UriComponentsBuilder uriComponentsBuilder) {
-        
-        if(currentUserId == null) {
-            throw new RuntimeException("user should be authenticated to post articles");
-        }
-        
+                
         if(bindingResult.hasErrors()) {            
             FieldError titleError = bindingResult.getFieldError("title");
             if(titleError != null) {
@@ -85,16 +84,15 @@ public class ArticleController {
         return "article/index";
     }
     
+    @PreAuthorize("isAuthenticated()")
     @RequestMapping(value = "{articleId}/edit", method = RequestMethod.GET)
     public String editArticle(
             @CurrentUser Integer currentUserId,
             @PathVariable int articleId, 
             Model model) {
-        if(currentUserId == null) { // what do i normally do here?
-            throw new RuntimeException("user should be authenticated to edit articles");
-        }        
                 
         CompleteArticle article = articleService.getArticle(articleId);
+        // Spring security, any ideas?
         if(article.User.UserId != currentUserId) { // what do i normally do here?
             throw new RuntimeException("the user doesn't own this article");
         }
@@ -106,7 +104,8 @@ public class ArticleController {
         model.addAttribute("articleModel", articleModel);        
         return "article/edit";
     }
-    
+
+    @PreAuthorize("isAuthenticated()")
     @RequestMapping(value = "{articleId}/edit", method = RequestMethod.POST)
     public String editArticleDo(@PathVariable int articleId, Model model) {
         // TODO

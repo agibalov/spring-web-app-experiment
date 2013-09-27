@@ -12,6 +12,7 @@ import me.loki2302.service.AuthenticationService;
 import me.loki2302.service.CategoryService;
 import me.loki2302.service.CurrentTimeProvider;
 import me.loki2302.service.dto.AuthenticationResult;
+import me.loki2302.service.exceptions.UserNameAlreadyUsedException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,10 +47,16 @@ public class DatabasePopulator {
         final int numberOfUsers = 23;        
         List<Integer> userIds = new ArrayList<Integer>();
         for(int i = 0; i < numberOfUsers; ++i) {
-            String userName = generator.username();
-            AuthenticationResult authenticationResult = authenticationService.signUp(userName, "qwerty");
-            int userId = authenticationResult.UserId;
-            userIds.add(userId);
+            while(true) {
+                try {
+                    String userName = generator.username();
+                    AuthenticationResult authenticationResult = authenticationService.signUp(userName, "qwerty");
+                    int userId = authenticationResult.UserId;
+                    userIds.add(userId);
+                    break;
+                } catch(UserNameAlreadyUsedException e) {                
+                }
+            }
         }
         
         logger.info("generating categories");
