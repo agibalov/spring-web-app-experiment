@@ -4,15 +4,15 @@ block title
   | New Article
 
 block content  
-  form(method="POST", action="/article/new")
-    .form-group(class=userNameError ? "has-error" : "")
+  form(method="POST", action="/article/new/#{categoryId}")
+    .form-group(class=titleError ? "has-error" : "")
       label.control-label(for="title") Title
-      input.form-control(type="text", name="title", value="todo")
+      input.form-control(type="text", name="title", value="#{articleModel.title}")
       if titleError
         span.help-block #{titleError}
-    .form-group(class=text ? "has-error" : "")
+    .form-group(class=textError ? "has-error" : "")
       label.control-label(for="text") Text
-      textarea.form-control(name="text") todo
+      textarea.form-control(name="text") #{articleModel.text}
       span.help-block You can use <a href="http://en.wikipedia.org/wiki/Markdown" target="_blank">markdown</a>.
       if textError
         span.help-block #{textError}

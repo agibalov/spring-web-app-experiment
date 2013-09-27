@@ -33,23 +33,7 @@ public class AccountController {
     private final static Logger logger = LoggerFactory.getLogger(AccountController.class);
     
     @Autowired
-    private AuthenticationService authenticationService;
-    
-    /*@ModelAttribute("currentUser")
-    public String currentUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if(authentication == null) {
-            return "authentication is null";
-        }
-        
-        return String.format(
-                "name=%s, credentials=%s, details=%s, authorities=%s, isAuthenticated=%b", 
-                authentication.getName(),
-                authentication.getCredentials(),
-                authentication.getDetails(),
-                authentication.getAuthorities(),
-                authentication.isAuthenticated());
-    }*/
+    private AuthenticationService authenticationService;        
     
     @RequestMapping(value = "/sign-in", method = RequestMethod.GET)
     public String signIn(Model model, UriComponentsBuilder b) {        
@@ -59,8 +43,7 @@ public class AccountController {
 
         URI uri = uriComponents.expand("42", "21").encode().toUri();*/
         
-        logger.info("OMG: {}", b.build());
-        
+        logger.info("OMG: {}", b.build());        
         
         model.addAttribute("signInModel", new SignInModel());
         return "account/sign-in";
