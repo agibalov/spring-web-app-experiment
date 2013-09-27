@@ -44,16 +44,11 @@ public class HomeController {
         logger.info("TOKEN: {}", sessionAuthenticationToken);
         logger.info("SECURITY CONTEXT: {}", SecurityContextHolder.getContext().getAuthentication());
         logger.info("WEB REQUEST: {}", nativeWebRequest.getUserPrincipal());
-        logger.info("CURRENT USER: {}", currentUserId);
+        logger.info("CURRENT USER: {}", currentUserId);       
         
         Home home = new Home();        
         home.Categories = categoryService.getBriefCategories();            
-        home.MostRecentArticles = articleService.getMostRecentArticles(3);
-        
-        /*if(sessionAuthenticationToken != null) {            
-            home.User = userService.getBriefUser((Integer)sessionAuthenticationToken.getPrincipal());
-        }*/
-        
+        home.MostRecentArticles = articleService.getMostRecentArticles(3);        
         model.addAttribute("home", home);
         return "home/index";
     }

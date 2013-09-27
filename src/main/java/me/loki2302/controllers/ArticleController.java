@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.web.util.UriComponents;
-import org.springframework.web.util.UriComponentsBuilder;
 
 @Controller
 @RequestMapping("/article")
@@ -42,8 +42,7 @@ public class ArticleController {
             @PathVariable int categoryId,
             Model model,
             @Validated @ModelAttribute("articleModel") ArticleModel articleModel,
-            BindingResult bindingResult,
-            UriComponentsBuilder uriComponentsBuilder) {
+            BindingResult bindingResult) {
                 
         if(bindingResult.hasErrors()) {            
             FieldError titleError = bindingResult.getFieldError("title");
@@ -70,7 +69,10 @@ public class ArticleController {
                 title,
                 text);
         
-        UriComponents uriComponents = uriComponentsBuilder.replacePath("/article/{articleId}").build();
+        UriComponents uriComponents = ServletUriComponentsBuilder
+                .fromCurrentRequestUri()
+                .replacePath("/article/{articleId}")
+                .build();      
         String articleUrl = uriComponents.expand(articleId).encode().toUriString();
         logger.info("URL: {}", articleUrl);
         
