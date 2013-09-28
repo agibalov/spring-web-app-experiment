@@ -11,6 +11,7 @@ import me.loki2302.service.ArticleService;
 import me.loki2302.service.AuthenticationService;
 import me.loki2302.service.CategoryService;
 import me.loki2302.service.CurrentTimeProvider;
+import me.loki2302.service.UserType;
 import me.loki2302.service.dto.AuthenticationResult;
 import me.loki2302.service.exceptions.UserNameAlreadyUsedException;
 
@@ -41,7 +42,7 @@ public class DatabasePopulator {
     @PostConstruct
     public void PopulateDatabase() {
         
-        // TODO: user currentTimeProvider to play with time
+        // TODO: use currentTimeProvider to play with time
         
         logger.info("generating users");
         final int numberOfUsers = 23;        
@@ -50,7 +51,10 @@ public class DatabasePopulator {
             while(true) {
                 try {
                     String userName = generator.username();
-                    AuthenticationResult authenticationResult = authenticationService.signUp(userName, "qwerty");
+                    AuthenticationResult authenticationResult = authenticationService.signUp(
+                            userName, 
+                            "qwerty", 
+                            UserType.Writer);
                     int userId = authenticationResult.UserId;
                     userIds.add(userId);
                     break;

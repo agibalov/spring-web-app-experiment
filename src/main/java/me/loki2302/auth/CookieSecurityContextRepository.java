@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import me.loki2302.service.AuthenticationService;
+import me.loki2302.service.UserType;
 import me.loki2302.service.dto.AuthenticationResult;
 
 import org.slf4j.Logger;
@@ -58,10 +59,14 @@ public class CookieSecurityContextRepository implements SecurityContextRepositor
             return SecurityContextHolder.createEmptyContext();
         }
         
-        List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>(); 
-        authorities.add(new SimpleGrantedAuthority("USER"));
-        authorities.add(new SimpleGrantedAuthority("ADMIN"));
-        authorities.add(new SimpleGrantedAuthority("WHOEVER"));
+        List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
+        authorities.add(new SimpleGrantedAuthority("USER_ROLE"));
+        if(authenticationResult.UserType.equals(UserType.Reader)) {            
+            authorities.add(new SimpleGrantedAuthority("READER_ROLE"));
+        } else if(authenticationResult.UserType.equals(UserType.Writer)) {
+            authorities.add(new SimpleGrantedAuthority("WRITER_ROLE"));
+        }
+        
         SessionAuthenticationToken authentication = new SessionAuthenticationToken(
                 authenticationResult.UserId, 
                 authenticationResult.UserName, 

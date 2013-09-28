@@ -36,13 +36,13 @@ public class AuthenticationService {
         return authenticationResult;
     }
     
-    public AuthenticationResult signUp(String userName, String password) {
+    public AuthenticationResult signUp(String userName, String password, UserType userType) {
         UserRow user = userDao.findUserByUserName(userName);
         if(user != null) {
             throw new UserNameAlreadyUsedException();
         }
         
-        user = userDao.createUser(userName, password);
+        user = userDao.createUser(userName, password, userType);
         
         AuthenticationResult authenticationResult = startSessionForUser(user);
         return authenticationResult;
@@ -73,6 +73,7 @@ public class AuthenticationService {
         authenticationResult.SessionToken = sessionToken;
         authenticationResult.UserId = userRow.Id;
         authenticationResult.UserName = userRow.Name;
+        authenticationResult.UserType = userRow.Type;
         return authenticationResult;
     }
 }

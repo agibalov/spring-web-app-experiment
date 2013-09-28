@@ -13,6 +13,9 @@ public class SignUpModel {
     @NotEmpty
     private String password;
     
+    @NotNull
+    private SignUpRole role;
+    
     public void setUserName(String userName) {
         this.userName = userName;
     }
@@ -27,5 +30,24 @@ public class SignUpModel {
     
     public String getPassword() {
         return password;
+    }
+    
+    public void setRole(SignUpRole role) {
+        this.role = role;
+    }
+    
+    public SignUpRole getRole() {
+        return role;
+    }
+    
+    public static enum SignUpRole {
+        Reader("Reader"),
+        Writer("Writer");
+        
+        private final String roleName; // how does it really work?
+        
+        SignUpRole(String roleName) {
+            this.roleName = roleName;
+        }
     }
 }

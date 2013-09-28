@@ -1,19 +1,18 @@
 package me.loki2302.controllers;
 
-import java.util.ArrayList;
-import java.util.List;
-
-
 import me.loki2302.auth.SessionAuthenticationToken;
+import me.loki2302.controllers.SignUpModel.SignUpRole;
 import me.loki2302.service.AuthenticationService;
+import me.loki2302.service.UserType;
 import me.loki2302.service.dto.AuthenticationResult;
 import me.loki2302.service.exceptions.IncorrectPasswordException;
 import me.loki2302.service.exceptions.UserNameAlreadyUsedException;
 import me.loki2302.service.exceptions.UserNotRegisteredException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -27,6 +26,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Controller
 @RequestMapping("/account")
 public class AccountController {    
+    private final static Logger logger = LoggerFactory.getLogger(AccountController.class);
+    
     @Autowired
     private AuthenticationService authenticationService;        
     
@@ -40,7 +41,7 @@ public class AccountController {
     public String signIn(
             Model model,
             @Validated @ModelAttribute("signInModel") SignInModel signInModel,
-            BindingResult bindingResult) {
+            BindingResult bindingResult) {        
         
         if(bindingResult.hasErrors()) {            
             FieldError userNameError = bindingResult.getFieldError("userName");
@@ -57,17 +58,14 @@ public class AccountController {
                 AuthenticationResult authenticationResult = authenticationService.signIn(
                         signInModel.getUserName(), 
                         signInModel.getPassword());
-                                
-                List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>(); 
-                authorities.add(new SimpleGrantedAuthority("USER"));
-                authorities.add(new SimpleGrantedAuthority("ADMIN"));
-                authorities.add(new SimpleGrantedAuthority("WHOEVER"));
                 
+                logger.info("SIGNED IN AS {} ({})", authenticationResult.UserName, authenticationResult.UserType);
+                                
                 SessionAuthenticationToken authentication = new SessionAuthenticationToken(
                         authenticationResult.UserId,
                         authenticationResult.UserName,
                         authenticationResult.SessionToken,
-                        authorities);
+                        AuthorityUtils.NO_AUTHORITIES);
                 authentication.setAuthenticated(true);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
                 
@@ -84,7 +82,9 @@ public class AccountController {
     
     @RequestMapping(value = "/sign-up", method = RequestMethod.GET)
     public String signUp(Model model) {
-        model.addAttribute("signUpModel", new SignUpModel());
+        SignUpModel signUpModel = new SignUpModel();
+        signUpModel.setRole(SignUpRole.Reader);
+        model.addAttribute("signUpModel", signUpModel);
         return "account/sign-up";
     }
     
@@ -93,7 +93,7 @@ public class AccountController {
             Model model,
             @Validated @ModelAttribute("signUpModel") SignUpModel signUpModel,
             BindingResult bindingResult) {
-        
+                
         if(bindingResult.hasErrors()) {            
             FieldError userNameError = bindingResult.getFieldError("userName");
             if(userNameError != null) {
@@ -104,22 +104,30 @@ public class AccountController {
             if(passwordError != null) {
                 model.addAttribute("passwordError", passwordError.getDefaultMessage());
             }
-        } else {            
+        } else {           
+            SignUpRole role = signUpModel.getRole();            
+            UserType userType;
+            if(role.equals(SignUpRole.Reader)) {
+                userType = UserType.Reader;
+            } else if(role.equals(SignUpRole.Writer)) {
+                userType = UserType.Writer;
+            } else {
+                throw new RuntimeException("Unknown role");
+            }
+            
             try {
                 AuthenticationResult authenticationResult = authenticationService.signUp(
                         signUpModel.getUserName(), 
-                        signUpModel.getPassword());
+                        signUpModel.getPassword(),
+                        userType);
                 
-                List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>(); 
-                authorities.add(new SimpleGrantedAuthority("USER"));
-                authorities.add(new SimpleGrantedAuthority("ADMIN"));
-                authorities.add(new SimpleGrantedAuthority("WHOEVER"));
-                
+                logger.info("SIGNED UP AS {} ({})", authenticationResult.UserName, authenticationResult.UserType);
+                                
                 SessionAuthenticationToken authentication = new SessionAuthenticationToken(
                         authenticationResult.UserId,
                         authenticationResult.UserName,
                         authenticationResult.SessionToken,
-                        authorities);
+                        AuthorityUtils.NO_AUTHORITIES);
                 authentication.setAuthenticated(true);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
                 

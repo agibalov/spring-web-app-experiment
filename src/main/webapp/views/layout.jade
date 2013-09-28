@@ -27,7 +27,7 @@ html
         small
           block title
       if User
-        p.text-muted #{User.UserId} #{User.UserName} #{User.SessionToken}
+        p.text-muted #{User.UserId} #{User.UserName} #{User.SessionToken} #{User.Roles}
       block content
       hr
       p
