@@ -75,6 +75,25 @@ public class ArticleDao {
                 "from Categories as C " +
                 "join Articles as A on A.CategoryId = C.Id " +
                 "where C.Id in (:categoryIds) and A.Id in ( " +
+                "    select Id " + 
+                "    from Articles " +
+                "    where CategoryId = C.Id " +
+                "    order by Id desc limit :take using index) " + 
+                "order by A.Id desc", 
+                new MapSqlParameterSource()
+                    .addValue("take", numberOfRecentArticles)
+                    .addValue("categoryIds", categoryIds),
+                new ArticleRowMapper());
+    }
+    
+    public List<ArticleRow> getRecentArticlesForCategoriesSlow(
+            Iterable<Integer> categoryIds, 
+            int numberOfRecentArticles) {
+        return template.query(
+                "select A.Id, A.Title, A.Text, A.CreatedAt, A.UpdatedAt, A.CategoryId, A.UserId " +
+                "from Categories as C " +
+                "join Articles as A on A.CategoryId = C.Id " +
+                "where C.Id in (:categoryIds) and A.Id in ( " +
                 "    select top :take Id " + 
                 "    from Articles " +
                 "    where CategoryId = C.Id " +

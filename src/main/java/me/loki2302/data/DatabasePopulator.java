@@ -36,6 +36,7 @@ public class DatabasePopulator {
         DateTime historyEndTime = new DateTime().minusSeconds(10);
                 
         DateTime currentTime = historyBeginningTime;
+        int eventCount = 0;
         while(currentTime.isBefore(historyEndTime)) {
             currentTimeProvider.overrideCurrentTime(currentTime.toDate());
             
@@ -48,6 +49,11 @@ public class DatabasePopulator {
                 worldFacade.makeRandomArticle();
             } else {
                 throw new RuntimeException("Unknown history event type");
+            }
+            
+            ++eventCount;
+            if(eventCount % 500 == 0) {
+                logger.info("{} events...", eventCount);
             }
             
             currentTime = currentTime
