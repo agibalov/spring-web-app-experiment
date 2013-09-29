@@ -43,3 +43,44 @@ create table Articles(
 create unique index ArticleRowUuidIndex on Articles(RowUuid);
 alter table Articles add foreign key (UserId) references Users (Id);
 alter table Articles add foreign key (CategoryId) references Categories (Id);
+
+create table Comments(
+	Id int identity,
+	RowUuid char(36) not null,
+	Text varchar(65536) not null,
+	CreatedAt timestamp not null,
+	UpdatedAt timestamp,
+	ArticleId int not null,
+	UserId int not null
+);
+
+create unique index CommentRowUuidIndex on Comments(RowUuid);
+alter table Comments add foreign key (ArticleId) references Articles (Id);
+alter table Comments add foreign key (UserId) references Users (Id);
+
+create table ArticleVotes(
+	Id int identity,
+	RowUuid char(36) not null,
+	CreatedAt timestamp not null,
+	UpdatedAt timestamp,
+	ArticleId int not null,
+	UserId int not null,
+	Vote int not null
+);
+
+create unique index ArticleVoteRowUuidIndex on ArticleVotes(RowUuid);
+alter table ArticleVotes add foreign key (ArticleId) references Articles (Id);
+alter table ArticleVotes add foreign key (UserId) references Users (Id);
+
+create table ArticleReads(
+	Id int identity,
+	RowUuid char(36) not null,
+	CreatedAt timestamp not null,
+	UpdatedAt timestamp,
+	ArticleId int not null,
+	UserId int not null
+);
+
+create unique index ArticleReadRowUuidIndex on ArticleReads(RowUuid);
+alter table ArticleReads add foreign key (ArticleId) references Articles (Id);
+alter table ArticleReads add foreign key (UserId) references Users (Id);
