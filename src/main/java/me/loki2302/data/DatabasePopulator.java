@@ -1,20 +1,12 @@
 package me.loki2302.data;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.Random;
 
 import javax.annotation.PostConstruct;
 
-import me.loki2302.dao.rows.CategoryRow;
-import me.loki2302.service.ArticleService;
-import me.loki2302.service.AuthenticationService;
-import me.loki2302.service.CategoryService;
 import me.loki2302.service.CurrentTimeProvider;
-import me.loki2302.service.UserType;
-import me.loki2302.service.dto.AuthenticationResult;
-import me.loki2302.service.exceptions.UserNameAlreadyUsedException;
 
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,64 +18,57 @@ public class DatabasePopulator {
     
     @Autowired
     private CurrentTimeProvider currentTimeProvider;
-    
+
     @Autowired
-    private AuthenticationService authenticationService;
-    
-    @Autowired
-    private CategoryService categoryService;
-    
-    @Autowired
-    private ArticleService articleService;
-    
-    @Autowired
-    private Generator generator;
+    private WorldFacade worldFacade;
     
     @PostConstruct
-    public void PopulateDatabase() {
+    public void populateDatabase() {
+        RandomOptionGenerator<HistoryEvent> historyEventGenerator = 
+                new RandomOptionGenerator<HistoryEvent>()
+                    .withOption(HistoryEvent.NewCategory, 1)
+                    .withOption(HistoryEvent.NewUser, 400)
+                    .withOption(HistoryEvent.NewArticle, 1200);
         
-        // TODO: use currentTimeProvider to play with time
+        Random random = new Random();
         
-        logger.info("generating users");
-        final int numberOfUsers = 23;        
-        List<Integer> userIds = new ArrayList<Integer>();
-        for(int i = 0; i < numberOfUsers; ++i) {
-            while(true) {
-                try {
-                    String userName = generator.username();
-                    AuthenticationResult authenticationResult = authenticationService.signUp(
-                            userName, 
-                            "qwerty", 
-                            UserType.Writer);
-                    int userId = authenticationResult.UserId;
-                    userIds.add(userId);
-                    break;
-                } catch(UserNameAlreadyUsedException e) {                
-                }
+        DateTime historyBeginningTime = new DateTime().minusYears(1);
+        DateTime historyEndTime = new DateTime().minusSeconds(10);
+                
+        DateTime currentTime = historyBeginningTime;
+        while(currentTime.isBefore(historyEndTime)) {
+            currentTimeProvider.overrideCurrentTime(currentTime.toDate());
+            
+            HistoryEvent historyEvent = historyEventGenerator.generate();
+            if(historyEvent.equals(HistoryEvent.NewCategory)) {
+                worldFacade.makeRandomCategory();
+            } else if(historyEvent.equals(HistoryEvent.NewUser)) {
+                worldFacade.makeRandomUser();
+            } else if(historyEvent.equals(HistoryEvent.NewArticle)) {
+                worldFacade.makeRandomArticle();
+            } else {
+                throw new RuntimeException("Unknown history event type");
             }
+            
+            currentTime = currentTime
+                    //.plusDays(random.nextInt(15))
+                    //.plusHours(random.nextInt(23))
+                    .plusMinutes(random.nextInt(60))
+                    .plusSeconds(random.nextInt(60))
+                    .plusMillis(random.nextInt(1000));
         }
         
-        logger.info("generating categories");
-        List<String> categoryNames = Arrays.asList("Porn", "Music", "Programming");
-        List<CategoryRow> categoryRows = new ArrayList<CategoryRow>();
-        for(String categoryName : categoryNames) {
-            CategoryRow categoryRow = categoryService.createCategory(categoryName);
-            categoryRows.add(categoryRow);
-        }        
+        logger.info("generated:");
+        logger.info("  {} users", worldFacade.userIds.size());
+        logger.info("  {} categories", worldFacade.categoryIds.size());
+        logger.info("  {} articles", worldFacade.articleIds.size());
         
-        logger.info("generating articles");
-        final int numberOfArticlesPerUserPerCategory = 7;
-        for(int userId : userIds) {
-            logger.info("...as user {}", userId);
-            for(CategoryRow categoryRow : categoryRows) {
-                for(int i = 0; i < numberOfArticlesPerUserPerCategory; ++i) {                    
-                    String title = generator.articleTitle();
-                    String text = generator.articleMarkdown();                    
-                    articleService.createArticle(userId, categoryRow.Id, title, text);
-                }
-            }
-        }
-        
-        logger.info("finished generating data");
+        currentTimeProvider.overrideCurrentTime(null);
+    }
+    
+    private static enum HistoryEvent {
+        NewCategory,
+        NewUser,
+        NewArticle
     }
 }
