@@ -1,4 +1,4 @@
-package me.loki2302;
+package me.loki2302.mvc;
 
 public class UserDetails {
     public int UserId;

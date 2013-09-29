@@ -10,10 +10,10 @@ import org.springframework.web.context.support.AnnotationConfigWebApplicationCon
 import org.springframework.web.filter.DelegatingFilterProxy;
 import org.springframework.web.servlet.DispatcherServlet;
 
-public class MyWebApplicationInitializer implements WebApplicationInitializer {
+public class WebAppInitializer implements WebApplicationInitializer {
     public void onStartup(ServletContext servletContext) throws ServletException {
         AnnotationConfigWebApplicationContext context = new AnnotationConfigWebApplicationContext();
-        context.register(AppConfiguration.class);
+        context.register(MvcConfiguration.class);
         
         servletContext.addListener(new ContextLoaderListener(context));
         

@@ -8,6 +8,8 @@ import java.util.Map;
 import me.loki2302.controllers.CurrentUserHandlerMethodArgumentResolver;
 import me.loki2302.jadehelpers.JadeDateHelper;
 import me.loki2302.jadehelpers.JadeMarkdownHelper;
+import me.loki2302.mvc.UserRelatedDetailsModelExtender;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -24,7 +26,7 @@ import de.neuland.jade4j.spring.view.JadeViewResolver;
 
 @EnableWebMvc
 @ComponentScan("me.loki2302")
-public class AppConfiguration extends WebMvcConfigurerAdapter {    
+public class MvcConfiguration extends WebMvcConfigurerAdapter {    
     @Autowired
     private UserRelatedDetailsModelExtender userRelatedDetailsModelExtender; 
     

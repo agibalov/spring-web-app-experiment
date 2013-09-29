@@ -1,6 +1,7 @@
 package me.loki2302;
 
 import me.loki2302.auth.CookieSecurityContextRepository;
+import me.loki2302.auth.DummyAuthenticationProvider;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -16,7 +17,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Autowired
     private CookieSecurityContextRepository cookieSecurityContextRepository;
     
