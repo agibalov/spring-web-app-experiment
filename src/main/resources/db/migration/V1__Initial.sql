@@ -29,6 +29,7 @@ create table Articles(
 	Text varchar(65536) not null,
 	CreatedAt timestamp not null,
 	UpdatedAt timestamp,
+	ReadCount int not null,
 	UserId int not null,
 	CategoryId int not null
 );
@@ -59,14 +60,3 @@ create table ArticleVotes(
 
 alter table ArticleVotes add foreign key (ArticleId) references Articles (Id);
 alter table ArticleVotes add foreign key (UserId) references Users (Id);
-
-create table ArticleReads(
-	Id int identity,
-	CreatedAt timestamp not null,
-	UpdatedAt timestamp,
-	ArticleId int not null,
-	UserId int not null
-);
-
-alter table ArticleReads add foreign key (ArticleId) references Articles (Id);
-alter table ArticleReads add foreign key (UserId) references Users (Id);

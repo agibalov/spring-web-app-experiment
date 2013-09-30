@@ -7,6 +7,7 @@ import java.util.Random;
 import me.loki2302.service.ArticleService;
 import me.loki2302.service.AuthenticationService;
 import me.loki2302.service.CategoryService;
+import me.loki2302.service.CommentService;
 import me.loki2302.service.UserType;
 import me.loki2302.service.dto.AuthenticationResult;
 import me.loki2302.service.exceptions.UserNameAlreadyUsedException;
@@ -20,6 +21,7 @@ public class WorldFacade {
     public final List<Integer> userIds = new ArrayList<Integer>();
     public final List<Integer> categoryIds = new ArrayList<Integer>();
     public final List<Integer> articleIds = new ArrayList<Integer>();
+    public final List<Integer> commentIds = new ArrayList<Integer>();
     
     @Autowired
     private AuthenticationService authenticationService;
@@ -29,6 +31,9 @@ public class WorldFacade {
     
     @Autowired
     private ArticleService articleService;
+    
+    @Autowired
+    private CommentService commentService;
     
     @Autowired
     private Generator generator;
@@ -64,6 +69,14 @@ public class WorldFacade {
         articleIds.add(articleId);
     }
     
+    public void makeRandomComment() {
+        int userId = getExistingUserOrCreateANewOne();
+        int articleId = getExistingArticleOrCreateANewOne();
+        String text = generator.commentMarkdown();
+        int commentId = commentService.createComment(userId, articleId, text);
+        commentIds.add(commentId);
+    }
+    
     private int getExistingUserOrCreateANewOne() {
         if(userIds.isEmpty()) {
             makeRandomUser();
@@ -78,5 +91,13 @@ public class WorldFacade {
         }
         
         return categoryIds.get(random.nextInt(categoryIds.size()));
+    }
+    
+    private int getExistingArticleOrCreateANewOne() {
+        if(articleIds.isEmpty()) {
+            makeRandomArticle();
+        }
+        
+        return articleIds.get(random.nextInt(articleIds.size()));
     }
 }

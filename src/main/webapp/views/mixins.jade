@@ -5,4 +5,13 @@ mixin article_meta(article)
     | <span class="glyphicon glyphicon-user"></span> 
     a(href="/user/#{article.User.UserId}") #{article.User.Name} 
     | <span class="glyphicon glyphicon-book"></span> 
-    a(href="/category/#{article.Category.CategoryId}") #{article.Category.Name}
+    a(href="/category/#{article.Category.CategoryId}") #{article.Category.Name} 
+    | <span class="glyphicon glyphicon-eye-open"></span> #{article.ReadCount} 
+    | <span class="glyphicon glyphicon-comment"></span> #{article.CommentCount} 
+    
+mixin comment_meta(comment)
+  p.text-muted
+    | <span class="glyphicon glyphicon-calendar"></span> #{dateHelper.makeDate(comment.CreatedAt)} 
+    | <span class="glyphicon glyphicon-time"></span> #{dateHelper.makeTime(comment.CreatedAt)} 
+    | <span class="glyphicon glyphicon-user"></span> 
+    a(href="/user/#{comment.User.UserId}") #{comment.User.Name} 

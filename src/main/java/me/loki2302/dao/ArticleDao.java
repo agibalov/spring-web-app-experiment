@@ -1,5 +1,7 @@
 package me.loki2302.dao;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -31,12 +33,13 @@ public class ArticleDao {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         
         template.update(
-                "insert into Articles(Title, Text, CreatedAt, CategoryId, UserId) " + 
-                "values(:title, :text, :createdAt, :categoryId, :userId)",
+                "insert into Articles(Title, Text, CreatedAt, ReadCount, CategoryId, UserId) " + 
+                "values(:title, :text, :createdAt, :readCount, :categoryId, :userId)",
                 new MapSqlParameterSource()                    
                     .addValue("title", title)
                     .addValue("text", text)
                     .addValue("createdAt", createdAt)
+                    .addValue("readCount", 0)
                     .addValue("categoryId", categoryId)
                     .addValue("userId", userId),
                 keyHolder);
@@ -46,15 +49,23 @@ public class ArticleDao {
     
     public ArticleRow getArticle(int articleId) {
         return DataAccessUtils.singleResult(template.query(
-                "select Id, Title, Text, CreatedAt, UpdatedAt, CategoryId, UserId from Articles where Id = :articleId",
+                "select Id, Title, Text, CreatedAt, UpdatedAt, ReadCount, CategoryId, UserId " + 
+                "from Articles where Id = :articleId",
                 new MapSqlParameterSource()
                     .addValue("articleId", articleId),                
                 new ArticleRowMapper()));
     }
+    
+    public void increaseArticleReadCount(int articleId) {
+        template.update(
+                "update Articles set ReadCount = ReadCount + 1 where Id = :articleId", 
+                new MapSqlParameterSource()
+                    .addValue("articleId", articleId));
+    }
         
     public List<ArticleRow> getRecentArticles(int numberOfArticles) {
         return template.query(
-                "select top :take Id, Title, Text, CreatedAt, UpdatedAt, CategoryId, UserId " + 
+                "select top :take Id, Title, Text, CreatedAt, UpdatedAt, ReadCount, CategoryId, UserId " + 
                 "from Articles " + 
                 "order by Id desc", 
                 new MapSqlParameterSource()
@@ -63,10 +74,14 @@ public class ArticleDao {
     }
     
     public List<ArticleRow> getRecentArticlesForCategories(
-            Iterable<Integer> categoryIds, 
+            Collection<Integer> categoryIds, 
             int numberOfRecentArticles) {
+        if(categoryIds.isEmpty()) {
+            return new ArrayList<ArticleRow>();
+        }
+        
         return template.query(
-                "select A.Id, A.Title, A.Text, A.CreatedAt, A.UpdatedAt, A.CategoryId, A.UserId " +
+                "select A.Id, A.Title, A.Text, A.CreatedAt, A.UpdatedAt, A.ReadCount, A.CategoryId, A.UserId " +
                 "from Categories as C " +
                 "join Articles as A on A.CategoryId = C.Id " +
                 "where C.Id in (:categoryIds) and A.Id in ( " +
@@ -82,10 +97,14 @@ public class ArticleDao {
     }
     
     public List<ArticleRow> getRecentArticlesForCategoriesSlow(
-            Iterable<Integer> categoryIds, 
+            Collection<Integer> categoryIds, 
             int numberOfRecentArticles) {
+        if(categoryIds.isEmpty()) {
+            return new ArrayList<ArticleRow>();
+        }
+        
         return template.query(
-                "select A.Id, A.Title, A.Text, A.CreatedAt, A.UpdatedAt, A.CategoryId, A.UserId " +
+                "select A.Id, A.Title, A.Text, A.CreatedAt, A.UpdatedAt, A.ReadCount, A.CategoryId, A.UserId " +
                 "from Categories as C " +
                 "join Articles as A on A.CategoryId = C.Id " +
                 "where C.Id in (:categoryIds) and A.Id in ( " +
@@ -113,7 +132,8 @@ public class ArticleDao {
         }
         
         List<ArticleRow> items = template.query(
-                "select limit :skip :take Id, Title, Text, CreatedAt, UpdatedAt, CategoryId, UserId from Articles where CategoryId = :categoryId", 
+                "select limit :skip :take Id, Title, Text, CreatedAt, UpdatedAt, ReadCount, CategoryId, UserId " + 
+                "from Articles where CategoryId = :categoryId", 
                 new MapSqlParameterSource()
                     .addValue("categoryId", categoryId)
                     .addValue("skip", skip)
@@ -138,6 +158,7 @@ public class ArticleDao {
             articleRow.Text = rs.getString("Text");
             articleRow.CreatedAt = rs.getTimestamp("CreatedAt");
             articleRow.UpdatedAt = rs.getTimestamp("UpdatedAt");
+            articleRow.ReadCount = rs.getInt("ReadCount");
             articleRow.CategoryId = rs.getInt("CategoryId");
             articleRow.UserId = rs.getInt("UserId");
             return articleRow;

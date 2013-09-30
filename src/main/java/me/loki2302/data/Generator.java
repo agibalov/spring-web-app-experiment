@@ -31,4 +31,9 @@ public class Generator {
         int numberOfParagraphs = 5 + random.nextInt(3);
         return jlorem.paragraphs(numberOfParagraphs).replace("  ", " ");
     }       
+    
+    public String commentMarkdown() {        
+        int numberOfParagraphs = 1 + random.nextInt(2);
+        return jlorem.paragraphs(numberOfParagraphs).replace("  ", " ");
+    }
 }

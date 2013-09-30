@@ -28,7 +28,8 @@ public class DatabasePopulator {
                 new RandomOptionGenerator<HistoryEvent>()
                     .withOption(HistoryEvent.NewCategory, 1)
                     .withOption(HistoryEvent.NewUser, 400)
-                    .withOption(HistoryEvent.NewArticle, 1200);
+                    .withOption(HistoryEvent.NewArticle, 1200)
+                    .withOption(HistoryEvent.NewComment, 2400);
         
         Random random = new Random();
         
@@ -47,6 +48,8 @@ public class DatabasePopulator {
                 worldFacade.makeRandomUser();
             } else if(historyEvent.equals(HistoryEvent.NewArticle)) {
                 worldFacade.makeRandomArticle();
+            } else if(historyEvent.equals(HistoryEvent.NewComment)) {
+                worldFacade.makeRandomComment();
             } else {
                 throw new RuntimeException("Unknown history event type");
             }
@@ -68,6 +71,7 @@ public class DatabasePopulator {
         logger.info("  {} users", worldFacade.userIds.size());
         logger.info("  {} categories", worldFacade.categoryIds.size());
         logger.info("  {} articles", worldFacade.articleIds.size());
+        logger.info("  {} comments", worldFacade.commentIds.size());
         
         currentTimeProvider.overrideCurrentTime(null);
     }
@@ -75,6 +79,7 @@ public class DatabasePopulator {
     private static enum HistoryEvent {
         NewCategory,
         NewUser,
-        NewArticle
+        NewArticle,
+        NewComment
     }
 }

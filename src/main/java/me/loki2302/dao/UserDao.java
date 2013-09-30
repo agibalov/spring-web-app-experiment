@@ -2,6 +2,8 @@ package me.loki2302.dao;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import me.loki2302.dao.rows.UserRow;
 import me.loki2302.service.UserType;
@@ -28,7 +30,11 @@ public class UserDao {
                 new UserRowMapper()));
     }
     
-    public List<UserRow> getUsers(Iterable<Integer> userIds) {
+    public List<UserRow> getUsers(Collection<Integer> userIds) {
+        if(userIds.isEmpty()) {
+            return new ArrayList<UserRow>();
+        }
+        
         return template.query(
                 "select Id, Name, Password, Type from Users where Id in (:userIds)",
                 new MapSqlParameterSource()

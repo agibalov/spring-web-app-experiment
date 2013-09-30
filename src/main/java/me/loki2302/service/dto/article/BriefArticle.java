@@ -10,6 +10,8 @@ public class BriefArticle {
     public String Title;
     public Date CreatedAt;
     public Date UpdatedAt;
+    public int ReadCount;
+    public int CommentCount;
     public BriefUser User;
     public BriefCategory Category;
 }

@@ -1,6 +1,7 @@
 package me.loki2302.service.dto.article;
 
 import java.util.Date;
+import java.util.List;
 
 import me.loki2302.service.dto.category.BriefCategory;
 import me.loki2302.service.dto.user.BriefUser;
@@ -11,6 +12,9 @@ public class CompleteArticle {
     public String Text;
     public Date CreatedAt;
     public Date UpdatedAt;
+    public int ReadCount;
+    public int CommentCount;
     public BriefUser User;
     public BriefCategory Category;
+    public List<Comment> Comments;
 }

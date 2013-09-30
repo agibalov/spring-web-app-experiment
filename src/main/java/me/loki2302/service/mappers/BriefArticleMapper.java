@@ -15,12 +15,14 @@ import org.springframework.stereotype.Component;
 public class BriefArticleMapper {
     public List<BriefArticle> makeBriefArticles(
             List<ArticleRow> articleRows,
+            Map<Integer, Integer> commentCountsMap,
             Map<Integer, BriefUser> briefUsersMap, 
             Map<Integer, BriefCategory> briefCategoriesMap) {
         List<BriefArticle> briefArticles = new ArrayList<BriefArticle>();
         for(ArticleRow articleRow : articleRows) {
             BriefArticle briefArticle = makeBriefArticle(
                     articleRow,
+                    commentCountsMap,
                     briefUsersMap,
                     briefCategoriesMap);
             briefArticles.add(briefArticle);
@@ -30,6 +32,7 @@ public class BriefArticleMapper {
     
     public BriefArticle makeBriefArticle(
             ArticleRow articleRow,
+            Map<Integer, Integer> commentCountsMap,
             Map<Integer, BriefUser> briefUsersMap, 
             Map<Integer, BriefCategory> briefCategoriesMap) {
         BriefArticle briefArticle = new BriefArticle();        
@@ -37,6 +40,8 @@ public class BriefArticleMapper {
         briefArticle.Title = articleRow.Title;
         briefArticle.CreatedAt = articleRow.CreatedAt;
         briefArticle.UpdatedAt = articleRow.UpdatedAt;
+        briefArticle.ReadCount = articleRow.ReadCount;
+        briefArticle.CommentCount = commentCountsMap.get(articleRow.Id);
         briefArticle.User = briefUsersMap.get(articleRow.UserId);
         briefArticle.Category = briefCategoriesMap.get(articleRow.CategoryId);        
         return briefArticle;

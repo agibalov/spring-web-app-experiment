@@ -7,3 +7,14 @@ block content
   h2 <span class="glyphicon glyphicon-file"></span> #{article.Title}
   +article_meta(article)
   div!= markdownHelper.renderMarkdown(article.Text)
+  hr
+  if !article.Comments
+    p.text-muted No comments so far
+  else    
+    ul.list-unstyled
+      for comment in article.Comments
+        li
+          +comment_meta(comment)
+          div!= markdownHelper.renderMarkdown(comment.Text)
+          hr
+

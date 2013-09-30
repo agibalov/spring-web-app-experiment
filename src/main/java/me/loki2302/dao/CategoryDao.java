@@ -2,7 +2,10 @@ package me.loki2302.dao;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+
 import me.loki2302.dao.rows.CategoryRow;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.support.DataAccessUtils;
@@ -37,7 +40,11 @@ public class CategoryDao {
                 new CategoryRowMapper()));
     }
     
-    public List<CategoryRow> getCategories(Iterable<Integer> categoryIds) {
+    public List<CategoryRow> getCategories(Collection<Integer> categoryIds) {
+        if(categoryIds.isEmpty()) {
+            return new ArrayList<CategoryRow>();
+        }
+        
         return template.query(
                 "select Id, Name from Categories where Id in (:categoryIds)",
                 new MapSqlParameterSource()

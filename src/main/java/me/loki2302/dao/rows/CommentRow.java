@@ -2,13 +2,11 @@ package me.loki2302.dao.rows;
 
 import java.util.Date;
 
-public class ArticleRow {
+public class CommentRow {
     public int Id;
-    public String Title;
     public String Text;
     public Date CreatedAt;
     public Date UpdatedAt;
-    public int ReadCount;
-    public int CategoryId;
+    public int ArticleId;
     public int UserId;
 }

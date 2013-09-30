@@ -7,7 +7,9 @@ import java.util.Set;
 
 import me.loki2302.dao.ArticleDao;
 import me.loki2302.dao.CategoryDao;
+import me.loki2302.dao.CommentDao;
 import me.loki2302.dao.UserDao;
+import me.loki2302.dao.rows.ArticleCommentCountRow;
 import me.loki2302.dao.rows.ArticleRow;
 import me.loki2302.dao.rows.CategoryRow;
 import me.loki2302.dao.rows.Page;
@@ -22,6 +24,7 @@ import me.loki2302.service.exceptions.CategoryNotFoundException;
 import me.loki2302.service.mappers.BriefArticleMapper;
 import me.loki2302.service.mappers.BriefCategoryMapper;
 import me.loki2302.service.mappers.BriefUserMapper;
+import me.loki2302.service.mappers.CommentMapper;
 import me.loki2302.service.mappers.CompleteCategoryMapper;
 import me.loki2302.service.mappers.MappingHelpers;
 import me.loki2302.service.mappers.ShortArticleMapper;
@@ -42,7 +45,10 @@ public class CategoryService {
     private ArticleDao articleDao;
     
     @Autowired
-    private BriefUserMapper briefUserMapper;
+    private CommentDao commentDao;
+    
+    @Autowired
+    private BriefUserMapper briefUserMapper;       
     
     @Autowired
     private BriefCategoryMapper briefCategoryMapper;
@@ -59,6 +65,9 @@ public class CategoryService {
     @Autowired
     private CompleteCategoryMapper completeCategoryMapper;
     
+    @Autowired
+    private CommentMapper commentMapper;
+    
     public int createCategory(String categoryName) {
         return categoryDao.createCategory(categoryName);
     }
@@ -71,18 +80,23 @@ public class CategoryService {
     public List<ShortCategory> getCategories(int numberOfRecentArticles) {
         List<CategoryRow> categoryRows = categoryDao.getCategories();
         
-        Set<Integer> categoryIds = MappingHelpers.extractIds(categoryRows);
+        Set<Integer> categoryIds = MappingHelpers.extractCategoryIdsFromCategoryRows(categoryRows);
         List<ArticleRow> articleRows = articleDao.getRecentArticlesForCategories(
                 categoryIds, 
-                numberOfRecentArticles);        
+                numberOfRecentArticles);
         
-        Set<Integer> userIds = MappingHelpers.extractUserIds(articleRows);
+        Set<Integer> userIds = MappingHelpers.extractUserIdsFromArticleRows(articleRows);
         List<UserRow> userRows = userDao.getUsers(userIds);
         Map<Integer, BriefUser> briefUsersMap = briefUserMapper.makeBriefUsersMap(userRows);
+        
+        Set<Integer> articleIds = MappingHelpers.extractArticleIdsFromArticleRows(articleRows);
+        List<ArticleCommentCountRow> articleCommentCountRows = commentDao.getCommentCountsByArticleIds(articleIds);
+        Map<Integer, Integer> articleCommentCountsMap = commentMapper.makeArticleCommentCountMap(articleCommentCountRows);
         
         Map<Integer, BriefCategory> briefCategoriesMap = briefCategoryMapper.makeBriefCategoriesMap(categoryRows);
         List<BriefArticle> briefArticles = briefArticleMapper.makeBriefArticles(
                 articleRows, 
+                articleCommentCountsMap,
                 briefUsersMap, 
                 briefCategoriesMap);
         
@@ -104,15 +118,20 @@ public class CategoryService {
                 articlesPerPage, 
                 page);
         
-        Set<Integer> userIds = MappingHelpers.extractUserIds(articleRowsPage.Items);
+        Set<Integer> userIds = MappingHelpers.extractUserIdsFromArticleRows(articleRowsPage.Items);
         List<UserRow> userRows = userDao.getUsers(userIds);
         Map<Integer, BriefUser> briefUsersMap = briefUserMapper.makeBriefUsersMap(userRows);
+        
+        Set<Integer> articleIds = MappingHelpers.extractArticleIdsFromArticleRows(articleRowsPage.Items);
+        List<ArticleCommentCountRow> articleCommentCountRows = commentDao.getCommentCountsByArticleIds(articleIds);
+        Map<Integer, Integer> articleCommentCountsMap = commentMapper.makeArticleCommentCountMap(articleCommentCountRows);
         
         List<CategoryRow> categoryRows = Arrays.asList(categoryRow);
         Map<Integer, BriefCategory> briefCategoriesMaps = briefCategoryMapper.makeBriefCategoriesMap(categoryRows);
         
         List<ShortArticle> shortArticles = shortArticleMapper.makeShortArticles(
                 articleRowsPage.Items,
+                articleCommentCountsMap,
                 briefUsersMap,
                 briefCategoriesMaps);
         
