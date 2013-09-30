@@ -23,6 +23,10 @@ public class Generator {
         return String.format("%c%s", firstName.charAt(0), lastName).toLowerCase();
     }
     
+    public String categoryName() {
+        return WordUtils.capitalize(jlorem.words(2 + random.nextInt(2)));
+    }
+    
     public String articleTitle() {
         return WordUtils.capitalize(faker.Lorem.sentence(5, 2));
     }

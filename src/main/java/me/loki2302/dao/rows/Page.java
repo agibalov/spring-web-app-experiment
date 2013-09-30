@@ -12,7 +12,7 @@ public class Page<T> {
     @Override
     public String toString() {
         return String.format(
-                "Page{NumberOfItems=%d,ItemsPerPage=%d,NumberOfPages=%d,CurrentPage=%d}",
+                "Page{NumberOfItems=%d, ItemsPerPage=%d, NumberOfPages=%d, CurrentPage=%d}",
                 NumberOfItems,
                 ItemsPerPage,
                 NumberOfPages,

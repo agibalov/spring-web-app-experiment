@@ -55,7 +55,7 @@ public class WorldFacade {
     }       
     
     public void makeRandomCategory() {
-        String categoryName = String.format("Category#%d", categoryIds.size() + 1);
+        String categoryName = generator.categoryName();
         int categoryId = categoryService.createCategory(categoryName);
         categoryIds.add(categoryId);
     }
@@ -67,14 +67,20 @@ public class WorldFacade {
         String text = generator.articleMarkdown();
         int articleId = articleService.createArticle(userId, categoryId, title, text);
         articleIds.add(articleId);
-    }
+    }   
     
     public void makeRandomComment() {
         int userId = getExistingUserOrCreateANewOne();
         int articleId = getExistingArticleOrCreateANewOne();
+        articleService.getArticle(articleId);
         String text = generator.commentMarkdown();
         int commentId = commentService.createComment(userId, articleId, text);
         commentIds.add(commentId);
+    }
+    
+    public void viewRandomArticle() {
+        int articleId = getExistingArticleOrCreateANewOne();
+        articleService.getArticle(articleId);
     }
     
     private int getExistingUserOrCreateANewOne() {
