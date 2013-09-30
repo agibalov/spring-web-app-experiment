@@ -3,14 +3,14 @@ package me.loki2302.dao;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.UUID;
-
 import me.loki2302.dao.rows.CategoryRow;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -18,21 +18,15 @@ public class CategoryDao {
     @Autowired
     private NamedParameterJdbcTemplate template;
     
-    public CategoryRow createCategory(String categoryName) {
-        final String rowUuid = UUID.randomUUID().toString();                
+    public int createCategory(String categoryName) {
+        KeyHolder keyHolder = new GeneratedKeyHolder();        
         template.update(
-                "insert into Categories(RowUuid, Name) values(:rowUuid, :name)",
+                "insert into Categories(Name) values(:name)",
                 new MapSqlParameterSource()
-                    .addValue("rowUuid", rowUuid)
-                    .addValue("name", categoryName));
+                    .addValue("name", categoryName),
+                keyHolder);
         
-        CategoryRow categoryRow = template.queryForObject(
-                "select Id, Name from Categories where RowUuid = :rowUuid",
-                new MapSqlParameterSource()
-                    .addValue("rowUuid", rowUuid),
-                new CategoryRowMapper());
-        
-        return categoryRow;
+        return (Integer)keyHolder.getKey();
     }
     
     public CategoryRow getCategory(int categoryId) {

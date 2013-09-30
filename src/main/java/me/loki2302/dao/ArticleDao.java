@@ -4,8 +4,6 @@ import java.util.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.UUID;
-
 import me.loki2302.dao.rows.ArticleRow;
 import me.loki2302.dao.rows.Page;
 
@@ -14,6 +12,8 @@ import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -21,32 +21,27 @@ public class ArticleDao {
     @Autowired
     private NamedParameterJdbcTemplate template;
     
-    public ArticleRow createArticle(
+    public int createArticle(
             int userId, 
             int categoryId, 
             String title, 
             String text,
             Date createdAt) {
         
-        String rowUuid = UUID.randomUUID().toString();                
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        
         template.update(
-                "insert into Articles(RowUuid, Title, Text, CreatedAt, CategoryId, UserId) " + 
-                "values(:rowUuid, :title, :text, :createdAt, :categoryId, :userId)",
-                new MapSqlParameterSource()
-                    .addValue("rowUuid", rowUuid)
+                "insert into Articles(Title, Text, CreatedAt, CategoryId, UserId) " + 
+                "values(:title, :text, :createdAt, :categoryId, :userId)",
+                new MapSqlParameterSource()                    
                     .addValue("title", title)
                     .addValue("text", text)
                     .addValue("createdAt", createdAt)
                     .addValue("categoryId", categoryId)
-                    .addValue("userId", userId));
+                    .addValue("userId", userId),
+                keyHolder);
         
-        ArticleRow articleRow = template.queryForObject(
-                "select Id, Title, Text, CreatedAt, UpdatedAt, CategoryId, UserId from Articles where RowUuid = :rowUuid",
-                new MapSqlParameterSource()
-                    .addValue("rowUuid", rowUuid),
-                new ArticleRowMapper());
-                
-        return articleRow;
+        return (Integer)keyHolder.getKey();
     }
     
     public ArticleRow getArticle(int articleId) {

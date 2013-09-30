@@ -59,7 +59,7 @@ public class CategoryService {
     @Autowired
     private CompleteCategoryMapper completeCategoryMapper;
     
-    public CategoryRow createCategory(String categoryName) {
+    public int createCategory(String categoryName) {
         return categoryDao.createCategory(categoryName);
     }
     

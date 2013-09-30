@@ -2,8 +2,6 @@ package me.loki2302.dao;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.UUID;
-
 import me.loki2302.dao.rows.SessionRow;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +9,8 @@ import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -18,23 +18,26 @@ public class SessionDao {
     @Autowired
     private NamedParameterJdbcTemplate template;
     
-    public SessionRow createSession(int userId, String token) {
-        String rowUuid = UUID.randomUUID().toString();        
-        template.update(
-                "insert into Sessions(RowUuid, Token, UserId) values(:rowUuid, :token, :userId)",
-                new MapSqlParameterSource()
-                    .addValue("rowUuid", rowUuid)
-                    .addValue("token", token)
-                    .addValue("userId", userId));
+    public int createSession(int userId, String token) {
+        KeyHolder keyHolder = new GeneratedKeyHolder();
         
-        SessionRow session = template.queryForObject(
-                "select Id, Token, UserId from Sessions where RowUuid = :rowUuid",
+        template.update(
+                "insert into Sessions(Token, UserId) values(:token, :userId)",
                 new MapSqlParameterSource()
-                    .addValue("rowUuid", rowUuid),
-                new SessionRowMapper());
-                
-        return session;
+                    .addValue("token", token)
+                    .addValue("userId", userId),
+                keyHolder);
+        
+        return (Integer)keyHolder.getKey();
     }
+    
+    public SessionRow getSession(int id) {
+        return DataAccessUtils.singleResult(template.query(
+                "select Id, Token, UserId from Sessions where id = :id",
+                new MapSqlParameterSource()
+                    .addValue("id", id),
+                new SessionRowMapper()));
+    } 
     
     public SessionRow getSession(String token) {
         return DataAccessUtils.singleResult(template.query(

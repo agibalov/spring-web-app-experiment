@@ -3,8 +3,6 @@ package me.loki2302.dao;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.UUID;
-
 import me.loki2302.dao.rows.UserRow;
 import me.loki2302.service.UserType;
 
@@ -13,6 +11,8 @@ import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -44,23 +44,17 @@ public class UserDao {
                 new UserRowMapper()));
     }
         
-    public UserRow createUser(String userName, String password, UserType userType) {
-        final String rowUuid = UUID.randomUUID().toString();                
+    public int createUser(String userName, String password, UserType userType) {
+        KeyHolder keyHolder = new GeneratedKeyHolder();               
         template.update(
-                "insert into Users(RowUuid, Name, Password, Type) values(:rowUuid, :userName, :password, :type)",
+                "insert into Users(Name, Password, Type) values(:userName, :password, :type)",
                 new MapSqlParameterSource()
-                    .addValue("rowUuid", rowUuid)
                     .addValue("userName", userName)
                     .addValue("password", password)
-                    .addValue("type", userType.ordinal()));
+                    .addValue("type", userType.ordinal()),
+                keyHolder);
         
-        UserRow user = template.queryForObject(
-                "select Id, Name, Password, Type from Users where RowUuid = :rowUuid",
-                new MapSqlParameterSource()
-                    .addValue("rowUuid", rowUuid),
-                new UserRowMapper());
-                
-        return user;
+        return (Integer)keyHolder.getKey();
     }
     
     private static class UserRowMapper implements RowMapper<UserRow> {

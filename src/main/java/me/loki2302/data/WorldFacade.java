@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import me.loki2302.dao.rows.CategoryRow;
 import me.loki2302.service.ArticleService;
 import me.loki2302.service.AuthenticationService;
 import me.loki2302.service.CategoryService;
@@ -52,8 +51,8 @@ public class WorldFacade {
     
     public void makeRandomCategory() {
         String categoryName = String.format("Category#%d", categoryIds.size() + 1);
-        CategoryRow categoryRow = categoryService.createCategory(categoryName);
-        categoryIds.add(categoryRow.Id);
+        int categoryId = categoryService.createCategory(categoryName);
+        categoryIds.add(categoryId);
     }
     
     public void makeRandomArticle() {

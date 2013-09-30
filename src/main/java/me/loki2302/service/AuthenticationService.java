@@ -42,7 +42,8 @@ public class AuthenticationService {
             throw new UserNameAlreadyUsedException();
         }
         
-        user = userDao.createUser(userName, password, userType);
+        int userId = userDao.createUser(userName, password, userType);
+        user = userDao.getUser(userId);
         
         AuthenticationResult authenticationResult = startSessionForUser(user);
         return authenticationResult;
@@ -62,7 +63,8 @@ public class AuthenticationService {
     
     private AuthenticationResult startSessionForUser(UserRow userRow) {
         String sessionToken = UUID.randomUUID().toString();
-        SessionRow session = sessionDao.createSession(userRow.Id, sessionToken);
+        int sessionId = sessionDao.createSession(userRow.Id, sessionToken);
+        SessionRow session = sessionDao.getSession(sessionId);
         
         AuthenticationResult authenticationResult = makeAuthenticationResult(session.Token, userRow);
         return authenticationResult;

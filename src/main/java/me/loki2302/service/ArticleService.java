@@ -54,14 +54,14 @@ public class ArticleService {
     
     public int createArticle(int userId, int categoryId, String title, String text) {
         Date currentTime = currentTimeProvider.getCurrentTime();
-        ArticleRow articleRow = articleDao.createArticle(
+        int articleId = articleDao.createArticle(
                 userId, 
                 categoryId, 
                 title, 
                 text, 
                 currentTime);
         
-        return articleRow.Id; 
+        return articleId; 
     }
         
     public CompleteArticle getArticle(int articleId) {
