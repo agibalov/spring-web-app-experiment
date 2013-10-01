@@ -6,11 +6,13 @@ import java.util.Map;
 import java.util.Set;
 
 import me.loki2302.dao.ArticleDao;
+import me.loki2302.dao.ArticleVoteDao;
 import me.loki2302.dao.CategoryDao;
 import me.loki2302.dao.CommentDao;
 import me.loki2302.dao.UserDao;
 import me.loki2302.dao.rows.ArticleCommentCountRow;
 import me.loki2302.dao.rows.ArticleRow;
+import me.loki2302.dao.rows.ArticleVoteStatsRow;
 import me.loki2302.dao.rows.CategoryRow;
 import me.loki2302.dao.rows.CommentRow;
 import me.loki2302.dao.rows.UserRow;
@@ -20,6 +22,7 @@ import me.loki2302.service.dto.article.ShortArticle;
 import me.loki2302.service.dto.category.BriefCategory;
 import me.loki2302.service.dto.user.BriefUser;
 import me.loki2302.service.exceptions.ArticleNotFoundException;
+import me.loki2302.service.mappers.ArticleVoteStatsMapper;
 import me.loki2302.service.mappers.BriefCategoryMapper;
 import me.loki2302.service.mappers.BriefUserMapper;
 import me.loki2302.service.mappers.CommentMapper;
@@ -48,6 +51,9 @@ public class ArticleService {
     private CommentDao commentDao;
     
     @Autowired
+    private ArticleVoteDao articleVoteDao;
+    
+    @Autowired
     private BriefUserMapper briefUserMapper;
     
     @Autowired
@@ -61,6 +67,9 @@ public class ArticleService {
     
     @Autowired
     private CommentMapper commentMapper;
+    
+    @Autowired
+    private ArticleVoteStatsMapper articleVoteStatsMapper;
     
     public int createArticle(int userId, int categoryId, String title, String text) {
         Date currentTime = currentTimeProvider.getCurrentTime();
@@ -92,10 +101,13 @@ public class ArticleService {
         Set<Integer> commentUserIds = MappingHelpers.extractUserIdsFromCommentRows(commentRows);
         List<UserRow> commentUserRows = userDao.getUsers(commentUserIds);
         Map<Integer, BriefUser> commentBriefUsersMap = briefUserMapper.makeBriefUsersMap(commentUserRows);
-        List<Comment> comments = commentMapper.makeComments(commentRows, commentBriefUsersMap);       
+        List<Comment> comments = commentMapper.makeComments(commentRows, commentBriefUsersMap);
+        
+        ArticleVoteStatsRow articleVoteStatsRow = articleVoteDao.getVoteStatsByArticleId(articleId);
         
         CompleteArticle completeArticle = completeArticleMapper.makeCompleteArticle(
                 articleRow, 
+                articleVoteStatsRow,
                 authorBriefUser,
                 briefCategory,
                 comments);
@@ -107,8 +119,12 @@ public class ArticleService {
         List<ArticleRow> articleRows = articleDao.getRecentArticles(numberOfMostRecentArticles);
         
         Set<Integer> articleIds = MappingHelpers.extractArticleIdsFromArticleRows(articleRows);
+        
         List<ArticleCommentCountRow> articleCommentCountRows = commentDao.getCommentCountsByArticleIds(articleIds);
         Map<Integer, Integer> articleCommentCountsMap = commentMapper.makeArticleCommentCountMap(articleCommentCountRows);
+        
+        List<ArticleVoteStatsRow> articleVoteStatsRows = articleVoteDao.getVoteStatsByArticleIds(articleIds);
+        Map<Integer, ArticleVoteStatsRow> articleVoteStatsMap = articleVoteStatsMapper.makeArticleVoteStatsMap(articleVoteStatsRows);
         
         Set<Integer> userIds = MappingHelpers.extractUserIdsFromArticleRows(articleRows);
         List<UserRow> userRows = userDao.getUsers(userIds);
@@ -119,8 +135,9 @@ public class ArticleService {
         Map<Integer, BriefCategory> briefCategoriesMap = briefCategoryMapper.makeBriefCategoriesMap(categoryRows);
             
         return shortArticleMapper.makeShortArticles(
-                articleRows, 
+                articleRows,                
                 articleCommentCountsMap,
+                articleVoteStatsMap,
                 briefUsersMap, 
                 briefCategoriesMap);
     }

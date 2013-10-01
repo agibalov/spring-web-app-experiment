@@ -13,6 +13,8 @@ public class ShortArticle {
     public Date UpdatedAt;
     public int ReadCount;
     public int CommentCount;
+    public int VoteCount;
+    public int AverageVote;
     public BriefUser User;
     public BriefCategory Category;
 }

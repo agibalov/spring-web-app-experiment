@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import me.loki2302.dao.rows.ArticleRow;
+import me.loki2302.dao.rows.ArticleVoteStatsRow;
 import me.loki2302.service.dto.article.BriefArticle;
 import me.loki2302.service.dto.category.BriefCategory;
 import me.loki2302.service.dto.user.BriefUser;
@@ -16,6 +17,7 @@ public class BriefArticleMapper {
     public List<BriefArticle> makeBriefArticles(
             List<ArticleRow> articleRows,
             Map<Integer, Integer> commentCountsMap,
+            Map<Integer, ArticleVoteStatsRow> articleVoteStatsMap,
             Map<Integer, BriefUser> briefUsersMap, 
             Map<Integer, BriefCategory> briefCategoriesMap) {
         List<BriefArticle> briefArticles = new ArrayList<BriefArticle>();
@@ -23,6 +25,7 @@ public class BriefArticleMapper {
             BriefArticle briefArticle = makeBriefArticle(
                     articleRow,
                     commentCountsMap,
+                    articleVoteStatsMap,
                     briefUsersMap,
                     briefCategoriesMap);
             briefArticles.add(briefArticle);
@@ -33,6 +36,7 @@ public class BriefArticleMapper {
     public BriefArticle makeBriefArticle(
             ArticleRow articleRow,
             Map<Integer, Integer> commentCountsMap,
+            Map<Integer, ArticleVoteStatsRow> articleVoteStatsMap,
             Map<Integer, BriefUser> briefUsersMap, 
             Map<Integer, BriefCategory> briefCategoriesMap) {
         BriefArticle briefArticle = new BriefArticle();        
@@ -42,6 +46,8 @@ public class BriefArticleMapper {
         briefArticle.UpdatedAt = articleRow.UpdatedAt;
         briefArticle.ReadCount = articleRow.ReadCount;
         briefArticle.CommentCount = commentCountsMap.get(articleRow.Id);
+        briefArticle.VoteCount = articleVoteStatsMap.get(articleRow.Id).VoteCount;
+        briefArticle.AverageVote = articleVoteStatsMap.get(articleRow.Id).AverageVote;
         briefArticle.User = briefUsersMap.get(articleRow.UserId);
         briefArticle.Category = briefCategoriesMap.get(articleRow.CategoryId);        
         return briefArticle;
