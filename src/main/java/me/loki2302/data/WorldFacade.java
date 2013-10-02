@@ -83,6 +83,14 @@ public class WorldFacade {
         articleService.getArticle(articleId);
     }
     
+    public void voteForRandomArticle() {
+        int userId = getExistingUserOrCreateANewOne();
+        int articleId = getExistingArticleOrCreateANewOne();
+        articleService.getArticle(articleId);
+        int vote = 1 + random.nextInt(5);
+        articleService.voteForArticle(userId, articleId, vote);
+    }
+    
     private int getExistingUserOrCreateANewOne() {
         if(userIds.isEmpty()) {
             makeRandomUser();

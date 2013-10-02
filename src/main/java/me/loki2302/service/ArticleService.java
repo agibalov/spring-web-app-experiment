@@ -141,4 +141,14 @@ public class ArticleService {
                 briefUsersMap, 
                 briefCategoriesMap);
     }
+    
+    public void voteForArticle(int userId, int articleId, int vote) {
+        Date currentTime = currentTimeProvider.getCurrentTime();
+        int articleVoteCount = articleVoteDao.getArticleVoteCountByUserId(articleId, userId);
+        if(articleVoteCount == 0) {
+            articleVoteDao.insertArticleVoteCount(articleId, userId, vote, currentTime);
+        } else {
+            articleVoteDao.updateArticleVoteCount(articleId, userId, vote, currentTime);
+        }
+    }
 }

@@ -30,7 +30,8 @@ public class DatabasePopulator {
                     .withOption(HistoryEvent.NewUser, 400)
                     .withOption(HistoryEvent.NewArticle, 1200)
                     .withOption(HistoryEvent.NewComment, 2400)
-                    .withOption(HistoryEvent.ViewArticle, 24000);
+                    .withOption(HistoryEvent.ViewArticle, 24000)
+                    .withOption(HistoryEvent.VoteForArticle, 12000);
         
         Random random = new Random();
         
@@ -53,6 +54,8 @@ public class DatabasePopulator {
                 worldFacade.makeRandomComment();
             } else if(historyEvent.equals(HistoryEvent.ViewArticle)) {
                 worldFacade.viewRandomArticle();
+            } else if(historyEvent.equals(HistoryEvent.VoteForArticle)) {
+                worldFacade.voteForRandomArticle();
             } else {
                 throw new RuntimeException("Unknown history event type");
             }
@@ -84,6 +87,7 @@ public class DatabasePopulator {
         NewUser,
         NewArticle,
         NewComment,
-        ViewArticle
+        ViewArticle,
+        VoteForArticle
     }
 }

@@ -4,6 +4,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import me.loki2302.dao.rows.ArticleVoteStatsRow;
@@ -20,6 +21,39 @@ import org.springframework.stereotype.Repository;
 public class ArticleVoteDao {
     @Autowired
     private NamedParameterJdbcTemplate template;
+    
+    public int getArticleVoteCountByUserId(int articleId, int userId) {
+        return template.queryForObject(
+                "select count(Id) from ArticleVotes " + 
+                "where ArticleId = :articleId and UserId = :userId", 
+                new MapSqlParameterSource()
+                    .addValue("articleId", articleId)
+                    .addValue("userId", userId),
+                Integer.class);
+    }
+        
+    public void insertArticleVoteCount(int articleId, int userId, int vote, Date createdAt) {
+        template.update(
+                "insert into ArticleVotes(CreatedAt, UpdatedAt, Vote, ArticleId, UserId) " + 
+                "values(:createdAt, :updatedAt, :vote, :articleId, :userId)", 
+                new MapSqlParameterSource()
+                    .addValue("articleId", articleId)
+                    .addValue("userId", userId)
+                    .addValue("vote", vote)
+                    .addValue("createdAt", createdAt)
+                    .addValue("updatedAt", null));
+    }
+    
+    public void updateArticleVoteCount(int articleId, int userId, int vote, Date updatedAt) {
+        template.update(
+                "update ArticleVotes set Vote = :vote, UpdatedAt = :updatedAt " + 
+                "where ArticleId = :articleId and UserId = :userId", 
+                new MapSqlParameterSource()
+                    .addValue("articleId", articleId)
+                    .addValue("userId", userId)
+                    .addValue("vote", vote)                    
+                    .addValue("updatedAt", updatedAt));
+    }
         
     public ArticleVoteStatsRow getVoteStatsByArticleId(int articleId) {        
         return DataAccessUtils.singleResult(template.query(

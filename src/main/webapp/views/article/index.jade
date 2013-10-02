@@ -13,7 +13,7 @@ block content
       button(type="button").btn.btn-default.btn-sm: i.glyphicon.glyphicon-star
       button(type="button").btn.btn-default.btn-sm: i.glyphicon.glyphicon-star
       button(type="button").btn.btn-default.btn-sm: i.glyphicon.glyphicon-star
-    |  3 (184 votes)
+    |  #{article.AverageVote} (#{article.VoteCount} vote(s))
   div!= markdownHelper.renderMarkdown(article.Text)
   hr
   if !article.Comments
