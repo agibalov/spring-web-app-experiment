@@ -13,12 +13,7 @@ block content
       button#vote3(type="button", data-vote="3").btn.btn-default.btn-sm: i.glyphicon.glyphicon-star
       button#vote4(type="button", data-vote="4").btn.btn-default.btn-sm: i.glyphicon.glyphicon-star
       button#vote5(type="button", data-vote="5").btn.btn-default.btn-sm: i.glyphicon.glyphicon-star
-    |  #{article.AverageVote} (#{article.VoteCount} vote(s))
-    script.
-      $("[data-vote]").click(function(e) {
-        var vote = $(e.delegateTarget).attr("data-vote");
-        Blogs.voteForArticle(#{article.ArticleId}, vote);        
-      });
+    |  #{article.AverageVote} (#{article.VoteCount} vote(s))    
   div!= markdownHelper.renderMarkdown(article.Text)
   hr
   if !article.Comments
@@ -30,4 +25,9 @@ block content
           +comment_meta(comment)
           div!= markdownHelper.renderMarkdown(comment.Text)
           hr
+  script.
+    $("[data-vote]").click(function(e) {
+      var vote = $(e.delegateTarget).attr("data-vote");
+      Blogs.voteForArticle(#{article.ArticleId}, vote);
+    });
 
