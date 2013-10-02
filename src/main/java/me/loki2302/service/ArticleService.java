@@ -143,6 +143,10 @@ public class ArticleService {
     }
     
     public void voteForArticle(int userId, int articleId, int vote) {
+        if(vote < 1 || vote > 5) {
+            throw new RuntimeException();
+        }
+        
         Date currentTime = currentTimeProvider.getCurrentTime();
         int articleVoteCount = articleVoteDao.getArticleVoteCountByUserId(articleId, userId);
         if(articleVoteCount == 0) {

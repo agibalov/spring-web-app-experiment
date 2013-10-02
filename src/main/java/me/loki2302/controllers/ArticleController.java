@@ -113,4 +113,14 @@ public class ArticleController {
         // TODO
         throw new RuntimeException();
     }
+    
+    @PreAuthorize("isAuthenticated()")
+    @RequestMapping(value = "{articleId}/vote/{vote}", method = RequestMethod.POST)
+    public String voteDo(
+            @CurrentUser Integer currentUserId,
+            @PathVariable int articleId,
+            @PathVariable int vote) {
+        articleService.voteForArticle(currentUserId, articleId, vote);
+        return String.format("redirect:/article/%d", articleId);
+    }
 }
