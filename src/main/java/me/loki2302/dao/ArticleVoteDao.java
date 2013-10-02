@@ -82,6 +82,17 @@ public class ArticleVoteDao {
                     .addValue("articleIds", articleIds),
                 new ArticleVoteStatsRowMapper());
     }
+    
+    public ArticleVoteRow getUserVote(int userId, int articleId) {
+        return DataAccessUtils.singleResult(template.query(
+                "select Id, CreatedAt, UpdatedAt, Vote, ArticleId, UserId " + 
+                "from ArticleVotes " +
+                "where ArticleId = :articleId and UserId = :userId",
+                new MapSqlParameterSource()
+                    .addValue("articleId", articleId)
+                    .addValue("userId", userId),
+                new ArticleVoteRowMapper()));
+    }
         
     private static class ArticleVoteStatsRowMapper implements RowMapper<ArticleVoteStatsRow> {
         @Override

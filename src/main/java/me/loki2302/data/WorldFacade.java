@@ -72,21 +72,22 @@ public class WorldFacade {
     public void makeRandomComment() {
         int userId = getExistingUserOrCreateANewOne();
         int articleId = getExistingArticleOrCreateANewOne();
-        articleService.getArticle(articleId);
+        articleService.getArticle(userId, articleId);
         String text = generator.commentMarkdown();
         int commentId = commentService.createComment(userId, articleId, text);
         commentIds.add(commentId);
     }
     
     public void viewRandomArticle() {
+        int userId = getExistingUserOrCreateANewOne();
         int articleId = getExistingArticleOrCreateANewOne();
-        articleService.getArticle(articleId);
+        articleService.getArticle(userId, articleId);
     }
     
     public void voteForRandomArticle() {
         int userId = getExistingUserOrCreateANewOne();
         int articleId = getExistingArticleOrCreateANewOne();
-        articleService.getArticle(articleId);
+        articleService.getArticle(userId, articleId);
         int vote = 1 + random.nextInt(5);
         articleService.voteForArticle(userId, articleId, vote);
     }

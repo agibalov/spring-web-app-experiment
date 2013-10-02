@@ -12,6 +12,7 @@ import me.loki2302.dao.CommentDao;
 import me.loki2302.dao.UserDao;
 import me.loki2302.dao.rows.ArticleCommentCountRow;
 import me.loki2302.dao.rows.ArticleRow;
+import me.loki2302.dao.rows.ArticleVoteRow;
 import me.loki2302.dao.rows.ArticleVoteStatsRow;
 import me.loki2302.dao.rows.CategoryRow;
 import me.loki2302.dao.rows.CommentRow;
@@ -83,7 +84,7 @@ public class ArticleService {
         return articleId; 
     }
         
-    public CompleteArticle getArticle(int articleId) {
+    public CompleteArticle getArticle(Integer userId, int articleId) {
         ArticleRow articleRow = articleDao.getArticle(articleId);
         if(articleRow == null) {
             throw new ArticleNotFoundException();
@@ -104,6 +105,18 @@ public class ArticleService {
         List<Comment> comments = commentMapper.makeComments(commentRows, commentBriefUsersMap);
         
         ArticleVoteStatsRow articleVoteStatsRow = articleVoteDao.getVoteStatsByArticleId(articleId);
+        
+        if(userId != null) {
+            ArticleVoteRow articleVoteRow = articleVoteDao.getUserVote(userId, articleId);
+            if(articleVoteRow != null) {
+                // TODO: can vote
+                // TODO: already voted - articleVoteRow.Vote                
+            } else {
+                // TODO: can vote
+            }            
+        } else {
+            // TODO: not authenticated, can't vote
+        }
         
         CompleteArticle completeArticle = completeArticleMapper.makeCompleteArticle(
                 articleRow, 

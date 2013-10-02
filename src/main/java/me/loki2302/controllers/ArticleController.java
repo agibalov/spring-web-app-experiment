@@ -29,7 +29,10 @@ public class ArticleController {
     
     @PreAuthorize("isAuthenticated()")
     @RequestMapping(value = "new/{categoryId}", method = RequestMethod.GET)
-    public String createArticle(@PathVariable int categoryId, Model model) {
+    public String createArticle(
+            @CurrentUser Integer currentUserId,
+            @PathVariable int categoryId, 
+            Model model) {
         model.addAttribute("categoryId", categoryId);
         model.addAttribute("articleModel", new ArticleModel());
         return "article/new";
@@ -80,8 +83,11 @@ public class ArticleController {
     }
     
     @RequestMapping("{articleId}")
-    public String viewArticle(@PathVariable int articleId, Model model) {
-        CompleteArticle article = articleService.getArticle(articleId);
+    public String viewArticle(
+            @CurrentUser Integer currentUserId, 
+            @PathVariable int articleId, 
+            Model model) {
+        CompleteArticle article = articleService.getArticle(currentUserId, articleId);
         model.addAttribute("article", article);
         return "article/index";
     }
@@ -93,7 +99,7 @@ public class ArticleController {
             @PathVariable int articleId, 
             Model model) {
                 
-        CompleteArticle article = articleService.getArticle(articleId);
+        CompleteArticle article = articleService.getArticle(currentUserId, articleId);
         // Spring security, any ideas?
         if(article.User.UserId != currentUserId) { // what do i normally do here?
             throw new RuntimeException("the user doesn't own this article");
@@ -109,7 +115,9 @@ public class ArticleController {
 
     @PreAuthorize("isAuthenticated()")
     @RequestMapping(value = "{articleId}/edit", method = RequestMethod.POST)
-    public String editArticleDo(@PathVariable int articleId, Model model) {
+    public String editArticleDo(
+            @PathVariable int articleId, 
+            Model model) {
         // TODO
         throw new RuntimeException();
     }

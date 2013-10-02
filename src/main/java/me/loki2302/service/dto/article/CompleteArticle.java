@@ -19,4 +19,7 @@ public class CompleteArticle {
     public BriefUser User;
     public BriefCategory Category;
     public List<Comment> Comments;
+    
+    public boolean CanVote; // TODO: true if authenticated
+    public Integer CurrentVote; // TODO: not null if authenticated and already voted
 }
