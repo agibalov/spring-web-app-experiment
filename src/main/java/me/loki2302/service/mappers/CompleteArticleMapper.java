@@ -17,7 +17,9 @@ public class CompleteArticleMapper {
             ArticleVoteStatsRow articleVoteStatsRow,
             BriefUser author, 
             BriefCategory category,
-            List<Comment> comments) {
+            List<Comment> comments,
+            boolean canVote,
+            Integer currentVote) {
         CompleteArticle completeArticle = new CompleteArticle();
         completeArticle.ArticleId = articleRow.Id;
         completeArticle.Title = articleRow.Title;
@@ -31,6 +33,8 @@ public class CompleteArticleMapper {
         completeArticle.User = author;
         completeArticle.Category = category;
         completeArticle.Comments = comments;
+        completeArticle.CanVote = canVote;
+        completeArticle.CurrentVote = currentVote;
         return completeArticle;
     }
 }

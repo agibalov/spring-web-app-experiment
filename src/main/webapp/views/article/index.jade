@@ -5,15 +5,21 @@ block title
 
 block content  
   h2 <span class="glyphicon glyphicon-file"></span> #{article.Title}
-  +article_meta(article)  
-  div  
-    .btn-group
-      button#vote1(type="button", data-vote="1").btn.btn-default.btn-sm: i.glyphicon.glyphicon-star
-      button#vote2(type="button", data-vote="2").btn.btn-default.btn-sm: i.glyphicon.glyphicon-star
-      button#vote3(type="button", data-vote="3").btn.btn-default.btn-sm: i.glyphicon.glyphicon-star
-      button#vote4(type="button", data-vote="4").btn.btn-default.btn-sm: i.glyphicon.glyphicon-star
-      button#vote5(type="button", data-vote="5").btn.btn-default.btn-sm: i.glyphicon.glyphicon-star
-    |  #{article.AverageVote} (#{article.VoteCount} vote(s))    
+  +article_meta(article)
+  if article.CanVote
+    div  
+      .btn-group
+        button#vote1(type="button", data-vote="1").btn.btn-default.btn-sm: i.glyphicon.glyphicon-star
+        button#vote2(type="button", data-vote="2").btn.btn-default.btn-sm: i.glyphicon.glyphicon-star
+        button#vote3(type="button", data-vote="3").btn.btn-default.btn-sm: i.glyphicon.glyphicon-star
+        button#vote4(type="button", data-vote="4").btn.btn-default.btn-sm: i.glyphicon.glyphicon-star
+        button#vote5(type="button", data-vote="5").btn.btn-default.btn-sm: i.glyphicon.glyphicon-star
+      |  #{article.AverageVote} 
+      | (
+      | #{article.VoteCount} vote(s)
+      if article.CurrentVote
+        | , you vote is #{article.CurrentVote}
+      | )    
   div!= markdownHelper.renderMarkdown(article.Text)
   hr
   if !article.Comments

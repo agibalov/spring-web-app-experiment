@@ -106,16 +106,17 @@ public class ArticleService {
         
         ArticleVoteStatsRow articleVoteStatsRow = articleVoteDao.getVoteStatsByArticleId(articleId);
         
+        boolean canVote;
+        Integer currentVote = null;
         if(userId != null) {
+            canVote = true;
+            
             ArticleVoteRow articleVoteRow = articleVoteDao.getUserVote(userId, articleId);
             if(articleVoteRow != null) {
-                // TODO: can vote
-                // TODO: already voted - articleVoteRow.Vote                
-            } else {
-                // TODO: can vote
+                currentVote = articleVoteRow.Vote;                
             }            
         } else {
-            // TODO: not authenticated, can't vote
+            canVote = false;
         }
         
         CompleteArticle completeArticle = completeArticleMapper.makeCompleteArticle(
@@ -123,7 +124,9 @@ public class ArticleService {
                 articleVoteStatsRow,
                 authorBriefUser,
                 briefCategory,
-                comments);
+                comments,
+                canVote,
+                currentVote);
                 
         return completeArticle;
     }
