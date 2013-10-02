@@ -6,15 +6,13 @@ block title
 block content
   if User
     .btn-group.btn-group-lg
-      a.btn.btn-default.btn-success(href="/article/new/0") New Article    
-  .row
-    .col-md-6   
+      a.btn.btn-default.btn-success(href="/article/new/0") New Article
+  .row    
+    .col-md-4   
       .list-group
         for category in home.Categories
-          a.list-group-item(href="/category/#{category.CategoryId}")
-            h4.list-group-item-heading: #{category.Name}
-            p.list-group-item-text category            
-    .col-md-6
+          a.list-group-item(href="/category/#{category.CategoryId}"): #{category.Name}            
+    .col-md-8
       ul.list-unstyled
         for article in home.MostRecentArticles
           li
