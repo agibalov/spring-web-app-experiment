@@ -7,6 +7,7 @@ import java.util.Map;
 
 import me.loki2302.dao.rows.ArticleCommentCountRow;
 import me.loki2302.dao.rows.CommentRow;
+import me.loki2302.dao.rows.CommentRow2;
 import me.loki2302.service.dto.article.Comment;
 import me.loki2302.service.dto.user.BriefUser;
 
@@ -49,4 +50,23 @@ public class CommentMapper {
         comment.User = briefUsersMap.get(commentRow.UserId);            
         return comment;
     }        
+    
+    public List<Comment> makeComments2(List<CommentRow2> commentRows) {        
+        List<Comment> comments = new ArrayList<Comment>();
+        for(CommentRow2 commentRow : commentRows) {
+            Comment comment = makeComment2(commentRow);
+            comments.add(comment);
+        }
+        return comments;
+    }
+    
+    public Comment makeComment2(CommentRow2 commentRow) {
+        Comment comment = new Comment();
+        comment.CommentId = commentRow.CommentId;
+        comment.Text = commentRow.Text;
+        comment.CreatedAt = commentRow.CreatedAt;
+        comment.UpdatedAt = commentRow.UpdatedAt;
+        comment.User = commentRow.User;            
+        return comment;
+    }
 }

@@ -7,7 +7,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import me.loki2302.dao.rows.ArticleRow;
+import me.loki2302.dao.rows.ArticleRow2;
 import me.loki2302.dao.rows.Page;
+import me.loki2302.service.dto.category.BriefCategory;
+import me.loki2302.service.dto.user.BriefUser;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.support.DataAccessUtils;
@@ -55,6 +58,26 @@ public class ArticleDao {
                     .addValue("articleId", articleId),                
                 new ArticleRowMapper()));
     }
+
+    public ArticleRow2 getArticle2(int articleId) {
+        return DataAccessUtils.singleResult(template.query(
+                "select " + 
+                "  A.Id as Id, A.Title as Title, A.Text as Text, A.CreatedAt as CreatedAt, A.UpdatedAt as UpdatedAt, A.ReadCount as ReadCount, " +
+                "  count(Comment.Id) as CommentCount, " + 
+                "  count(V.Id) as VoteCount, avg(V.Vote) as AverageVote, " +
+                "  U.Id as UserId, U.Name as UserName, " + 
+                "  Category.Id as CategoryId, Category.Name as CategoryName " + 
+                "from Articles as A " +
+                "join Users as U on U.Id = A.UserId " +
+                "join Categories as Category on Category.Id = A.CategoryId " +
+                "left join Comments as Comment on Comment.ArticleId = A.Id " +
+                "left join ArticleVotes as V on V.ArticleId = A.Id " +
+                "where A.Id = :articleId " +
+                "group by A.Id, A.Title, A.Text, A.CreatedAt, A.UpdatedAt, A.ReadCount, U.Id, U.Name, Category.Id, Category.Name",
+                new MapSqlParameterSource()
+                    .addValue("articleId", articleId),                
+                new ArticleRow2Mapper()));
+    }    
     
     public void increaseArticleReadCount(int articleId) {
         template.update(
@@ -162,6 +185,35 @@ public class ArticleDao {
             articleRow.CategoryId = rs.getInt("CategoryId");
             articleRow.UserId = rs.getInt("UserId");
             return articleRow;
+        }        
+    }
+    
+    private static class ArticleRow2Mapper implements RowMapper<ArticleRow2> {
+        @Override
+        public ArticleRow2 mapRow(ResultSet rs, int rowNum) throws SQLException {
+            ArticleRow2 articleRow2 = new ArticleRow2();            
+            
+            articleRow2.ArticleId = rs.getInt("Id");
+            articleRow2.Title = rs.getString("Title");
+            articleRow2.Text = rs.getString("Text");
+            articleRow2.CreatedAt = rs.getTimestamp("CreatedAt");
+            articleRow2.UpdatedAt = rs.getTimestamp("UpdatedAt");
+            articleRow2.ReadCount = rs.getInt("ReadCount");
+            articleRow2.CommentCount = rs.getInt("CommentCount");
+            articleRow2.VoteCount = rs.getInt("VoteCount");
+            articleRow2.AverageVote = rs.getInt("AverageVote");
+            
+            BriefUser briefUser = new BriefUser();
+            briefUser.UserId = rs.getInt("UserId");
+            briefUser.Name = rs.getString("UserName");            
+            articleRow2.User = briefUser;
+            
+            BriefCategory briefCategory = new BriefCategory();
+            briefCategory.CategoryId = rs.getInt("CategoryId");
+            briefCategory.Name = rs.getString("CategoryName");
+            articleRow2.Category = briefCategory;
+            
+            return articleRow2;
         }        
     }
 }

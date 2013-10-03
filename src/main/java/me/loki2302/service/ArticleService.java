@@ -12,10 +12,12 @@ import me.loki2302.dao.CommentDao;
 import me.loki2302.dao.UserDao;
 import me.loki2302.dao.rows.ArticleCommentCountRow;
 import me.loki2302.dao.rows.ArticleRow;
+import me.loki2302.dao.rows.ArticleRow2;
 import me.loki2302.dao.rows.ArticleVoteRow;
 import me.loki2302.dao.rows.ArticleVoteStatsRow;
 import me.loki2302.dao.rows.CategoryRow;
 import me.loki2302.dao.rows.CommentRow;
+import me.loki2302.dao.rows.CommentRow2;
 import me.loki2302.dao.rows.UserRow;
 import me.loki2302.service.dto.article.Comment;
 import me.loki2302.service.dto.article.CompleteArticle;
@@ -82,6 +84,42 @@ public class ArticleService {
                 currentTime);
         
         return articleId; 
+    }
+    
+    public CompleteArticle getArticle2(Integer userId, int articleId) {
+        ArticleRow2 articleRow = articleDao.getArticle2(articleId);
+        if(articleRow == null) {
+            throw new ArticleNotFoundException();
+        }
+        
+        articleDao.increaseArticleReadCount(articleId);
+        
+        List<CommentRow2> commentRows = commentDao.getCommentsByArticleId2(articleId);
+        List<Comment> comments = commentMapper.makeComments2(commentRows);
+        
+        // TODO: extract this piece of code to something like UserContextService, 
+        // which will be responsible for making user-specific customizations
+        boolean canVote;
+        Integer currentVote = null;
+        if(userId != null) {
+            canVote = true;
+            
+            ArticleVoteRow articleVoteRow = articleVoteDao.getUserVote(userId, articleId);
+            if(articleVoteRow != null) {
+                currentVote = articleVoteRow.Vote;                
+            }            
+        } else {
+            canVote = false;
+        }
+        //
+        
+        CompleteArticle completeArticle = completeArticleMapper.makeCompleteArticle(
+                articleRow, 
+                comments,
+                canVote,
+                currentVote);
+                
+        return completeArticle;
     }
         
     public CompleteArticle getArticle(Integer userId, int articleId) {

@@ -87,7 +87,7 @@ public class ArticleController {
             @CurrentUser Integer currentUserId, 
             @PathVariable int articleId, 
             Model model) {
-        CompleteArticle article = articleService.getArticle(currentUserId, articleId);
+        CompleteArticle article = articleService.getArticle2(currentUserId, articleId);
         model.addAttribute("article", article);
         return "article/index";
     }

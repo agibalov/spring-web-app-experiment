@@ -72,7 +72,8 @@ public class WorldFacade {
     public void makeRandomComment() {
         int userId = getExistingUserOrCreateANewOne();
         int articleId = getExistingArticleOrCreateANewOne();
-        articleService.getArticle(userId, articleId);
+        //articleService.getArticle(userId, articleId);
+        articleService.getArticle2(userId, articleId);
         String text = generator.commentMarkdown();
         int commentId = commentService.createComment(userId, articleId, text);
         commentIds.add(commentId);
