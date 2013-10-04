@@ -58,7 +58,7 @@ public class ArticleDao {
                     .addValue("articleId", articleId),                
                 new ArticleRowMapper()));
     }
-
+    
     public ArticleRow2 getArticle2(int articleId) {
         return DataAccessUtils.singleResult(template.query(
                 "select " + 
@@ -78,6 +78,20 @@ public class ArticleDao {
                     .addValue("articleId", articleId),                
                 new ArticleRow2Mapper()));
     }    
+    
+    public ArticleRow2 getArticle3(int articleId) {
+        return DataAccessUtils.singleResult(template.query(
+                "select " + 
+                "  Id, Title, Text, CreatedAt, UpdatedAt, " + 
+                "  ReadCount, CommentCount, " + 
+                "  VoteCount, AverageVote, " + 
+                "  UserId, UserName, " + 
+                "  CategoryId, CategoryName " + 
+                "from DetailedArticle where Id = :articleId order by Id limit 1 using index",
+                new MapSqlParameterSource()
+                    .addValue("articleId", articleId),                
+                new ArticleRow2Mapper()));
+    }
     
     public void increaseArticleReadCount(int articleId) {
         template.update(

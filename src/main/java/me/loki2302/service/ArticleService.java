@@ -87,7 +87,7 @@ public class ArticleService {
     }
     
     public CompleteArticle getArticle2(Integer userId, int articleId) {
-        ArticleRow2 articleRow = articleDao.getArticle2(articleId);
+        ArticleRow2 articleRow = articleDao.getArticle3(articleId);
         if(articleRow == null) {
             throw new ArticleNotFoundException();
         }
