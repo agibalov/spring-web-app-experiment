@@ -1,0 +1,43 @@
+@args CompleteArticle article
+@extends(layout.html)
+
+@section("title") {@article.Title}
+
+@section("content") {
+	<h2><span class="glyphicon glyphicon-file"></span> @article.Title</h2>
+	@articleMeta(article)
+	@if(article.CanVote) {
+		<div>
+			<div class="btn-group">
+				<button id="vote1" type="button" data-vote="1" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-star"></i></button>
+				<button id="vote2" type="button" data-vote="2" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-star"></i></button>
+				<button id="vote3" type="button" data-vote="3" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-star"></i></button>
+				<button id="vote4" type="button" data-vote="4" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-star"></i></button>
+				<button id="vote5" type="button" data-vote="5" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-star"></i></button>			
+			</div>
+			@article.AverageVote (@article.VoteCount vote(s)@if(article.CurrentVote) {, your vote is @article.CurrentVote	})
+		</div>
+	}
+	<div>@markdown(article.Text)</div>
+	<hr>
+	@if(article.Comments.isEmpty()) {
+		<p class="text-muted">No comments so far</p>
+	} else {
+		<ul class="list-unstyled">
+			@for(Comment comment : article.Comments) {
+				<li>
+					@commentMeta(comment)
+					<div>@markdown(comment.Text)</div>
+					<hr>
+				</li>
+			}
+		</ul>		
+	}
+	
+	<script type="text/javascript">
+		$("[data-vote]").click(function(e) {
+	      var vote = $(e.delegateTarget).attr("data-vote");
+	      Blogs.voteForArticle(@article.ArticleId, vote);
+	    });
+	</script>
+}

@@ -1,0 +1,6 @@
+@args Comment comment
+<p class="text-muted">
+	<span class="glyphicon glyphicon-calendar"></span> @fancyDate(comment.CreatedAt)
+	<span class="glyphicon glyphicon-time"></span> @fancyTime(comment.CreatedAt)
+	<span class="glyphicon glyphicon-user"></span> <a href="/user/@comment.User.UserId">@comment.User.Name</a>	
+</p>

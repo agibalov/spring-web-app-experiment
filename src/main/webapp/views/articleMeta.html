@@ -1,0 +1,12 @@
+@args BriefArticle article
+<p class="text-muted">
+	<span class="glyphicon glyphicon-calendar"></span> @fancyDate(article.CreatedAt)
+	<span class="glyphicon glyphicon-time"></span> @fancyTime(article.CreatedAt)
+	<span class="glyphicon glyphicon-user"></span> <a href="/user/@article.User.UserId">@article.User.Name</a>
+	<span class="glyphicon glyphicon-book"></span> <a href="/category/@article.Category.CategoryId">@article.Category.Name</a>
+	<br>
+	<span class="glyphicon glyphicon-eye-open"></span> @article.ReadCount 
+    <span class="glyphicon glyphicon-comment"></span> @article.CommentCount 
+    <span class="glyphicon glyphicon-thumbs-up"></span> @article.VoteCount 
+    <span class="glyphicon glyphicon-stats"></span> @article.AverageVote
+</p>

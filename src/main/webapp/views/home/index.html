@@ -1,0 +1,33 @@
+@args Home home
+@extends(layout.html)
+
+@section("title") {Home}
+
+@section("content") {
+	@if(User) {
+		<div class="btn-group btn-group-lg">
+			<a href="/article/new/0" class="btn btn-default btn-success">New Article</a>
+		</div>
+	}
+	<div class="row">
+		<div class="col-md-4">
+			<div class="list-group">
+				@for(BriefCategory category : home.Categories) {
+					<a href="/category/@category.CategoryId" class="list-group-item">@category.Name</a>
+				}
+			</div>
+		</div>
+		<div class="col-md-8">
+			<ul class="list-unstyled">
+				@for(ShortArticle article : home.MostRecentArticles) {
+					<li>
+						<h3><span class="glyphicon glyphicon-file"></span> <a href="/article/@article.ArticleId">@article.Title</a></h3>
+						@articleMeta(article)
+						<div>@markdown(article.FirstParagraph)</div>
+						<p><a href="href="/article/@article.ArticleId">(Read more...)</a></p>
+					</li>
+				}
+			</ul>
+		</div>
+	</div>
+}

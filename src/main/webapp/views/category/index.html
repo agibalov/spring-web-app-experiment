@@ -1,0 +1,23 @@
+@args List<ShortCategory> categories
+@extends(layout.html)
+
+@section("title") {Categories}
+
+@section("content") {
+	<ul class="list-unstyled">
+		@for(ShortCategory category : categories) {
+			<li>
+				<h2><span class="glyphicon glyphicon-book"></span> <a href="/category/@category.CategoryId">@category.Name</a></h2>
+				<ul class="list-unstyled">
+					@for(BriefArticle article : category.RecentArticles) {
+						<li>
+							<h3><span class="glyphicon glyphicon-file"></span> @article.Title</h3>
+							@articleMeta(article)
+							<p><a href="/article/@article.ArticleId">(Read...)</a></p>
+						</li>
+					}				
+				</ul>
+			</li>
+		}
+	</ul>
+}

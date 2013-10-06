@@ -1,0 +1,51 @@
+@args UserDetails User;
+
+<!doctype html>
+<html>
+	<head>
+		<title>Blogs - @render("title")</title>
+		<link rel="stylesheet" href="/assets/css/bootstrap.min.css">
+	    <script type="text/javascript" src="/assets/js/jquery.js"></script>
+	    <script type="text/javascript" src="/assets/js/bootstrap.min.js"></script>
+	    <script type="text/javascript" src="/assets/js/blogs.js"></script>
+	</head>
+	<body>
+		<nav class="navbar navbar-default">
+			<div class="container">
+				<div class="navbar-header">
+					<button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".my-navbar-collapse">
+						<span class="sr-only">Toggle Navigation</span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+					<a href="/" class="navbar-brand">Brand</a>
+				</div>
+				<nav class="collapse navbar-collapse my-navbar-collapse">
+					<ul class="nav navbar-nav">
+						<li><a href="/"><span class="glyphicon glyphicon-home"></span> Home</a></li>
+						<li><a href="/category"><span class="glyphicon glyphicon-book"></span> Categories</a></li>
+					</ul>
+					<ul class="nav navbar-nav navbar-right">
+						@if(User) {
+							<li><a href="#"><span class="glyphicon glyphicon-user"></span> @User.UserName</a></li>
+							<li><a href="/account/sign-out">Sign Out</a></li>
+						} else {
+							<li><a href="/account/sign-in"><span class="glyphicon glyphicon-fire"></span> Sign In</a></li>            
+              				<li><a href="/account/sign-up"><span class="glyphicon glyphicon-fire"></span> Sign Up</a></li>
+						}
+					</ul>
+				</nav>
+			</div>
+		</nav>
+		<div class="container">
+			<h2>Blogs <small>@render("title")</small></h2>
+			@if(User) {
+        		<p class="text-muted">@User.UserId @User.UserName @User.SessionToken @User.Roles</p>
+        	}
+        	@render("content")
+        	<hr>
+			<p>&copy; 2013 by <a href="http://loki2302.me" target="_blank">loki2302</a>
+		</div>			
+	</body>	
+</html>

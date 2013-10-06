@@ -1,0 +1,32 @@
+@args CompleteCategory category
+@extends(layout.html)
+
+@section("title") {@category.Name}
+
+@section("content") {
+	<h2>@category.Name</h2>
+	<p class="text-muted">DEBUG: @category.Articles</p>
+	<ul class="list-unstyled">
+		@for(ShortArticle article : category.Articles.Items) {
+			<li>
+				<h3><span class="glyphicon glyphicon-file"></span> <a href="/article/@article.ArticleId">@article.Title</a></h3>
+				@articleMeta(article)
+				<div>@markdown(article.FirstParagraph)</div>
+				<p><a href="/article/@article.ArticleId">(Read more...)</a></p>
+			</li>
+		}		
+	</ul>
+	<ul class="pager">
+		@if(category.Articles.CurrentPage != 0) {
+			<li class="previous">
+				<a href="/category/@category.CategoryId?articlesPerPage=@category.Articles.ItemsPerPage&page=@(category.Articles.CurrentPage-1)">&larr; Previous</a>
+			</li>
+		}
+		
+		@if(category.Articles.CurrentPage != category.Articles.NumberOfPages - 1) {
+			<li class="next">
+				<a href="/category/@category.CategoryId?articlesPerPage=@category.Articles.ItemsPerPage&page=@(category.Articles.CurrentPage+1)">Next &rarr;</a>
+			</li>
+		}
+	</ul>	
+}
