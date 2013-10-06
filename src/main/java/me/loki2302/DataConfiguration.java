@@ -11,32 +11,20 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import com.googlecode.flyway.core.Flyway;
 
 @Configuration
-public class DataConfiguration {
+public class DataConfiguration {   
     @Bean
-    public DataSource dataSource() {
-        EmbeddedDatabaseBuilder builder = new EmbeddedDatabaseBuilder();
-        EmbeddedDatabase embeddedDatabase = builder.setType(EmbeddedDatabaseType.HSQL).build();
-        
-        Flyway flyway = new Flyway();
-        flyway.setDataSource(embeddedDatabase);
-        flyway.migrate();
-        
-        return embeddedDatabase;
-    }
-    
-    /*@Bean
+    @SuppressWarnings("unchecked")
     public DataSource dataSource() throws ClassNotFoundException {        
         SimpleDriverDataSource dataSource = new SimpleDriverDataSource();
         dataSource.setDriverClass((Class<? extends Driver>)Class.forName("org.hsqldb.jdbcDriver"));
-        dataSource.setUrl("jdbc:hsqldb:file:mydb");
+        dataSource.setUrl("jdbc:hsqldb:mem:.");
+        //dataSource.setUrl("jdbc:hsqldb:file:mydb");        
+        //dataSource.setUrl("jdbc:hsqldb:hsql://dbserver/");
         dataSource.setUsername("sa");
         dataSource.setPassword("");
         
@@ -45,7 +33,7 @@ public class DataConfiguration {
         flyway.migrate();
         
         return dataSource;
-    }*/
+    }
     
     @Bean
     public PlatformTransactionManager transactionManager(DataSource dataSource) {

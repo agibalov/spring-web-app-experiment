@@ -2,12 +2,7 @@ package me.loki2302.dao;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
-import java.util.List;
-
-import me.loki2302.dao.rows.ArticleVoteStatsRow;
 import me.loki2302.dao.rows.ArticleVoteRow;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,35 +49,7 @@ public class ArticleVoteDao {
                     .addValue("vote", vote)                    
                     .addValue("updatedAt", updatedAt));
     }
-        
-    public ArticleVoteStatsRow getVoteStatsByArticleId(int articleId) {        
-        return DataAccessUtils.singleResult(template.query(
-                "select A.Id as ArticleId, count(V.Id) as VoteCount, avg(V.Vote) as AverageVote " + 
-                "from Articles as A " +
-                "left join ArticleVotes as V on V.ArticleId = A.Id " +
-                "where A.Id = :articleId " +
-                "group by A.Id", 
-                new MapSqlParameterSource()
-                    .addValue("articleId", articleId),
-                new ArticleVoteStatsRowMapper()));
-    }
-    
-    public List<ArticleVoteStatsRow> getVoteStatsByArticleIds(Collection<Integer> articleIds) {
-        if(articleIds.isEmpty()) {
-            return new ArrayList<ArticleVoteStatsRow>();
-        }
-        
-        return template.query(
-                "select A.Id as ArticleId, count(V.Id) as VoteCount, avg(V.Vote) as AverageVote " + 
-                "from Articles as A " +
-                "left join ArticleVotes as V on V.ArticleId = A.Id " +
-                "where A.Id in (:articleIds) " +
-                "group by A.Id", 
-                new MapSqlParameterSource()
-                    .addValue("articleIds", articleIds),
-                new ArticleVoteStatsRowMapper());
-    }
-    
+                
     public ArticleVoteRow getUserVote(int userId, int articleId) {
         return DataAccessUtils.singleResult(template.query(
                 "select Id, CreatedAt, UpdatedAt, Vote, ArticleId, UserId " + 
@@ -93,18 +60,7 @@ public class ArticleVoteDao {
                     .addValue("userId", userId),
                 new ArticleVoteRowMapper()));
     }
-        
-    private static class ArticleVoteStatsRowMapper implements RowMapper<ArticleVoteStatsRow> {
-        @Override
-        public ArticleVoteStatsRow mapRow(ResultSet rs, int rowNum) throws SQLException {
-            ArticleVoteStatsRow articleVoteStatsRow = new ArticleVoteStatsRow();
-            articleVoteStatsRow.ArticleId = rs.getInt("ArticleId");
-            articleVoteStatsRow.VoteCount = rs.getInt("VoteCount");
-            articleVoteStatsRow.AverageVote = rs.getInt("AverageVote");
-            return articleVoteStatsRow;
-        }        
-    }
-    
+            
     private static class ArticleVoteRowMapper implements RowMapper<ArticleVoteRow> {
         @Override
         public ArticleVoteRow mapRow(ResultSet rs, int rowNum) throws SQLException {

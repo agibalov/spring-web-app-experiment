@@ -39,15 +39,4 @@ public class SignUpModel {
     public SignUpRole getRole() {
         return role;
     }
-    
-    public static enum SignUpRole {
-        Reader("Reader"),
-        Writer("Writer");
-        
-        private final String roleName; // how does it really work?
-        
-        SignUpRole(String roleName) {
-            this.roleName = roleName;
-        }
-    }
 }

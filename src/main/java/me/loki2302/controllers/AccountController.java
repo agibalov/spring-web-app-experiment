@@ -1,7 +1,6 @@
 package me.loki2302.controllers;
 
 import me.loki2302.auth.SessionAuthenticationToken;
-import me.loki2302.controllers.SignUpModel.SignUpRole;
 import me.loki2302.service.AuthenticationService;
 import me.loki2302.service.UserType;
 import me.loki2302.service.dto.AuthenticationResult;
