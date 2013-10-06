@@ -15,7 +15,7 @@
 		</div>
 		<div class="form-group @if(passwordError != null && !passwordError.equals("")) { has-error }">
 			<label class="control-label" for="password">Password</label>
-			<input type="text" name="password" class="form-control" value="@signUpModel.getPassword()">
+			<input type="password" name="password" class="form-control" value="@signUpModel.getPassword()">
 			@if(passwordError != null && !passwordError.equals("")) {
 				<span class="help-block">@passwordError</span>
 			}
@@ -23,12 +23,12 @@
 		<div class="form-group">
 			<div class="radio">
 				<label>
-					<input type="radio" name="role" value="Reader" @if(signUpModel.getRole().equals(SignUpModel.SignUpRole.Reader)) { checked }"> Reader
+					<input type="radio" name="role" value="Reader" @if(signUpModel.getRole().equals(SignUpRole.Reader)) { checked }"> Reader
 				</label>
 			</div>			
 			<div class="radio">
 				<label>
-					<input type="radio" name="role" value="Writer" @if(signUpModel.getRole().equals(SignUpModel.SignUpRole.Writer)) { checked }"> Writer
+					<input type="radio" name="role" value="Writer" @if(signUpModel.getRole().equals(SignUpRole.Writer)) { checked }"> Writer
 				</label>
 			</div>
 		</div>

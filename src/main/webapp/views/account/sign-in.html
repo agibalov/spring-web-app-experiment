@@ -15,7 +15,7 @@
 		</div>
 		<div class="form-group @if(passwordError != null && !passwordError.equals("")) { has-error }">
 			<label class="control-label" for="password">Password</label>
-			<input type="text" name="password" class="form-control" value="@signInModel.getPassword()">
+			<input type="password" name="password" class="form-control" value="@signInModel.getPassword()">
 			@if(passwordError != null && !passwordError.equals("")) {
 				<span class="help-block">@passwordError</span>
 			}
