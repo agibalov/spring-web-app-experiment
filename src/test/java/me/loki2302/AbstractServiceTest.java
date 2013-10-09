@@ -10,5 +10,5 @@ import org.springframework.transaction.annotation.Transactional;
 @ContextConfiguration(classes = TestConfiguration.class)
 @Transactional
 @TransactionConfiguration(defaultRollback = true)
-public abstract class AbstractServiceTest {
+public abstract class AbstractServiceTest {    
 }

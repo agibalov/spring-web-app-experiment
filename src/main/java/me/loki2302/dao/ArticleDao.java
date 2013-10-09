@@ -133,34 +133,39 @@ public class ArticleDao {
                 new MapSqlParameterSource()
                     .addValue("categoryId", categoryId),
                 Integer.class);
-        
-        int skip = page * itemsPerPage;
-        if(skip >= numberOfItems) {
-            throw new RuntimeException("no such page");
+                
+        List<ArticleRow> items;
+        if(numberOfItems > 0) {
+            int skip = page * itemsPerPage;
+            if(skip >= numberOfItems) {
+                throw new RuntimeException("no such page");
+            }
+            
+            items = template.query(
+                    "select limit :skip :take " + 
+                    "  A.Id as Id, A.Title as Title, A.Text as Text, " + 
+                    "  A.CreatedAt as CreatedAt, A.UpdatedAt as UpdatedAt, " + 
+                    "  A.ReadCount as ReadCount, " +
+                    "  count(Comment.Id) as CommentCount, " + 
+                    "  count(V.Id) as VoteCount, avg(V.Vote) as AverageVote, " +
+                    "  U.Id as UserId, U.Name as UserName, " + 
+                    "  Category.Id as CategoryId, Category.Name as CategoryName " + 
+                    "from Articles as A " +
+                    "join Users as U on U.Id = A.UserId " +
+                    "join Categories as Category on Category.Id = A.CategoryId " +
+                    "left join Comments as Comment on Comment.ArticleId = A.Id " +
+                    "left join ArticleVotes as V on V.ArticleId = A.Id " +
+                    "where Category.Id = :categoryId " +
+                    "group by A.Id, A.Title, A.Text, A.CreatedAt, A.UpdatedAt, A.ReadCount, U.Id, U.Name, Category.Id, Category.Name " + 
+                    "order by A.Id desc",
+                    new MapSqlParameterSource()
+                        .addValue("categoryId", categoryId)
+                        .addValue("skip", skip)
+                        .addValue("take", itemsPerPage),                
+                    new ArticleRowMapper());
+        } else {
+            items = new ArrayList<ArticleRow>();
         }
-        
-        List<ArticleRow> items = template.query(
-                "select limit :skip :take " + 
-                "  A.Id as Id, A.Title as Title, A.Text as Text, " + 
-                "  A.CreatedAt as CreatedAt, A.UpdatedAt as UpdatedAt, " + 
-                "  A.ReadCount as ReadCount, " +
-                "  count(Comment.Id) as CommentCount, " + 
-                "  count(V.Id) as VoteCount, avg(V.Vote) as AverageVote, " +
-                "  U.Id as UserId, U.Name as UserName, " + 
-                "  Category.Id as CategoryId, Category.Name as CategoryName " + 
-                "from Articles as A " +
-                "join Users as U on U.Id = A.UserId " +
-                "join Categories as Category on Category.Id = A.CategoryId " +
-                "left join Comments as Comment on Comment.ArticleId = A.Id " +
-                "left join ArticleVotes as V on V.ArticleId = A.Id " +
-                "where Category.Id = :categoryId " +
-                "group by A.Id, A.Title, A.Text, A.CreatedAt, A.UpdatedAt, A.ReadCount, U.Id, U.Name, Category.Id, Category.Name " + 
-                "order by A.Id desc",
-                new MapSqlParameterSource()
-                    .addValue("categoryId", categoryId)
-                    .addValue("skip", skip)
-                    .addValue("take", itemsPerPage),                
-                new ArticleRowMapper());
         
         Page<ArticleRow> pageData = new Page<ArticleRow>();
         pageData.NumberOfItems = numberOfItems;
