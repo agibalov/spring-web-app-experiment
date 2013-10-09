@@ -14,8 +14,6 @@ import me.loki2302.service.dto.article.Comment;
 import me.loki2302.service.dto.article.CompleteArticle;
 import me.loki2302.service.dto.article.ShortArticle;
 import me.loki2302.service.exceptions.ArticleNotFoundException;
-import me.loki2302.service.mappers.BriefCategoryMapper;
-import me.loki2302.service.mappers.BriefUserMapper;
 import me.loki2302.service.mappers.CommentMapper;
 import me.loki2302.service.mappers.CompleteArticleMapper;
 import me.loki2302.service.mappers.ShortArticleMapper;
@@ -42,13 +40,7 @@ public class ArticleService {
     
     @Autowired
     private ArticleVoteDao articleVoteDao;
-    
-    @Autowired
-    private BriefUserMapper briefUserMapper;
-    
-    @Autowired
-    private BriefCategoryMapper briefCategoryMapper;
-    
+            
     @Autowired
     private CompleteArticleMapper completeArticleMapper;
     

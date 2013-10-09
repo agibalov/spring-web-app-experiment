@@ -1,10 +1,7 @@
 package me.loki2302.service.mappers;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
 import me.loki2302.dao.rows.CategoryRow;
 import me.loki2302.service.dto.category.BriefCategory;
 
@@ -26,14 +23,5 @@ public class BriefCategoryMapper {
             briefCategories.add(briefCategory);
         }        
         return briefCategories;
-    }
-    
-    public Map<Integer, BriefCategory> makeBriefCategoriesMap(List<CategoryRow> categoryRows) {
-        Map<Integer, BriefCategory> categoriesMap = new HashMap<Integer, BriefCategory>();
-        for(CategoryRow categoryRow : categoryRows) {
-            BriefCategory briefCategory = makeBriefCategory(categoryRow);
-            categoriesMap.put(briefCategory.CategoryId, briefCategory);
-        }
-        return categoriesMap;
     }
 }

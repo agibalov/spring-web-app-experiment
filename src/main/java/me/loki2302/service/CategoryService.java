@@ -5,10 +5,7 @@ import java.util.List;
 import java.util.Set;
 
 import me.loki2302.dao.ArticleDao;
-import me.loki2302.dao.ArticleVoteDao;
 import me.loki2302.dao.CategoryDao;
-import me.loki2302.dao.CommentDao;
-import me.loki2302.dao.UserDao;
 import me.loki2302.dao.rows.ArticleRow;
 import me.loki2302.dao.rows.CategoryRow;
 import me.loki2302.dao.rows.Page;
@@ -20,8 +17,6 @@ import me.loki2302.service.dto.category.ShortCategory;
 import me.loki2302.service.exceptions.CategoryNotFoundException;
 import me.loki2302.service.mappers.BriefArticleMapper;
 import me.loki2302.service.mappers.BriefCategoryMapper;
-import me.loki2302.service.mappers.BriefUserMapper;
-import me.loki2302.service.mappers.CommentMapper;
 import me.loki2302.service.mappers.CompleteCategoryMapper;
 import me.loki2302.service.mappers.ShortArticleMapper;
 import me.loki2302.service.mappers.ShortCategoryMapper;
@@ -30,25 +25,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class CategoryService {
-    @Autowired
-    private UserDao userDao;
-    
+public class CategoryService {    
     @Autowired
     private CategoryDao categoryDao;
     
     @Autowired
     private ArticleDao articleDao;
-    
-    @Autowired
-    private CommentDao commentDao;
-    
-    @Autowired
-    private ArticleVoteDao articleVoteDao;
-    
-    @Autowired
-    private BriefUserMapper briefUserMapper;       
-    
+                
     @Autowired
     private BriefCategoryMapper briefCategoryMapper;
     
@@ -63,10 +46,7 @@ public class CategoryService {
     
     @Autowired
     private CompleteCategoryMapper completeCategoryMapper;
-    
-    @Autowired
-    private CommentMapper commentMapper;
-        
+            
     public int createCategory(String categoryName) {
         return categoryDao.createCategory(categoryName);
     }
