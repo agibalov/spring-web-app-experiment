@@ -13,6 +13,7 @@ import org.springframework.web.servlet.DispatcherServlet;
 public class WebAppInitializer implements WebApplicationInitializer {
     public void onStartup(ServletContext servletContext) throws ServletException {
         AnnotationConfigWebApplicationContext context = new AnnotationConfigWebApplicationContext();
+        context.getEnvironment().setActiveProfiles("production");
         context.register(MvcConfiguration.class);
         
         servletContext.addListener(new ContextLoaderListener(context));

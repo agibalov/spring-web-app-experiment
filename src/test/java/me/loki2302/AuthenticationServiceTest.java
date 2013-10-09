@@ -1,7 +1,7 @@
 package me.loki2302;
 
-import static org.junit.Assert.assertEquals;
-import me.loki2302.dao.SomethingDao;
+import me.loki2302.service.AuthenticationService;
+import me.loki2302.service.exceptions.UserNotRegisteredException;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,13 +15,12 @@ import org.springframework.transaction.annotation.Transactional;
 @ContextConfiguration(classes = TestConfiguration.class)
 @Transactional
 @TransactionConfiguration(defaultRollback = true)
-public class SomethingDAOTest {
+public class AuthenticationServiceTest {
     @Autowired
-    private SomethingDao somethingDao;
+    private AuthenticationService authenticationService;
     
-    @Test
-    public void test() {
-        int something = somethingDao.getSomething();
-        assertEquals(123, something);
-    }    
+    @Test(expected = UserNotRegisteredException.class)
+    public void canSignInIfDidNotSignUpBefore() {
+        authenticationService.signIn("loki2302", "qwerty");        
+    }
 }

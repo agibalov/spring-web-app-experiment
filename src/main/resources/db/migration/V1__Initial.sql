@@ -1,6 +1,3 @@
-create table Something(x int);
-insert into Something(x) values(123);
-
 create table Users(
 	Id int identity primary key,
 	Name varchar(256) not null,

@@ -4,6 +4,7 @@ import java.util.Random;
 
 import javax.annotation.PostConstruct;
 
+import me.loki2302.OnlyInProduction;
 import me.loki2302.service.CurrentTimeProvider;
 
 import org.joda.time.DateTime;
@@ -12,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+@OnlyInProduction
 @Component
 public class DatabasePopulator {
     private final static Logger logger = LoggerFactory.getLogger(DatabasePopulator.class);
