@@ -3,12 +3,7 @@
 
 @section("title") {Home}
 
-@section("content") {
-	@if(User) {
-		<div class="btn-group btn-group-lg">
-			<a href="/article/new/0" class="btn btn-default btn-success">New Article</a>
-		</div>
-	}
+@section("content") {	
 	<div class="row">
 		<div class="col-md-4">
 			<div class="list-group">
@@ -24,7 +19,6 @@
 						<h3><span class="glyphicon glyphicon-file"></span> <a href="/article/@article.ArticleId">@article.Title</a></h3>
 						@articleMeta(article)
 						<div>@markdown(article.FirstParagraph)</div>
-						<p><a href="href="/article/@article.ArticleId">(Read more...)</a></p>
 					</li>
 				}
 			</ul>

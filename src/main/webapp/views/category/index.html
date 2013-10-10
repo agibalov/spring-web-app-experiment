@@ -10,7 +10,7 @@
 				<h2><span class="glyphicon glyphicon-book"></span> <a href="/category/@category.CategoryId">@category.Name</a></h2>
 			</div>
 		</div>
-		<div class="row">
+		<div class="row">			
 			@for(BriefArticle article : category.RecentArticles) {
 				<div class="col-md-4">
 					<h3><span class="glyphicon glyphicon-file"></span> <a href="/article/@article.ArticleId">@article.Title</a></h3>

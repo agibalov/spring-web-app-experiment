@@ -5,6 +5,11 @@
 
 @section("content") {
 	<h2>@category.Name</h2>
+	@if(User) {
+		<div class="btn-group btn-group-lg">
+			<a href="/article/new/@category.CategoryId" class="btn btn-default btn-success">New Article</a>
+		</div>
+	}
 	<p class="text-muted">DEBUG: @category.Articles</p>
 	<ul class="list-unstyled">
 		@for(ShortArticle article : category.Articles.Items) {
