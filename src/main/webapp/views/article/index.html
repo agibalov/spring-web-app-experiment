@@ -1,4 +1,4 @@
-@args CompleteArticle article
+@args CompleteArticle article, ArticleVoteDetails articleVoteDetails
 @extends(layout.html, area="categories")
 
 @section("title") {@article.Title}
@@ -6,7 +6,7 @@
 @section("content") {
 	<h2><span class="glyphicon glyphicon-file"></span> @article.Title</h2>
 	@articleMeta(article)
-	@if(article.CanVote) {
+	@if(articleVoteDetails.CanVote) {
 		<div>
 			<div class="btn-group">
 				<button id="vote1" type="button" data-vote="1" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-star"></i></button>
@@ -15,7 +15,7 @@
 				<button id="vote4" type="button" data-vote="4" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-star"></i></button>
 				<button id="vote5" type="button" data-vote="5" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-star"></i></button>			
 			</div>
-			@article.AverageVote (@article.VoteCount vote(s)@if(article.CurrentVote) {, your vote is @article.CurrentVote	})
+			@article.AverageVote (@article.VoteCount vote(s)@if(articleVoteDetails.CurrentVote) {, your vote is @articleVoteDetails.CurrentVote	})
 		</div>
 	}
 	<div>@markdown(article.Text)</div>

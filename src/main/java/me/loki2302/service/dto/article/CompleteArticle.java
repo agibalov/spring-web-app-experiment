@@ -5,6 +5,4 @@ import java.util.List;
 public class CompleteArticle extends BriefArticle {
     public String Text;
     public List<Comment> Comments;
-    public boolean CanVote;
-    public Integer CurrentVote;
 }

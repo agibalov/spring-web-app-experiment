@@ -1,7 +1,10 @@
 package me.loki2302.service;
 
+import me.loki2302.dao.ArticleVoteDao;
 import me.loki2302.dao.UserDao;
+import me.loki2302.dao.rows.ArticleVoteRow;
 import me.loki2302.dao.rows.UserRow;
+import me.loki2302.service.dto.article.ArticleVoteDetails;
 import me.loki2302.service.dto.user.CompleteUser;
 import me.loki2302.service.exceptions.UserNotFoundException;
 import me.loki2302.service.mappers.CompleteUserMapper;
@@ -13,6 +16,9 @@ import org.springframework.stereotype.Service;
 public class UserService {
     @Autowired
     private UserDao userDao;
+    
+    @Autowired
+    private ArticleVoteDao articleVoteDao;
         
     @Autowired
     private CompleteUserMapper completeUserMapper;
@@ -24,5 +30,26 @@ public class UserService {
         }
         
         return completeUserMapper.makeCompleteUser(userRow);
+    }
+    
+    public ArticleVoteDetails getArticleVote(Integer userId, int articleId) {
+        boolean canVote;
+        Integer currentVote = null;
+        if(userId != null) {
+            canVote = true;
+            
+            ArticleVoteRow articleVoteRow = articleVoteDao.getUserVote(userId, articleId);
+            if(articleVoteRow != null) {
+                currentVote = articleVoteRow.Vote;                
+            }            
+        } else {
+            canVote = false;
+        }
+        
+        ArticleVoteDetails articleVoteDetails = new ArticleVoteDetails();
+        articleVoteDetails.CanVote = canVote;
+        articleVoteDetails.CurrentVote = currentVote;
+        
+        return articleVoteDetails;
     }
 }

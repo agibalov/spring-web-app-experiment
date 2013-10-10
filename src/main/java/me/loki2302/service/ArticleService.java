@@ -2,13 +2,13 @@ package me.loki2302.service;
 
 import java.util.Date;
 import java.util.List;
+
 import me.loki2302.dao.ArticleDao;
 import me.loki2302.dao.ArticleVoteDao;
 import me.loki2302.dao.CategoryDao;
 import me.loki2302.dao.CommentDao;
 import me.loki2302.dao.UserDao;
 import me.loki2302.dao.rows.ArticleRow;
-import me.loki2302.dao.rows.ArticleVoteRow;
 import me.loki2302.dao.rows.CommentRow;
 import me.loki2302.service.dto.article.Comment;
 import me.loki2302.service.dto.article.CompleteArticle;
@@ -72,28 +72,10 @@ public class ArticleService {
         
         List<CommentRow> commentRows = commentDao.getCommentsByArticleId(articleId);
         List<Comment> comments = commentMapper.makeComments(commentRows);
-        
-        // TODO: extract this piece of code to something like UserContextService, 
-        // which will be responsible for making user-specific customizations
-        boolean canVote;
-        Integer currentVote = null;
-        if(userId != null) {
-            canVote = true;
-            
-            ArticleVoteRow articleVoteRow = articleVoteDao.getUserVote(userId, articleId);
-            if(articleVoteRow != null) {
-                currentVote = articleVoteRow.Vote;                
-            }            
-        } else {
-            canVote = false;
-        }
-        //
-        
+                
         CompleteArticle completeArticle = completeArticleMapper.makeCompleteArticle(
                 articleRow, 
-                comments,
-                canVote,
-                currentVote);
+                comments);
                 
         return completeArticle;
     }

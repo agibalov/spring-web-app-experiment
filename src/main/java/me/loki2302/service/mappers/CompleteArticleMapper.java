@@ -10,9 +10,7 @@ import org.springframework.stereotype.Component;
 public class CompleteArticleMapper {    
     public CompleteArticle makeCompleteArticle(
             ArticleRow articleRow, 
-            List<Comment> comments,
-            boolean canVote,
-            Integer currentVote) {
+            List<Comment> comments) {
         CompleteArticle completeArticle = new CompleteArticle();
         completeArticle.ArticleId = articleRow.ArticleId;
         completeArticle.Title = articleRow.Title;
@@ -26,8 +24,6 @@ public class CompleteArticleMapper {
         completeArticle.User = articleRow.User;
         completeArticle.Category = articleRow.Category;
         completeArticle.Comments = comments;
-        completeArticle.CanVote = canVote;
-        completeArticle.CurrentVote = currentVote;
         return completeArticle;
     }
 }

@@ -1,6 +1,8 @@
 package me.loki2302.controllers;
 
 import me.loki2302.service.ArticleService;
+import me.loki2302.service.UserService;
+import me.loki2302.service.dto.article.ArticleVoteDetails;
 import me.loki2302.service.dto.article.CompleteArticle;
 
 import org.slf4j.Logger;
@@ -26,6 +28,9 @@ public class ArticleController {
     
     @Autowired
     private ArticleService articleService;
+    
+    @Autowired
+    private UserService userService;
     
     @PreAuthorize("isAuthenticated()")
     @RequestMapping(value = "new/{categoryId}", method = RequestMethod.GET)
@@ -87,8 +92,13 @@ public class ArticleController {
             @CurrentUser Integer currentUserId, 
             @PathVariable int articleId, 
             Model model) {
+        
         CompleteArticle article = articleService.getArticle(currentUserId, articleId);
+        ArticleVoteDetails articleVoteDetails = userService.getArticleVote(currentUserId, articleId);
+        
         model.addAttribute("article", article);
+        model.addAttribute("articleVoteDetails", articleVoteDetails);
+        
         return "article/index";
     }
     
