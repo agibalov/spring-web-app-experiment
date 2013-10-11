@@ -48,6 +48,25 @@ public class ArticleDao {
         
         return (Integer)keyHolder.getKey();
     }
+    
+    public void updateArticle(
+            int articleId, 
+            String title, 
+            String text, 
+            Date updatedAt) {
+        
+        template.update(
+                "update Articles set " +
+                "Title = :title, " +
+                "Text = :text, " +
+                "UpdatedAt = :updatedAt " +
+                "where Id = :articleId", 
+                new MapSqlParameterSource()                    
+                    .addValue("title", title)
+                    .addValue("text", text)
+                    .addValue("updatedAt", updatedAt)
+                    .addValue("articleId", articleId));
+    }
         
     public ArticleRow getArticle(int articleId) {
         return DataAccessUtils.singleResult(template.query(

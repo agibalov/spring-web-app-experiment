@@ -13,6 +13,7 @@ import me.loki2302.dao.rows.CommentRow;
 import me.loki2302.service.dto.article.Comment;
 import me.loki2302.service.dto.article.CompleteArticle;
 import me.loki2302.service.dto.article.ShortArticle;
+import me.loki2302.service.exceptions.AccessToArticleDeniedException;
 import me.loki2302.service.exceptions.ArticleNotFoundException;
 import me.loki2302.service.mappers.CommentMapper;
 import me.loki2302.service.mappers.CompleteArticleMapper;
@@ -60,6 +61,21 @@ public class ArticleService {
                 currentTime);
         
         return articleId; 
+    }
+    
+    public void updateArticle(int userId, int articleId, String title, String text) {
+        ArticleRow articleRow = articleDao.getArticle(articleId);
+        if(articleRow == null) {
+            throw new ArticleNotFoundException();
+        }
+        
+        int articleAuthor = articleRow.User.UserId;
+        if(articleAuthor != userId) {
+            throw new AccessToArticleDeniedException();
+        }
+        
+        Date currentTime = currentTimeProvider.getCurrentTime();
+        articleDao.updateArticle(articleId, title, text, currentTime);
     }
     
     public CompleteArticle getArticle(Integer userId, int articleId) {
