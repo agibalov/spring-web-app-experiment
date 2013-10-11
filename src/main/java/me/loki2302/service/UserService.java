@@ -19,7 +19,7 @@ public class UserService {
     
     @Autowired
     private ArticleVoteDao articleVoteDao;
-        
+    
     @Autowired
     private CompleteUserMapper completeUserMapper;
         
