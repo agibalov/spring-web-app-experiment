@@ -15,9 +15,8 @@ import me.loki2302.service.dto.article.CompleteArticle;
 import me.loki2302.service.dto.article.ShortArticle;
 import me.loki2302.service.exceptions.AccessToArticleDeniedException;
 import me.loki2302.service.exceptions.ArticleNotFoundException;
+import me.loki2302.service.mappers.ArticleMapper;
 import me.loki2302.service.mappers.CommentMapper;
-import me.loki2302.service.mappers.CompleteArticleMapper;
-import me.loki2302.service.mappers.ShortArticleMapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -43,11 +42,8 @@ public class ArticleService {
     private ArticleVoteDao articleVoteDao;
             
     @Autowired
-    private CompleteArticleMapper completeArticleMapper;
-    
-    @Autowired
-    private ShortArticleMapper shortArticleMapper;
-    
+    private ArticleMapper articleMapper;
+        
     @Autowired
     private CommentMapper commentMapper;
         
@@ -89,7 +85,7 @@ public class ArticleService {
         List<CommentRow> commentRows = commentDao.getCommentsByArticleId(articleId);
         List<Comment> comments = commentMapper.makeComments(commentRows);
                 
-        CompleteArticle completeArticle = completeArticleMapper.makeCompleteArticle(
+        CompleteArticle completeArticle = articleMapper.makeCompleteArticle(
                 articleRow, 
                 comments);
                 
@@ -98,7 +94,7 @@ public class ArticleService {
             
     public List<ShortArticle> getMostRecentArticles(int numberOfMostRecentArticles) {
         List<ArticleRow> articleRows = articleDao.getRecentArticles(numberOfMostRecentArticles);            
-        return shortArticleMapper.makeShortArticles(articleRows);
+        return articleMapper.makeShortArticles(articleRows);
     }
     
     public void voteForArticle(int userId, int articleId, int vote) {

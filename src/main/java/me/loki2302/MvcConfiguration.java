@@ -50,7 +50,7 @@ public class MvcConfiguration extends WebMvcConfigurerAdapter {
     @Bean
     public RythmConfigurator rythmConfigurator() {
         RythmConfigurator rythmConfigurator = new RythmConfigurator();
-        rythmConfigurator.setMode("dev");
+        rythmConfigurator.setMode("dev");        
         rythmConfigurator.setTempDirectory("./");
         rythmConfigurator.setRootDirectory("/views/");
         rythmConfigurator.setImplicitPackages(Arrays.asList(

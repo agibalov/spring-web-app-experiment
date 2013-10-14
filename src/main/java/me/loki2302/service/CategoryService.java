@@ -15,10 +15,9 @@ import me.loki2302.service.dto.category.BriefCategory;
 import me.loki2302.service.dto.category.CompleteCategory;
 import me.loki2302.service.dto.category.ShortCategory;
 import me.loki2302.service.exceptions.CategoryNotFoundException;
-import me.loki2302.service.mappers.BriefArticleMapper;
+import me.loki2302.service.mappers.ArticleMapper;
 import me.loki2302.service.mappers.BriefCategoryMapper;
 import me.loki2302.service.mappers.CompleteCategoryMapper;
-import me.loki2302.service.mappers.ShortArticleMapper;
 import me.loki2302.service.mappers.ShortCategoryMapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,14 +35,11 @@ public class CategoryService {
     private BriefCategoryMapper briefCategoryMapper;
     
     @Autowired
-    private BriefArticleMapper briefArticleMapper;
+    private ArticleMapper articleMapper;
     
     @Autowired
     private ShortCategoryMapper shortCategoryMapper;
-    
-    @Autowired
-    private ShortArticleMapper shortArticleMapper;
-    
+        
     @Autowired
     private CompleteCategoryMapper completeCategoryMapper;
             
@@ -65,7 +61,7 @@ public class CategoryService {
                 categoryIds, 
                 numberOfRecentArticles);
         
-        List<BriefArticle> briefArticles = briefArticleMapper.makeBriefArticles(articleRows);
+        List<BriefArticle> briefArticles = articleMapper.makeBriefArticles(articleRows);
         
         List<ShortCategory> shortCategories = shortCategoryMapper.makeShortCategories(
                 categoryRows, 
@@ -85,7 +81,7 @@ public class CategoryService {
                 articlesPerPage, 
                 page);
                 
-        List<ShortArticle> shortArticles = shortArticleMapper.makeShortArticles(articleRowsPage.Items);
+        List<ShortArticle> shortArticles = articleMapper.makeShortArticles(articleRowsPage.Items);
         
         Page<ShortArticle> pageData = new Page<ShortArticle>();
         pageData.NumberOfItems = articleRowsPage.NumberOfItems;
