@@ -50,6 +50,10 @@ public class CommentDao {
                     .addValue("articleId", articleId),
                 new CommentRowMapper());
     }
+    
+    public List<Object> getCommentsByUser(int userId) {
+        throw new RuntimeException("todo");
+    }
                 
     private static class CommentRowMapper implements RowMapper<CommentRow> {
         @Override

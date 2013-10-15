@@ -1,6 +1,8 @@
 package me.loki2302.service;
 
+import me.loki2302.dao.ArticleDao;
 import me.loki2302.dao.ArticleVoteDao;
+import me.loki2302.dao.CommentDao;
 import me.loki2302.dao.UserDao;
 import me.loki2302.dao.rows.ArticleVoteRow;
 import me.loki2302.dao.rows.UserRow;
@@ -21,6 +23,12 @@ public class UserService {
     private ArticleVoteDao articleVoteDao;
     
     @Autowired
+    private ArticleDao articleDao;
+    
+    @Autowired
+    private CommentDao commentDao;
+    
+    @Autowired
     private CompleteUserMapper completeUserMapper;
         
     public CompleteUser getCompleteUser(int userId) {
@@ -28,6 +36,10 @@ public class UserService {
         if(userRow == null) {
             throw new UserNotFoundException();
         }
+        
+        // TODO
+        // articleDao.getArticlesByUser(userId);
+        // commentDao.getCommentsByUser(userId);
         
         return completeUserMapper.makeCompleteUser(userRow);
     }

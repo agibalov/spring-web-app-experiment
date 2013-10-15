@@ -201,6 +201,10 @@ public class ArticleDao {
                 new MapSqlParameterSource()
                     .addValue("articleId", articleId));
     }
+    
+    public List<Object> getArticlesByUser(int userId) {
+        throw new RuntimeException("todo");
+    }
         
     private static class ArticleRowMapper implements RowMapper<ArticleRow> {
         @Override
