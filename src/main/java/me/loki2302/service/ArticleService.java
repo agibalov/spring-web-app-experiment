@@ -10,11 +10,15 @@ import me.loki2302.dao.CommentDao;
 import me.loki2302.dao.UserDao;
 import me.loki2302.dao.rows.ArticleRow;
 import me.loki2302.dao.rows.CommentRow;
+import me.loki2302.dao.rows.Page;
+import me.loki2302.dao.rows.UserRow;
+import me.loki2302.service.dto.article.BriefArticle;
 import me.loki2302.service.dto.article.Comment;
 import me.loki2302.service.dto.article.CompleteArticle;
 import me.loki2302.service.dto.article.ShortArticle;
 import me.loki2302.service.exceptions.AccessToArticleDeniedException;
 import me.loki2302.service.exceptions.ArticleNotFoundException;
+import me.loki2302.service.exceptions.UserNotFoundException;
 import me.loki2302.service.mappers.ArticleMapper;
 import me.loki2302.service.mappers.CommentMapper;
 
@@ -109,5 +113,16 @@ public class ArticleService {
         } else {
             articleVoteDao.updateArticleVoteCount(articleId, userId, vote, currentTime);
         }
+    }
+    
+    public Page<BriefArticle> getArticlesByUser(int userId, int itemsPerPage, int page) {
+        UserRow userRow = userDao.getUser(userId);
+        if(userRow == null) {
+            throw new UserNotFoundException();
+        }
+        
+        Page<ArticleRow> articleRowsPage = articleDao.getArticlesByUser(userId, itemsPerPage, page);
+        Page<BriefArticle> briefArticlesPage = articleMapper.makeBriefArticlesPage(articleRowsPage);
+        return briefArticlesPage;
     }
 }

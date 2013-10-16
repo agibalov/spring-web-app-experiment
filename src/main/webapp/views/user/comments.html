@@ -1,0 +1,51 @@
+@args int userId, Page<Comment> comments
+
+<div class="comments-container">
+	@if(comments.Items.size() == 0) {
+		<div class="alert alert-info">This user didn't post any comments yet</div>
+	} else {
+		<ul class="list-unstyled">
+			@for(Comment comment : comments.Items) {
+				<li>
+					@comment.Text
+					@commentMeta(comment)
+				</li>
+			}
+		</ul>
+		<ul class="pager comments">
+			@if(comments.hasPreviousPage()) {
+				<li class="previous">
+					<a href="#">&larr; Previous</a>
+				</li>
+			}
+					
+			@if(comments.hasNextPage()) {
+				<li class="next">
+					<a href="#">Next &rarr;</a>
+				</li>
+			}
+		</ul>
+		
+		<script type="text/javascript">
+			$(function() {
+			    function makeUrl(page) {
+			        return "/user/@userId/comments/?itemsPerPage=@comments.ItemsPerPage&page=" + page;
+			    };
+			    
+				$(".pager.comments .previous a").click(function() {
+				    var url = makeUrl(@(comments.CurrentPage-1));				
+					$.get(url, function(data) {
+					    $(".comments-container").replaceWith(data);
+					});
+				});
+				
+				$(".pager.comments .next a").click(function() {				
+				    var url = makeUrl(@(comments.CurrentPage+1));				
+					$.get(url, function(data) {
+					    $(".comments-container").replaceWith(data);
+					});
+				});
+			});	
+		</script>
+	}	
+</div>

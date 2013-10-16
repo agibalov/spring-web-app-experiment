@@ -59,7 +59,8 @@ public class MvcConfiguration extends WebMvcConfigurerAdapter {
                 "me.loki2302.service.dto.*",
                 "me.loki2302.service.dto.article.*",
                 "me.loki2302.service.dto.category.*",
-                "me.loki2302.service.dto.user.*"));
+                "me.loki2302.service.dto.user.*",
+                "me.loki2302.dao.rows.Page"));
         
         List<ITemplate> tags = new ArrayList<ITemplate>();
         tags.add(new MarkdownTag());

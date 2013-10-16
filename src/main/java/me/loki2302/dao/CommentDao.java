@@ -2,10 +2,12 @@ package me.loki2302.dao;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import me.loki2302.dao.rows.CommentRow;
+import me.loki2302.dao.rows.Page;
 import me.loki2302.service.dto.user.BriefUser;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,9 +53,22 @@ public class CommentDao {
                 new CommentRowMapper());
     }
     
-    public List<CommentRow> getCommentsByUser(int userId) {
-        return template.query(
-                "select " + 
+    public Page<CommentRow> getCommentsByUser(int userId, int itemsPerPage, int page) {
+        int numberOfItems = template.queryForObject(
+                "select count(Id) from Comments where UserId = :userId",
+                new MapSqlParameterSource()
+                    .addValue("userId", userId),
+                Integer.class);
+                
+        List<CommentRow> items;
+        if(numberOfItems > 0) {
+            int skip = page * itemsPerPage;
+            if(skip >= numberOfItems) {
+                throw new RuntimeException("no such page");
+            }
+            
+            items = template.query(
+                "select limit :skip :take " + 
                 "C.Id as Id, C.Text as Text, C.CreatedAt as CreatedAt, C.UpdatedAt as UpdatedAt, " + 
                 "U.Id as UserId, U.Name as UserName " + 
                 "from Comments as C " +
@@ -61,8 +76,21 @@ public class CommentDao {
                 "where U.Id = :userId " +
                 "order by C.Id desc", 
                 new MapSqlParameterSource()
-                    .addValue("userId", userId),
+                    .addValue("userId", userId)
+                    .addValue("skip", skip)
+                    .addValue("take", itemsPerPage),
                 new CommentRowMapper());
+        } else {
+            items = new ArrayList<CommentRow>();
+        }
+        
+        Page<CommentRow> pageData = new Page<CommentRow>();
+        pageData.NumberOfItems = numberOfItems;
+        pageData.ItemsPerPage = itemsPerPage;
+        pageData.NumberOfPages = (numberOfItems / itemsPerPage) + (numberOfItems % itemsPerPage > 0 ? 1 : 0);
+        pageData.CurrentPage = page;
+        pageData.Items = items;
+        return pageData;
     }
                 
     private static class CommentRowMapper implements RowMapper<CommentRow> {

@@ -9,6 +9,14 @@ public class Page<T> {
     public int CurrentPage;
     public List<T> Items;
     
+    public boolean hasPreviousPage() {
+        return CurrentPage > 0;
+    }
+    
+    public boolean hasNextPage() {
+        return CurrentPage < NumberOfPages - 1;
+    }
+    
     @Override
     public String toString() {
         return String.format(

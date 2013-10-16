@@ -202,27 +202,53 @@ public class ArticleDao {
                     .addValue("articleId", articleId));
     }
     
-    public List<ArticleRow> getArticlesByUser(int userId) {
-        return template.query(
-                "select " + 
-                "  A.Id as Id, A.Title as Title, A.Text as Text, " + 
-                "  A.CreatedAt as CreatedAt, A.UpdatedAt as UpdatedAt, " + 
-                "  A.ReadCount as ReadCount, " +
-                "  count(Comment.Id) as CommentCount, " + 
-                "  count(V.Id) as VoteCount, avg(V.Vote) as AverageVote, " +
-                "  U.Id as UserId, U.Name as UserName, " + 
-                "  Category.Id as CategoryId, Category.Name as CategoryName " + 
-                "from Articles as A " +
-                "join Users as U on U.Id = A.UserId " +
-                "join Categories as Category on Category.Id = A.CategoryId " +
-                "left join Comments as Comment on Comment.ArticleId = A.Id " +
-                "left join ArticleVotes as V on V.ArticleId = A.Id " +
-                "where U.Id = :userId " +
-                "group by A.Id, A.Title, A.Text, A.CreatedAt, A.UpdatedAt, A.ReadCount, U.Id, U.Name, Category.Id, Category.Name " + 
-                "order by A.Id desc",
+    public Page<ArticleRow> getArticlesByUser(int userId, int itemsPerPage, int page) {
+        int numberOfItems = template.queryForObject(
+                "select count(Id) from Articles where UserId = :userId",
                 new MapSqlParameterSource()
-                    .addValue("userId", userId),                
-                new ArticleRowMapper());
+                    .addValue("userId", userId),
+                Integer.class);
+                
+        List<ArticleRow> items;
+        if(numberOfItems > 0) {
+            int skip = page * itemsPerPage;
+            if(skip >= numberOfItems) {
+                throw new RuntimeException("no such page");
+            }
+            
+            items = template.query(
+                    "select limit :skip :take " + 
+                    "  A.Id as Id, A.Title as Title, A.Text as Text, " + 
+                    "  A.CreatedAt as CreatedAt, A.UpdatedAt as UpdatedAt, " + 
+                    "  A.ReadCount as ReadCount, " +
+                    "  count(Comment.Id) as CommentCount, " + 
+                    "  count(V.Id) as VoteCount, avg(V.Vote) as AverageVote, " +
+                    "  U.Id as UserId, U.Name as UserName, " + 
+                    "  Category.Id as CategoryId, Category.Name as CategoryName " + 
+                    "from Articles as A " +
+                    "join Users as U on U.Id = A.UserId " +
+                    "join Categories as Category on Category.Id = A.CategoryId " +
+                    "left join Comments as Comment on Comment.ArticleId = A.Id " +
+                    "left join ArticleVotes as V on V.ArticleId = A.Id " +
+                    "where U.Id = :userId " +
+                    "group by A.Id, A.Title, A.Text, A.CreatedAt, A.UpdatedAt, A.ReadCount, U.Id, U.Name, Category.Id, Category.Name " + 
+                    "order by A.Id desc",
+                    new MapSqlParameterSource()
+                        .addValue("userId", userId)  
+                        .addValue("skip", skip)
+                        .addValue("take", itemsPerPage),   
+                    new ArticleRowMapper());
+        } else {
+            items = new ArrayList<ArticleRow>();
+        }
+        
+        Page<ArticleRow> pageData = new Page<ArticleRow>();
+        pageData.NumberOfItems = numberOfItems;
+        pageData.ItemsPerPage = itemsPerPage;
+        pageData.NumberOfPages = (numberOfItems / itemsPerPage) + (numberOfItems % itemsPerPage > 0 ? 1 : 0);
+        pageData.CurrentPage = page;
+        pageData.Items = items;
+        return pageData;
     }
         
     private static class ArticleRowMapper implements RowMapper<ArticleRow> {

@@ -22,13 +22,13 @@
 		}		
 	</ul>
 	<ul class="pager">
-		@if(category.Articles.CurrentPage != 0) {
+		@if(category.Articles.hasPreviousPage()) {
 			<li class="previous">
 				<a href="/category/@category.CategoryId?articlesPerPage=@category.Articles.ItemsPerPage&page=@(category.Articles.CurrentPage-1)">&larr; Previous</a>
 			</li>
 		}
 		
-		@if(category.Articles.CurrentPage != category.Articles.NumberOfPages - 1) {
+		@if(category.Articles.hasNextPage()) {
 			<li class="next">
 				<a href="/category/@category.CategoryId?articlesPerPage=@category.Articles.ItemsPerPage&page=@(category.Articles.CurrentPage+1)">Next &rarr;</a>
 			</li>

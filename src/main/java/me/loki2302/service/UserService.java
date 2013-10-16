@@ -1,7 +1,5 @@
 package me.loki2302.service;
 
-import java.util.List;
-
 import me.loki2302.dao.ArticleDao;
 import me.loki2302.dao.ArticleVoteDao;
 import me.loki2302.dao.CommentDao;
@@ -9,6 +7,7 @@ import me.loki2302.dao.UserDao;
 import me.loki2302.dao.rows.ArticleRow;
 import me.loki2302.dao.rows.ArticleVoteRow;
 import me.loki2302.dao.rows.CommentRow;
+import me.loki2302.dao.rows.Page;
 import me.loki2302.dao.rows.UserRow;
 import me.loki2302.service.dto.article.ArticleVoteDetails;
 import me.loki2302.service.dto.article.BriefArticle;
@@ -51,11 +50,11 @@ public class UserService {
             throw new UserNotFoundException();
         }
         
-        List<ArticleRow> articleRows = articleDao.getArticlesByUser(userId);
-        List<BriefArticle> briefArticles = articleMapper.makeBriefArticles(articleRows);
+        Page<ArticleRow> articleRows = articleDao.getArticlesByUser(userId, 5, 0);
+        Page<BriefArticle> briefArticles = articleMapper.makeBriefArticlesPage(articleRows);
         
-        List<CommentRow> commentRows = commentDao.getCommentsByUser(userId);
-        List<Comment> comments = commentMapper.makeComments(commentRows);
+        Page<CommentRow> commentRows = commentDao.getCommentsByUser(userId, 5, 0);
+        Page<Comment> comments = commentMapper.makeCommentsPage(commentRows);
         
         return completeUserMapper.makeCompleteUser(userRow, briefArticles, comments);
     }

@@ -1,0 +1,51 @@
+@args int userId, Page<BriefArticle> articles
+
+<div class="articles-container">
+	@if(articles.Items.size() == 0) {
+		<div class="alert alert-info">This user didn't post any articles yet</div>
+	} else {
+		<ul class="list-unstyled">
+			@for(BriefArticle article : articles.Items) {
+				<li>
+					<h3><span class="glyphicon glyphicon-file"></span> <a href="/article/@article.ArticleId">@article.Title</a></h3>
+					@articleMeta(article)
+				</li>
+			}
+		</ul>
+		<ul class="pager articles">
+			@if(articles.hasPreviousPage()) {
+				<li class="previous">
+					<a href="#">&larr; Previous</a>
+				</li>
+			}
+	
+			@if(articles.hasNextPage()) {
+				<li class="next">
+					<a href="#">Next &rarr;</a>
+				</li>
+			}
+		</ul>
+		
+		<script type="text/javascript">
+			$(function() {
+			    function makeUrl(page) {
+			        return "/user/@userId/articles/?itemsPerPage=@articles.ItemsPerPage&page=" + page;
+			    };
+			    
+				$(".pager.articles .previous a").click(function() {
+				    var url = makeUrl(@(articles.CurrentPage-1));				    				    
+					$.get(url, function(data) {
+					    $(".articles-container").replaceWith(data);
+					});
+				});
+				
+				$(".pager.articles .next a").click(function() {				
+				    var url = makeUrl(@(articles.CurrentPage+1));				
+					$.get(url, function(data) {
+					    $(".articles-container").replaceWith(data);
+					});
+				});
+			});	
+		</script>
+	}	
+</div>
