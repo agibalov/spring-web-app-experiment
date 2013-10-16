@@ -51,8 +51,18 @@ public class CommentDao {
                 new CommentRowMapper());
     }
     
-    public List<Object> getCommentsByUser(int userId) {
-        throw new RuntimeException("todo");
+    public List<CommentRow> getCommentsByUser(int userId) {
+        return template.query(
+                "select " + 
+                "C.Id as Id, C.Text as Text, C.CreatedAt as CreatedAt, C.UpdatedAt as UpdatedAt, " + 
+                "U.Id as UserId, U.Name as UserName " + 
+                "from Comments as C " +
+                "join Users as U on U.Id = C.UserId " +
+                "where U.Id = :userId " +
+                "order by C.Id desc", 
+                new MapSqlParameterSource()
+                    .addValue("userId", userId),
+                new CommentRowMapper());
     }
                 
     private static class CommentRowMapper implements RowMapper<CommentRow> {

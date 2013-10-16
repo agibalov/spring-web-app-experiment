@@ -5,4 +5,26 @@
 
 @section("content") {
 	<h2>@user.Name</h2>
+	<div class="row">
+		<div class="col-md-6">
+			<ul class="list-unstyled">
+				@for(BriefArticle article : user.Articles) {
+					<li>
+						<h3><span class="glyphicon glyphicon-file"></span> <a href="/article/@article.ArticleId">@article.Title</a></h3>
+						@articleMeta(article)
+					</li>
+				}
+			</ul>
+		</div>
+		<div class="col-md-6">
+			<ul class="list-unstyled">
+				@for(Comment comment : user.Comments) {
+					<li>
+						@comment.Text
+						@commentMeta(comment)
+					</li>
+				}
+			</ul>
+		</div>
+	</div>
 }

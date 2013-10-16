@@ -202,8 +202,27 @@ public class ArticleDao {
                     .addValue("articleId", articleId));
     }
     
-    public List<Object> getArticlesByUser(int userId) {
-        throw new RuntimeException("todo");
+    public List<ArticleRow> getArticlesByUser(int userId) {
+        return template.query(
+                "select " + 
+                "  A.Id as Id, A.Title as Title, A.Text as Text, " + 
+                "  A.CreatedAt as CreatedAt, A.UpdatedAt as UpdatedAt, " + 
+                "  A.ReadCount as ReadCount, " +
+                "  count(Comment.Id) as CommentCount, " + 
+                "  count(V.Id) as VoteCount, avg(V.Vote) as AverageVote, " +
+                "  U.Id as UserId, U.Name as UserName, " + 
+                "  Category.Id as CategoryId, Category.Name as CategoryName " + 
+                "from Articles as A " +
+                "join Users as U on U.Id = A.UserId " +
+                "join Categories as Category on Category.Id = A.CategoryId " +
+                "left join Comments as Comment on Comment.ArticleId = A.Id " +
+                "left join ArticleVotes as V on V.ArticleId = A.Id " +
+                "where U.Id = :userId " +
+                "group by A.Id, A.Title, A.Text, A.CreatedAt, A.UpdatedAt, A.ReadCount, U.Id, U.Name, Category.Id, Category.Name " + 
+                "order by A.Id desc",
+                new MapSqlParameterSource()
+                    .addValue("userId", userId),                
+                new ArticleRowMapper());
     }
         
     private static class ArticleRowMapper implements RowMapper<ArticleRow> {
