@@ -17,7 +17,7 @@ public class BriefCategoryMapper {
     }
     
     public List<BriefCategory> makeBriefCategories(List<CategoryRow> categoryRows) {
-        List<BriefCategory> briefCategories = new ArrayList<BriefCategory>();
+        List<BriefCategory> briefCategories = new ArrayList<BriefCategory>(categoryRows.size());
         for(CategoryRow categoryRow : categoryRows) {
             BriefCategory briefCategory = makeBriefCategory(categoryRow);
             briefCategories.add(briefCategory);

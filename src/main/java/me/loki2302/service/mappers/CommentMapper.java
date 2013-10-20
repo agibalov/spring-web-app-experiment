@@ -22,7 +22,7 @@ public class CommentMapper {
     }
     
     public List<Comment> makeComments(List<CommentRow> commentRows) {        
-        List<Comment> comments = new ArrayList<Comment>();
+        List<Comment> comments = new ArrayList<Comment>(commentRows.size());
         for(CommentRow commentRow : commentRows) {
             Comment comment = makeComment(commentRow);
             comments.add(comment);

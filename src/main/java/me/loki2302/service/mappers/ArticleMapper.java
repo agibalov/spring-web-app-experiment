@@ -23,7 +23,7 @@ public class ArticleMapper {
     }
     
     public List<BriefArticle> makeBriefArticles(List<ArticleRow> articleRows) {
-        List<BriefArticle> briefArticles = new ArrayList<BriefArticle>();
+        List<BriefArticle> briefArticles = new ArrayList<BriefArticle>(articleRows.size());
         for(ArticleRow articleRow : articleRows) {
             BriefArticle briefArticle = makeBriefArticle(
                     articleRow);
@@ -48,7 +48,7 @@ public class ArticleMapper {
     }
     
     public List<ShortArticle> makeShortArticles(List<ArticleRow> articleRows) {
-        List<ShortArticle> shortArticles = new ArrayList<ShortArticle>();
+        List<ShortArticle> shortArticles = new ArrayList<ShortArticle>(articleRows.size());
         for(ArticleRow articleRow : articleRows) {
             ShortArticle shortArticle = makeShortArticle(articleRow);
             shortArticles.add(shortArticle);
