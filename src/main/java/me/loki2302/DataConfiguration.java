@@ -36,13 +36,13 @@ public class DataConfiguration {
     }
     
     @Bean
-    public PlatformTransactionManager transactionManager(DataSource dataSource) {
-        return new DataSourceTransactionManager(dataSource);
+    public PlatformTransactionManager transactionManager() throws ClassNotFoundException {
+        return new DataSourceTransactionManager(dataSource());
     }
         
     @Bean
-    public NamedParameterJdbcTemplate jdbcTemplate(DataSource dataSource) {
-        return new NamedParameterJdbcTemplate(dataSource);
+    public NamedParameterJdbcTemplate jdbcTemplate() throws ClassNotFoundException {
+        return new NamedParameterJdbcTemplate(dataSource());
     }
     
     @Bean

@@ -34,7 +34,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http
             .csrf().disable()
             .anonymous().disable()
-            .exceptionHandling().accessDeniedPage("/").and() // doesn't work
             .securityContext().securityContextRepository(cookieSecurityContextRepository);               
     }
     
