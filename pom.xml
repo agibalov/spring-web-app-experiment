@@ -87,7 +87,7 @@
 		<dependency>
 			<groupId>org.hsqldb</groupId>
 			<artifactId>hsqldb</artifactId>
-			<version>2.3.0</version>
+			<version>2.3.1</version>
 		</dependency>
 		<dependency>
 			<groupId>com.googlecode.flyway</groupId>
@@ -127,7 +127,7 @@
 		<dependency>
 			<groupId>com.ctlok</groupId>
 			<artifactId>spring-webmvc-rythm</artifactId>
-			<version>1.3.6</version>
+			<version>1.4.0</version>
 		</dependency>
 	</dependencies>
 	<build>

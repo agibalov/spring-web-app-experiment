@@ -53,19 +53,23 @@ public class MvcConfiguration extends WebMvcConfigurerAdapter {
         rythmConfigurator.setMode("dev");        
         rythmConfigurator.setTempDirectory("./");
         rythmConfigurator.setRootDirectory("/views/");
-        rythmConfigurator.setImplicitPackages(Arrays.asList(
+        
+        List<String> implicitPackages = new ArrayList<String>();
+        implicitPackages.addAll(Arrays.asList(
                 "me.loki2302.mvc.*",
                 "me.loki2302.controllers.*",
                 "me.loki2302.service.dto.*",
                 "me.loki2302.service.dto.article.*",
                 "me.loki2302.service.dto.category.*",
                 "me.loki2302.service.dto.user.*",
-                "me.loki2302.dao.rows.Page"));
+                "me.loki2302.dao.rows.Page"));        
+        rythmConfigurator.setImplicitPackages(implicitPackages);
         
         List<ITemplate> tags = new ArrayList<ITemplate>();
-        tags.add(new MarkdownTag());
-        tags.add(new FancyDateFormatTag());
-        tags.add(new FancyTimeFormatTag());
+        tags.addAll(Arrays.asList(
+                new MarkdownTag(), 
+                new FancyDateFormatTag(), 
+                new FancyTimeFormatTag()));
         rythmConfigurator.setTags(tags);
         
         return rythmConfigurator;
