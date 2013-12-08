@@ -70,7 +70,7 @@ public class DatabasePopulator {
             currentTime = currentTime
                     //.plusDays(random.nextInt(15))
                     //.plusHours(random.nextInt(23))
-                    .plusMinutes(random.nextInt(10))
+                    .plusMinutes(random.nextInt(30))
                     .plusSeconds(random.nextInt(60))
                     .plusMillis(random.nextInt(1000));
         }
