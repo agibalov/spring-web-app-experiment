@@ -5,6 +5,7 @@ import java.util.Random;
 import javax.annotation.PostConstruct;
 
 import me.loki2302.OnlyInProduction;
+import me.loki2302.charlatan.RandomOptionGenerator;
 import me.loki2302.service.CurrentTimeProvider;
 
 import org.joda.time.DateTime;
