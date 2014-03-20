@@ -5,7 +5,8 @@ import java.util.Random;
 import javax.annotation.PostConstruct;
 
 import me.loki2302.OnlyInProduction;
-import me.loki2302.charlatan.RandomOptionGenerator;
+import me.loki2302.charlatan.RandomEventGenerator;
+import me.loki2302.charlatan.RandomEventGeneratorBuilder;
 import me.loki2302.service.CurrentTimeProvider;
 
 import org.joda.time.DateTime;
@@ -27,14 +28,14 @@ public class DatabasePopulator {
     
     @PostConstruct
     public void populateDatabase() {
-        RandomOptionGenerator<HistoryEvent> historyEventGenerator = 
-                new RandomOptionGenerator<HistoryEvent>()
-                    .withOption(HistoryEvent.NewCategory, 1)
-                    .withOption(HistoryEvent.NewUser, 400)
-                    .withOption(HistoryEvent.NewArticle, 1200)
-                    .withOption(HistoryEvent.NewComment, 2400)
-                    .withOption(HistoryEvent.ViewArticle, 24000)
-                    .withOption(HistoryEvent.VoteForArticle, 12000);
+        RandomEventGenerator<HistoryEvent> historyEventGenerator = new RandomEventGeneratorBuilder<HistoryEvent>()
+                .withEvent(HistoryEvent.NewCategory, 1)
+                .withEvent(HistoryEvent.NewUser, 400)
+                .withEvent(HistoryEvent.NewArticle, 1200)
+                .withEvent(HistoryEvent.NewComment, 2400)
+                .withEvent(HistoryEvent.ViewArticle, 24000)
+                .withEvent(HistoryEvent.VoteForArticle, 12000)
+                .build();
         
         Random random = new Random();
         
@@ -46,7 +47,7 @@ public class DatabasePopulator {
         while(currentTime.isBefore(historyEndTime)) {
             currentTimeProvider.overrideCurrentTime(currentTime.toDate());
             
-            HistoryEvent historyEvent = historyEventGenerator.generate();
+            HistoryEvent historyEvent = historyEventGenerator.makeEvent();
             if(historyEvent.equals(HistoryEvent.NewCategory)) {
                 worldFacade.makeRandomCategory();
             } else if(historyEvent.equals(HistoryEvent.NewUser)) {
