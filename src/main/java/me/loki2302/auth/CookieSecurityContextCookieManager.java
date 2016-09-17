@@ -33,6 +33,10 @@ public class CookieSecurityContextCookieManager {
     
     private static Cookie getCookieByName(String cookieOfInterest, HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
+        if(cookies == null) {
+            return null;
+        }
+
         for(Cookie cookie : cookies) {
             String cookieName = cookie.getName();
             if(cookieName.equals(cookieOfInterest)) {
