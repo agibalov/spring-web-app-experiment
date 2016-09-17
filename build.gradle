@@ -1,0 +1,71 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'org.akhikhl.gretty:gretty:+'
+    }
+}
+
+group 'me.loki2302'
+version '1.0-SNAPSHOT'
+
+task wrapper(type: Wrapper) {
+  gradleVersion = '2.5'
+  distributionUrl = "https://services.gradle.org/distributions/gradle-$gradleVersion-all.zip"
+}
+
+apply plugin: 'java'
+apply plugin: 'war'
+apply plugin: 'org.akhikhl.gretty'
+
+sourceCompatibility = 1.6
+
+repositories {
+    mavenCentral()
+    maven { url 'http://repo.springsource.org/milestone' }
+    maven { url 'https://raw.github.com/loki2302/charlatan/mvn-repo/' }
+}
+
+dependencies {
+    testCompile 'junit:junit:4.11'
+    testCompile 'org.springframework:spring-test:3.2.4.RELEASE'
+    compile 'org.apache.tomcat:tomcat-servlet-api:7.0.0'
+    compile 'org.springframework:spring-webmvc:3.2.4.RELEASE'
+    compile 'org.springframework.security:spring-security-web:3.2.0.RC1'
+    compile 'org.springframework.security:spring-security-config:3.2.0.RC1'
+    compile 'org.springframework:spring-context:3.2.4.RELEASE'
+    compile 'org.springframework:spring-jdbc:3.2.4.RELEASE'
+    compile 'org.hsqldb:hsqldb:2.3.1'
+    compile 'com.googlecode.flyway:flyway-core:2.2.1'
+    compile 'org.pegdown:pegdown:1.4.1'
+    compile 'org.hibernate:hibernate-validator:4.3.0.Final'
+    compile 'org.slf4j:slf4j-api:1.6.4'
+    compile 'org.slf4j:slf4j-simple:1.6.4'
+    compile 'joda-time:joda-time:2.3'
+    compile('com.ctlok:spring-webmvc-rythm:1.4.0') {
+        exclude group: 'org.eclipse.jdt.core.compiler', module: 'ecj'
+    }
+    compile 'org.eclipse.jdt.core.compiler:ecj:4.3.1'
+    compile 'me.loki2302:charlatan:0.0.1-SNAPSHOT'
+
+    compile 'org.eclipse.jetty:jetty-runner:9.2.15.v20160210'
+}
+
+gretty {
+    servletContainer = 'jetty9'
+    contextPath = '/'
+    scanInterval = 0
+}
+
+task copyJettyRunner(type: Copy) {
+    into buildDir
+    from(configurations.compile.filter { it.name.startsWith('jetty-runner') }) {
+        rename 'jetty-runner.*', 'jetty-runner.jar'
+    }
+}
+
+build.dependsOn copyJettyRunner
+
+task stage(dependsOn: 'build') {}
