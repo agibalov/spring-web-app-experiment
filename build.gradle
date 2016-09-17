@@ -39,7 +39,7 @@ dependencies {
     compile 'org.springframework:spring-jdbc:3.2.4.RELEASE'
     compile 'org.hsqldb:hsqldb:2.3.1'
     compile 'com.googlecode.flyway:flyway-core:2.2.1'
-    compile 'org.pegdown:pegdown:1.4.1'
+    compile 'org.pegdown:pegdown:1.6.0'
     compile 'org.hibernate:hibernate-validator:4.3.0.Final'
     compile 'org.slf4j:slf4j-api:1.6.4'
     compile 'org.slf4j:slf4j-simple:1.6.4'
@@ -49,7 +49,6 @@ dependencies {
     }
     compile 'org.eclipse.jdt.core.compiler:ecj:4.3.1'
     compile 'me.loki2302:charlatan:0.0.1-SNAPSHOT'
-
     compile 'org.eclipse.jetty:jetty-runner:9.2.15.v20160210'
 }
 
