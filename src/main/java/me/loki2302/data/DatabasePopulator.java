@@ -29,12 +29,12 @@ public class DatabasePopulator {
     @PostConstruct
     public void populateDatabase() {
         RandomEventGenerator<HistoryEvent> historyEventGenerator = new RandomEventGeneratorBuilder<HistoryEvent>()
-                .withEvent(HistoryEvent.NewCategory, 10)
-                .withEvent(HistoryEvent.NewUser, 100)
-                .withEvent(HistoryEvent.NewArticle, 1000)
-                .withEvent(HistoryEvent.NewComment, 2000)
-                .withEvent(HistoryEvent.ViewArticle, 8000)
-                .withEvent(HistoryEvent.VoteForArticle, 3000)
+                .withEvent(HistoryEvent.NewCategory, 1)
+                .withEvent(HistoryEvent.NewUser, 400)
+                .withEvent(HistoryEvent.NewArticle, 1200)
+                .withEvent(HistoryEvent.NewComment, 2400)
+                .withEvent(HistoryEvent.ViewArticle, 24000)
+                .withEvent(HistoryEvent.VoteForArticle, 12000)
                 .build();
         
         Random random = new Random();
