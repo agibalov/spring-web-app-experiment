@@ -25,12 +25,13 @@ repositories {
 }
 
 dependencies {
-    testCompile 'junit:junit:4.11'
+    testCompile 'junit:junit:4.12'
     testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '1.4.0.RELEASE'
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '1.4.0.RELEASE'
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: '1.4.0.RELEASE'
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-jdbc', version: '1.4.0.RELEASE'
-    compile 'org.hsqldb:hsqldb:2.3.4'
+    compile 'org.hsqldb:hsqldb:2.3.3'
+    compile group: 'org.flywaydb', name: 'flyway-core', version: '4.0.3'
     compile 'org.pegdown:pegdown:1.6.0'
     compile group: 'org.hibernate', name: 'hibernate-validator', version: '5.2.4.Final'
     compile group: 'joda-time', name: 'joda-time', version: '2.9.4'
