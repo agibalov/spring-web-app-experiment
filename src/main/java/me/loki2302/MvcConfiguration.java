@@ -20,7 +20,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 
 @Configuration
-public class MvcConfiguration extends WebMvcConfigurerAdapter {    
+public class MvcConfiguration extends WebMvcConfigurerAdapter {
     @Autowired
     private UserRelatedDetailsModelExtender userRelatedDetailsModelExtender; 
     

@@ -13,6 +13,7 @@ import me.loki2302.service.dto.AuthenticationResult;
 import me.loki2302.service.exceptions.UserNameAlreadyUsedException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.flyway.FlywayMigrationInitializer;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -22,6 +23,11 @@ public class WorldFacade {
     public final List<Integer> categoryIds = new ArrayList<Integer>();
     public final List<Integer> articleIds = new ArrayList<Integer>();
     public final List<Integer> commentIds = new ArrayList<Integer>();
+
+    // force WorldFacade to be initialized only after DB migration has been applied
+    // TODO: what's the right approach?
+    @Autowired
+    private FlywayMigrationInitializer flywayMigrationInitializer;
     
     @Autowired
     private AuthenticationService authenticationService;
