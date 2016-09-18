@@ -1,1 +1,1 @@
-web: java $JAVA_OPTS -cp build/jetty-runner.jar org.eclipse.jetty.runner.Runner --port $PORT build/libs/*.war
+web: java $JAVA_OPTS -jar build/libs/spring-web-app-experiment-1.0-SNAPSHOT.jar --server.port $PORT

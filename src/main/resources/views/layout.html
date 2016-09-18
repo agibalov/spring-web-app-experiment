@@ -1,3 +1,11 @@
+@import me.loki2302.service.dto.*
+@import me.loki2302.service.dto.article.*
+@import me.loki2302.service.dto.category.*
+@import me.loki2302.service.dto.user.*
+@import me.loki2302.mvc.*
+@import me.loki2302.controllers.*
+@import me.loki2302.dao.rows.Page
+
 @args UserDetails User, String area;
 
 <!doctype html>
@@ -47,7 +55,7 @@
         	}
         	@render("content")
         	<hr>
-			<p>&copy; 2013 by <a href="http://loki2302.me" target="_blank">loki2302</a>
+			<p>&copy; 2013 - 2016 by <a href="http://loki2302.me" target="_blank">loki2302</a>
 		</div>			
 	</body>	
 </html>

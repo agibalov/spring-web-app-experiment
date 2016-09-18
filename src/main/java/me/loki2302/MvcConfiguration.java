@@ -1,41 +1,31 @@
 package me.loki2302;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import me.loki2302.controllers.CurrentUserHandlerMethodArgumentResolver;
 import me.loki2302.mvc.UserRelatedDetailsModelExtender;
 import me.loki2302.rythm.FancyDateFormatTag;
 import me.loki2302.rythm.FancyTimeFormatTag;
 import me.loki2302.rythm.MarkdownTag;
-
-import org.rythmengine.template.ITemplate;
+import me.loki2302.rythm.spring.RythmViewResolver;
+import org.rythmengine.RythmEngine;
+import org.rythmengine.resource.ClasspathResourceLoader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
-import com.ctlok.springframework.web.servlet.view.rythm.RythmConfigurator;
-import com.ctlok.springframework.web.servlet.view.rythm.RythmViewResolver;
+import java.net.URISyntaxException;
+import java.util.List;
 
-@EnableWebMvc
-@ComponentScan("me.loki2302")
+@Configuration
 public class MvcConfiguration extends WebMvcConfigurerAdapter {    
     @Autowired
     private UserRelatedDetailsModelExtender userRelatedDetailsModelExtender; 
     
     @Autowired
     private CurrentUserHandlerMethodArgumentResolver currentUserHandlerMethodArgumentResolver;
-    
-    @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/assets/**").addResourceLocations("/assets/");
-        registry.addResourceHandler("/robots.txt").addResourceLocations("/robots.txt");
-    }
     
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
@@ -46,40 +36,20 @@ public class MvcConfiguration extends WebMvcConfigurerAdapter {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(userRelatedDetailsModelExtender);
     }
-    
+
     @Bean
-    public RythmConfigurator rythmConfigurator() {
-        RythmConfigurator rythmConfigurator = new RythmConfigurator();
-        rythmConfigurator.setMode("dev");        
-        rythmConfigurator.setTempDirectory("./");
-        rythmConfigurator.setRootDirectory("/views/");
-        
-        List<String> implicitPackages = new ArrayList<String>();
-        implicitPackages.addAll(Arrays.asList(
-                "me.loki2302.mvc.*",
-                "me.loki2302.controllers.*",
-                "me.loki2302.service.dto.*",
-                "me.loki2302.service.dto.article.*",
-                "me.loki2302.service.dto.category.*",
-                "me.loki2302.service.dto.user.*",
-                "me.loki2302.dao.rows.Page"));        
-        rythmConfigurator.setImplicitPackages(implicitPackages);
-        
-        List<ITemplate> tags = new ArrayList<ITemplate>();
-        tags.addAll(Arrays.asList(
-                new MarkdownTag(), 
-                new FancyDateFormatTag(), 
-                new FancyTimeFormatTag()));
-        rythmConfigurator.setTags(tags);
-        
-        return rythmConfigurator;
-    }
-    
-    @Bean
-    public RythmViewResolver rythmViewResolver(RythmConfigurator rythmConfigurator) {
-        RythmViewResolver rythmViewResolver = new RythmViewResolver(rythmConfigurator);
-        rythmViewResolver.setPrefix("/views/");
+    public ViewResolver rythmViewResolver() throws URISyntaxException {
+        RythmEngine rythmEngine = new RythmEngine();
+        rythmEngine.registerResourceLoader(new ClasspathResourceLoader(rythmEngine, "views"));
+        rythmEngine.registerFastTag(new MarkdownTag());
+        rythmEngine.registerFastTag(new FancyDateFormatTag());
+        rythmEngine.registerFastTag(new FancyTimeFormatTag());
+        rythmEngine.registerResourceLoader();
+
+        RythmViewResolver rythmViewResolver = new RythmViewResolver(rythmEngine);
+        rythmViewResolver.setPrefix("");
         rythmViewResolver.setSuffix(".html");
+
         return rythmViewResolver;
-    }        
+    }
 }
